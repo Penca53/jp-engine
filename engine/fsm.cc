@@ -8,12 +8,12 @@
 
 namespace ng {
 
-FSM::FSM(std::unique_ptr<ng::State> entry_state)
+FSM::FSM(std::unique_ptr<State> entry_state)
     : current_state_(entry_state.get()) {
   AddState(std::move(entry_state));
 }
 
-void FSM::AddState(std::unique_ptr<ng::State> state) {
+void FSM::AddState(std::unique_ptr<State> state) {
   states_.insert({state->GetID(), std::move(state)});
 }
 
@@ -37,7 +37,7 @@ void FSM::Update() {
   current_state_->Update();
 }
 
-void FSM::Transit(ng::State& to_state) {
+void FSM::Transit(State& to_state) {
   current_state_->OnExit();
   current_state_ = &to_state;
   current_state_->OnEnter();

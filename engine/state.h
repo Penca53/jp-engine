@@ -9,7 +9,9 @@ class State {
 
  public:
   using ID = std::string;
+
   State(ID id);
+
   virtual ~State() = default;
 
   const ID& GetID() const;
