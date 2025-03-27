@@ -12,5 +12,6 @@ FetchContent_MakeAvailable(SFML)
 
 add_library(engine app.cc camera.cc circle_collider.cc collider.cc fsm.cc input.cc node.cc physics.cc rectangle_collider.cc resource_manager.cc sprite_sheet_animation.cc state.cc tile.cc tilemap.cc tileset.cc transition.cc)
 target_compile_features(engine PRIVATE cxx_std_23)
+set_target_properties(engine PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(engine PUBLIC SFML::Audio SFML::Graphics)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR})
