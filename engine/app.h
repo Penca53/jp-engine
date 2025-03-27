@@ -9,6 +9,17 @@
 
 namespace ng {
 
+static constexpr auto cmp_ascending_draw_order = [](const Camera* a,
+                                                    const Camera* b) {
+  if (a->GetDrawOrder() < b->GetDrawOrder()) {
+    return true;
+  } else if (a->GetDrawOrder() > b->GetDrawOrder()) {
+    return false;
+  }
+
+  return a < b;
+};
+
 class App {
  public:
   static App& GetInstance();
@@ -48,16 +59,6 @@ class App {
   // The cameras must be declared before scene because of destruction order.
   // The cameras in the scene will unregister in their destructor,
   // so their destructor must be called before the destructor of the cameras field).
-  static constexpr auto cmp_ascending_draw_order = [](const Camera* a,
-                                                      const Camera* b) {
-    if (a->GetDrawOrder() < b->GetDrawOrder()) {
-      return true;
-    } else if (a->GetDrawOrder() > b->GetDrawOrder()) {
-      return false;
-    }
-
-    return a < b;
-  };
   std::set<Camera*, decltype(cmp_ascending_draw_order)> cameras_;
   std::unordered_set<const Node*> valid_nodes_;
 
