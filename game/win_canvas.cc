@@ -1,6 +1,9 @@
 #include "win_canvas.h"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Vector2.hpp>
 #include "engine/app.h"
+#include "engine/layer.h"
 #include "engine/resource_manager.h"
 
 namespace game {
@@ -14,20 +17,20 @@ WinCanvas::WinCanvas()
   SetLayer(ng::Layer::kUI);
 
   background_.setSize(
-      static_cast<sf::Vector2f>(ng::App::GetInstance().GetWindow().getSize()));
-  background_.setOrigin(static_cast<sf::Vector2f>(
-      ng::App::GetInstance().GetWindow().getSize() / 2u));
+      sf::Vector2f(ng::App::GetInstance().GetWindow().getSize()));
+  background_.setOrigin(
+      sf::Vector2f(ng::App::GetInstance().GetWindow().getSize() / 2U));
   background_.setFillColor(sf::Color(50, 50, 50, 200));
 
   title_text_.setString("YOU WON");
   title_text_.setCharacterSize(42);
   title_text_.setStyle(sf::Text::Bold);
-  title_text_.setOrigin(title_text_.getGlobalBounds().size / 2.f);
+  title_text_.setOrigin(title_text_.getGlobalBounds().size / 2.F);
 
   restart_text_.setString("(press ENTER to restart)");
   restart_text_.setCharacterSize(24);
   restart_text_.setStyle(sf::Text::Italic);
-  restart_text_.setOrigin(restart_text_.getGlobalBounds().size / 2.f);
+  restart_text_.setOrigin(restart_text_.getGlobalBounds().size / 2.F);
   restart_text_.setPosition(
       sf::Vector2f(0, title_text_.getGlobalBounds().size.y * 2));
 }

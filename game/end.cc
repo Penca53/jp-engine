@@ -1,15 +1,22 @@
 #include "end.h"
-#include "default_scene.h"
-#include "engine/app.h"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <cstdint>
+#include <memory>
+#include <utility>
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
+#include "engine/state.h"
+#include "game_manager.h"
 
 namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
 End::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id), animation_(sprite, "End/End (Idle).png", kAnimationTPF) {}
+    : ng::State(std::move(id)),
+      animation_(sprite, "End/End (Idle).png", kAnimationTPF) {}
 
 void End::IdleState::OnEnter() {
   animation_.Start();
@@ -21,7 +28,7 @@ void End::IdleState::Update() {
 
 End::PressedState::PressedState(ng::State::ID id, sf::Sprite& sprite,
                                 GameManager& game_manager)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "End/End (Pressed) (64x64).png", kAnimationTPF),
       game_manager_(&game_manager) {}
 

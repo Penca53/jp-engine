@@ -12,7 +12,7 @@ class FSM {
  public:
   FSM(std::unique_ptr<State> entry_state);
   void AddState(std::unique_ptr<State> state);
-  void AddTransition(Transition t);
+  void AddTransition(Transition transition);
   void Update();
 
  private:

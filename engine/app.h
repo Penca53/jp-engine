@@ -24,7 +24,7 @@ class App {
  public:
   static App& GetInstance();
 
-  App& SetWindowTitle(std::string title);
+  App& SetWindowTitle(const std::string& title);
   App& SetWindowSize(sf::Vector2u size);
 
   void Run(uint32_t tps, uint32_t fps);

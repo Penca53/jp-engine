@@ -1,6 +1,11 @@
 #include "rectangle_collider.h"
 
 #include "circle_collider.h"
+#include "collider.h"
+
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace ng {
 
@@ -46,7 +51,7 @@ void RectangleCollider::Draw(sf::RenderTarget& target) {
   shape.setOutlineThickness(2);
   shape.setFillColor(sf::Color::Transparent);
   shape.setOrigin(size_.componentWiseMul(GetGlobalTransform().getScale()) /
-                  2.f);
+                  2.F);
   target.draw(shape, GetGlobalTransform().getTransform());
 }
 

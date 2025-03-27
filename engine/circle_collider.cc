@@ -1,8 +1,12 @@
 #include "circle_collider.h"
 
-#include <iostream>
-
+#include "collider.h"
 #include "rectangle_collider.h"
+
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <algorithm>
 
 namespace ng {
 
@@ -28,27 +32,27 @@ bool CircleCollider::Collides(const CircleCollider& other) const {
 
 bool CircleCollider::Collides(const RectangleCollider& other) const {
   sf::Vector2f pos = GetGlobalTransform().getPosition();
-  sf::Vector2f otherPos = other.GetGlobalTransform().getPosition();
+  sf::Vector2f other_pos = other.GetGlobalTransform().getPosition();
 
-  float left = otherPos.x -
-               other.GetSize().x * other.GetGlobalTransform().getScale().x / 2;
-  float right = otherPos.x +
-                other.GetSize().x * other.GetGlobalTransform().getScale().x / 2;
-  float top = otherPos.y -
-              other.GetSize().y * other.GetGlobalTransform().getScale().y / 2;
-  float bottom = otherPos.y + other.GetSize().y *
-                                  other.GetGlobalTransform().getScale().y / 2;
+  float left = other_pos.x - (other.GetSize().x *
+                              other.GetGlobalTransform().getScale().x / 2);
+  float right = other_pos.x + (other.GetSize().x *
+                               other.GetGlobalTransform().getScale().x / 2);
+  float top = other_pos.y -
+              (other.GetSize().y * other.GetGlobalTransform().getScale().y / 2);
+  float bottom = other_pos.y + (other.GetSize().y *
+                                other.GetGlobalTransform().getScale().y / 2);
 
-  float closestX = std::max(left, std::min(pos.x, right));
-  float closestY = std::max(top, std::min(pos.y, bottom));
+  float closest_x = std::max(left, std::min(pos.x, right));
+  float closest_y = std::max(top, std::min(pos.y, bottom));
 
-  float dx = pos.x - closestX;
-  float dy = pos.y - closestY;
-  float distanceSquared = dx * dx + dy * dy;
+  float diff_x = pos.x - closest_x;
+  float diff_y = pos.y - closest_y;
+  float distance_squared = (diff_x * diff_x) + (diff_y * diff_y);
 
   float radius = radius_ * std::max(GetGlobalTransform().getScale().x,
                                     GetGlobalTransform().getScale().y);
-  return distanceSquared <= radius * radius;
+  return distance_squared <= radius * radius;
 }
 
 void CircleCollider::Draw(sf::RenderTarget& target) {

@@ -1,12 +1,20 @@
 #include "goomba.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
-#include "engine/input.h"
+#include <cmath>
+#include <cstdint>
+#include <memory>
+#include <utility>
+#include "engine/collider.h"
+#include "engine/node.h"
 #include "engine/physics.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
+#include "engine/state.h"
+#include "engine/tilemap.h"
 #include "mario.h"
 #include "tile_id.h"
 
@@ -15,7 +23,7 @@ namespace game {
 static constexpr int32_t kAnimationTPF = 4;
 
 Goomba::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Mushroom/Run (32x32).png", kAnimationTPF) {}
 
 void Goomba::RunState::OnEnter() {
@@ -27,7 +35,7 @@ void Goomba::RunState::Update() {
 }
 
 Goomba::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Mushroom/Hit.png", kAnimationTPF),
       node_(&node),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
@@ -49,7 +57,7 @@ void Goomba::HitState::Die() {
 }
 
 Goomba::Goomba(const ng::Tilemap& tilemap)
-    : shape_({64.f, 64.f}),
+    : shape_({64.F, 64.F}),
       tilemap_(&tilemap),
       sprite_(ng::ResourceManager::GetInstance().LoadTexture(
           "Mushroom/Run (32x32).png")),
@@ -111,7 +119,8 @@ void Goomba::Update() {
   sf::Vector2f old_pos = collider_->GetGlobalTransform().getPosition();
   sf::Vector2f new_pos = old_pos + velocity_;
 
-  sf::Vector2f col_size = collider_->GetSize() / 2.f;
+  sf::Vector2f col_size = collider_->GetSize() / 2.F;
+  sf::Vector2f tilemap_size = sf::Vector2f(tilemap_->GetTileSize());
 
   static constexpr float kEps = 0.001;
   sf::Vector2f top_left = {new_pos.x - (col_size.x - kEps),
@@ -131,9 +140,8 @@ void Goomba::Update() {
   if (velocity_.x < 0 && (DoesCollide(top_left, *tilemap_) ||
                           DoesCollide(middle_left, *tilemap_) ||
                           DoesCollide(bottom_left, *tilemap_))) {
-    new_pos.x = std::ceil(top_left.x / tilemap_->GetTileSize().x) *
-                    tilemap_->GetTileSize().x +
-                col_size.x;
+    new_pos.x =
+        std::ceil(top_left.x / tilemap_size.x) * tilemap_size.x + col_size.x;
     velocity_.x = 0;
     direction_.x = 1;
   }
@@ -155,9 +163,8 @@ void Goomba::Update() {
   if (velocity_.x > 0 && (DoesCollide(top_right, *tilemap_) ||
                           DoesCollide(middle_right, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
-    new_pos.x = std::floor(top_right.x / tilemap_->GetTileSize().x) *
-                    tilemap_->GetTileSize().x -
-                col_size.x;
+    new_pos.x =
+        std::floor(top_right.x / tilemap_size.x) * tilemap_size.x - col_size.x;
     velocity_.x = 0;
     direction_.x = -1;
   }
@@ -174,9 +181,8 @@ void Goomba::Update() {
 
   if (velocity_.y < 0 &&
       (DoesCollide(top_left, *tilemap_) || DoesCollide(top_right, *tilemap_))) {
-    new_pos.y = std::ceil(top_left.y / tilemap_->GetTileSize().y) *
-                    tilemap_->GetTileSize().y +
-                col_size.y;
+    new_pos.y =
+        std::ceil(top_left.y / tilemap_size.y) * tilemap_size.y + col_size.y;
     velocity_.y = 0;
   }
 
@@ -193,8 +199,7 @@ void Goomba::Update() {
 
   if (velocity_.y > 0 && (DoesCollide(bottom_left, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
-    new_pos.y = std::floor(bottom_left.y / tilemap_->GetTileSize().y) *
-                    tilemap_->GetTileSize().y -
+    new_pos.y = std::floor(bottom_left.y / tilemap_size.y) * tilemap_size.y -
                 col_size.y;
     velocity_.y = 0;
     is_on_ground_ = true;
@@ -205,14 +210,14 @@ void Goomba::Update() {
   SetLocalPosition(new_pos - sf::Vector2f{0, 16});
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
-  if (other) {
+  if (other != nullptr) {
     if (other->GetParent()->GetName() == "Mario") {
-      Mario* mario = static_cast<Mario*>(other->GetParent());
+      auto* mario = dynamic_cast<Mario*>(other->GetParent());
       if (mario->GetVelocity().y <= 0) {
         mario->TakeDamage();
       }
     } else if (other->GetParent()->GetName() == "Goomba") {
-      Goomba* goomba = static_cast<Goomba*>(other->GetParent());
+      auto* goomba = dynamic_cast<Goomba*>(other->GetParent());
       if (!goomba->GetIsDead()) {
         goomba->direction_.x = -goomba->direction_.x;
         direction_.x = -direction_.x;
@@ -222,7 +227,7 @@ void Goomba::Update() {
 }
 
 void Goomba::Draw(sf::RenderTarget& target) {
-  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.f});
+  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.F});
   target.draw(sprite_, GetGlobalTransform().getTransform());
 }
 

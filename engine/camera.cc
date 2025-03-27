@@ -1,6 +1,11 @@
 #include "camera.h"
 
 #include "app.h"
+#include "layer.h"
+
+#include <cstdint>
+
+#include <SFML/Graphics/View.hpp>
 
 namespace ng {
 

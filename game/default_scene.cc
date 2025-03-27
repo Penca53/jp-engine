@@ -1,15 +1,18 @@
 #include "default_scene.h"
 
+#include <cstdint>
+#include <memory>
+#include <utility>
 #include "background.h"
 #include "banana.h"
 #include "end.h"
-#include "engine/app.h"
 #include "engine/camera.h"
-#include "engine/input.h"
 #include "engine/layer.h"
 #include "engine/node.h"
 #include "engine/resource_manager.h"
+#include "engine/tile.h"
 #include "engine/tilemap.h"
+#include "engine/tileset.h"
 #include "follow_player.h"
 #include "game_manager.h"
 #include "goomba.h"
@@ -23,8 +26,9 @@ namespace game {
 std::unique_ptr<ng::Node> MakeDefaultScene() {
   auto scene = std::make_unique<ng::Node>();
   scene->SetName("Scene");
-  scene->SetLayer((ng::Layer)(std::to_underlying(ng::Layer::kDefault) |
-                              std::to_underlying(ng::Layer::kUI)));
+  scene->SetLayer(
+      static_cast<ng::Layer>(std::to_underlying(ng::Layer::kDefault) |
+                             std::to_underlying(ng::Layer::kUI)));
 
   ng::Tileset tileset({32, 32}, ng::ResourceManager::GetInstance().LoadTexture(
                                     "Terrain (16x16).png"));
@@ -189,7 +193,8 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
   std::unique_ptr<Mario> mario =
       std::make_unique<Mario>(*tilemap, *score_manager, *game_manager);
   mario->SetLocalPosition(
-      {8.f * tilemap->GetTileSize().x, 25.f * tilemap->GetTileSize().y});
+      {8.F * static_cast<float>(tilemap->GetTileSize().x),
+       25.F * static_cast<float>(tilemap->GetTileSize().y)});
 
   std::unique_ptr<ng::Camera> ui_camera =
       std::make_unique<ng::Camera>(1, ng::Layer::kUI);
@@ -212,10 +217,10 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
   g1->SetLocalPosition({40 * 32, 27 * 32});
 
   std::unique_ptr<Plant> p = std::make_unique<Plant>(*tilemap);
-  p->SetLocalPosition({52 * 32, 28 * 32 - 10});
+  p->SetLocalPosition({52 * 32, (28 * 32) - 10});
 
   std::unique_ptr<Plant> p1 = std::make_unique<Plant>(*tilemap);
-  p1->SetLocalPosition({58 * 32, 26 * 32 - 10});
+  p1->SetLocalPosition({58 * 32, (26 * 32) - 10});
 
   std::unique_ptr<Banana> b = std::make_unique<Banana>();
   b->SetLocalPosition({14 * 32, 26 * 32});

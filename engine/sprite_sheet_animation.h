@@ -8,9 +8,9 @@ namespace ng {
 
 class SpriteSheetAnimation {
  public:
-  SpriteSheetAnimation(sf::Sprite& sprite, std::string texture,
+  SpriteSheetAnimation(sf::Sprite& sprite, const std::string& texture,
                        int32_t ticks_per_frame);
-  SpriteSheetAnimation(sf::Sprite& sprite, std::string texture,
+  SpriteSheetAnimation(sf::Sprite& sprite, const std::string& texture,
                        int32_t ticks_per_frame, sf::Vector2i frame_size);
 
   int32_t GetFrameIndex() const;

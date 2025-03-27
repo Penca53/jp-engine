@@ -1,6 +1,8 @@
 #include "input.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <utility>
 
 namespace ng {
 

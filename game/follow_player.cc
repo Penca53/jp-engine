@@ -1,5 +1,7 @@
 #include "follow_player.h"
 
+#include <SFML/System/Vector2.hpp>
+#include <algorithm>
 #include "engine/app.h"
 #include "mario.h"
 
@@ -22,8 +24,8 @@ void FollowPlayer::Follow() {
 
   sf::Vector2f mario_pos = mario_->GetGlobalTransform().getPosition();
   sf::Vector2f new_pos(
-      std::min(std::max(mario_pos.x, 32.f * (32 - 19)), 32.f * (64 - 13)),
-      std::max(std::min(mario_pos.y, 32.f * (32 - 10)), 32.f * (10)));
+      std::min(std::max(mario_pos.x, 32.F * (32 - 19)), 32.F * (64 - 13)),
+      std::max(std::min(mario_pos.y, 32.F * (32 - 10)), 32.F * (10)));
   GetParent()->SetLocalPosition(new_pos);
 }
 

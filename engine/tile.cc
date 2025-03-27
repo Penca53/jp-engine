@@ -1,6 +1,7 @@
 #include "tile.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <optional>
 
 namespace ng {
 

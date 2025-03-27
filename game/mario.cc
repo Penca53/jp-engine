@@ -1,19 +1,29 @@
 #include "mario.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
+#include <cmath>
+#include <cstdint>
+#include <memory>
+#include <utility>
 #include "banana.h"
-#include "default_scene.h"
 #include "end.h"
-#include "engine/app.h"
+#include "engine/collider.h"
 #include "engine/fsm.h"
 #include "engine/input.h"
+#include "engine/node.h"
 #include "engine/physics.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
+#include "engine/state.h"
+#include "engine/tilemap.h"
+#include "game_manager.h"
 #include "goomba.h"
 #include "plant.h"
+#include "score_manager.h"
 #include "tile_id.h"
 
 namespace game {
@@ -21,7 +31,7 @@ namespace game {
 static constexpr int32_t kAnimationTPF = 4;
 
 Mario::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Player/Idle (32x32).png", kAnimationTPF) {}
 
 void Mario::IdleState::OnEnter() {
@@ -33,7 +43,7 @@ void Mario::IdleState::Update() {
 }
 
 Mario::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Player/Run (32x32).png", kAnimationTPF) {}
 
 void Mario::RunState::OnEnter() {
@@ -45,7 +55,7 @@ void Mario::RunState::Update() {
 }
 
 Mario::JumpState::JumpState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Player/Jump (32x32).png", kAnimationTPF),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Player/Jump_2.wav")) {}
@@ -60,7 +70,7 @@ void Mario::JumpState::Update() {
 }
 
 Mario::FallState::FallState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Player/Fall (32x32).png", kAnimationTPF) {}
 
 void Mario::FallState::OnEnter() {
@@ -73,7 +83,7 @@ void Mario::FallState::Update() {
 
 Mario::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
                           GameManager& game_manager)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Player/Hit (32x32).png", kAnimationTPF),
       node_(&node),
       game_manager_(&game_manager) {
@@ -95,7 +105,7 @@ void Mario::HitState::Die() {
 
 Mario::Mario(ng::Tilemap& tilemap, ScoreManager& score_manager,
              GameManager& game_manager)
-    : shape_({64.f, 64.f}),
+    : shape_({64.F, 64.F}),
       tilemap_(&tilemap),
       score_manager_(&score_manager),
       game_manager_(&game_manager),
@@ -191,11 +201,11 @@ void Mario::Update() {
   if (!has_won_) {
     if (ng::GetKey(sf::Keyboard::Scancode::A)) {
       dir.x += -1;
-      sprite_.setScale(sf::Vector2f{-2.f, 2.f});
+      sprite_.setScale(sf::Vector2f{-2.F, 2.F});
     }
     if (ng::GetKey(sf::Keyboard::Scancode::D)) {
       dir.x += 1;
-      sprite_.setScale(sf::Vector2f{2.f, 2.f});
+      sprite_.setScale(sf::Vector2f{2.F, 2.F});
     }
   }
 
@@ -210,7 +220,8 @@ void Mario::Update() {
   sf::Vector2f old_pos = collider_->GetGlobalTransform().getPosition();
   sf::Vector2f new_pos = old_pos + velocity_;
 
-  sf::Vector2f col_size = collider_->GetSize() / 2.f;
+  sf::Vector2f col_size = collider_->GetSize() / 2.F;
+  sf::Vector2f tilemap_size = sf::Vector2f(tilemap_->GetTileSize());
 
   static constexpr float kEps = 0.001;
   sf::Vector2f top_left = {new_pos.x - (col_size.x - kEps),
@@ -230,9 +241,8 @@ void Mario::Update() {
   if (velocity_.x < 0 && (DoesCollide(top_left, *tilemap_) ||
                           DoesCollide(middle_left, *tilemap_) ||
                           DoesCollide(bottom_left, *tilemap_))) {
-    new_pos.x = std::ceil(top_left.x / tilemap_->GetTileSize().x) *
-                    tilemap_->GetTileSize().x +
-                col_size.x;
+    new_pos.x =
+        std::ceil(top_left.x / tilemap_size.x) * tilemap_size.x + col_size.x;
     velocity_.x = 0;
   }
 
@@ -253,9 +263,8 @@ void Mario::Update() {
   if (velocity_.x > 0 && (DoesCollide(top_right, *tilemap_) ||
                           DoesCollide(middle_right, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
-    new_pos.x = std::floor(top_right.x / tilemap_->GetTileSize().x) *
-                    tilemap_->GetTileSize().x -
-                col_size.x;
+    new_pos.x =
+        std::floor(top_right.x / tilemap_size.x) * tilemap_size.x - col_size.x;
     velocity_.x = 0;
   }
 
@@ -283,9 +292,8 @@ void Mario::Update() {
       }
     }
 
-    new_pos.y = std::ceil(top_left.y / tilemap_->GetTileSize().y) *
-                    tilemap_->GetTileSize().y +
-                col_size.y;
+    new_pos.y =
+        std::ceil(top_left.y / tilemap_size.y) * tilemap_size.y + col_size.y;
     velocity_.y = 0;
   }
 
@@ -302,8 +310,7 @@ void Mario::Update() {
 
   if (velocity_.y > 0 && (DoesCollide(bottom_left, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
-    new_pos.y = std::floor(bottom_left.y / tilemap_->GetTileSize().y) *
-                    tilemap_->GetTileSize().y -
+    new_pos.y = std::floor(bottom_left.y / tilemap_size.y) * tilemap_size.y -
                 col_size.y;
     velocity_.y = 0;
     is_on_ground_ = true;
@@ -314,10 +321,10 @@ void Mario::Update() {
   SetLocalPosition(new_pos - sf::Vector2f{0, 8});
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
-  if (other) {
+  if (other != nullptr) {
     if (other->GetParent()->GetName() == "Goomba") {
       if (velocity_.y > 0) {
-        Goomba* goomba = static_cast<Goomba*>(other->GetParent());
+        auto* goomba = dynamic_cast<Goomba*>(other->GetParent());
         if (!goomba->GetIsDead()) {
           goomba->TakeDamage();
           velocity_.y = -10;
@@ -326,7 +333,7 @@ void Mario::Update() {
       }
     } else if (other->GetParent()->GetName() == "Plant") {
       if (velocity_.y > 0) {
-        Plant* plant = static_cast<Plant*>(other->GetParent());
+        auto* plant = dynamic_cast<Plant*>(other->GetParent());
         if (!plant->GetIsDead()) {
           plant->TakeDamage();
           velocity_.y = -10;
@@ -334,7 +341,7 @@ void Mario::Update() {
         }
       }
     } else if (other->GetParent()->GetName() == "Banana") {
-      Banana* banana = static_cast<Banana*>(other->GetParent());
+      auto* banana = dynamic_cast<Banana*>(other->GetParent());
       if (!banana->GetIsCollected()) {
         banana->Collect();
         score_manager_->AddScore(500);
@@ -343,7 +350,7 @@ void Mario::Update() {
     } else if (other->GetParent()->GetName() == "End") {
       if (!has_won_) {
         velocity_.y = -15;
-        static_cast<End*>(other->GetParent())->EndGame();
+        dynamic_cast<End*>(other->GetParent())->EndGame();
         has_won_ = true;
       }
     }

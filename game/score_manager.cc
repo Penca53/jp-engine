@@ -1,6 +1,10 @@
 #include "score_manager.h"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <cstdint>
+#include <string>
 #include "engine/app.h"
+#include "engine/layer.h"
 #include "engine/resource_manager.h"
 
 namespace game {
@@ -19,8 +23,9 @@ void ScoreManager::AddScore(int32_t score) {
 }
 
 void ScoreManager::Update() {
-  SetLocalPosition(
-      {0, -(ng::App::GetInstance().GetWindow().getSize().y / 2.f - 8)});
+  float width =
+      static_cast<float>(ng::App::GetInstance().GetWindow().getSize().y);
+  SetLocalPosition({0, -((width / 2.F) - 8)});
 }
 
 void ScoreManager::Draw(sf::RenderTarget& target) {
@@ -29,7 +34,7 @@ void ScoreManager::Draw(sf::RenderTarget& target) {
 
 void ScoreManager::UpdateUI() {
   score_text_.setString(std::to_string(score_));
-  score_text_.setOrigin(score_text_.getGlobalBounds().size / 2.f);
+  score_text_.setOrigin(score_text_.getGlobalBounds().size / 2.F);
 }
 
 }  // namespace game

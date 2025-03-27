@@ -1,7 +1,7 @@
 #include "physics.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ranges>
 #include <vector>
 
 #include "collider.h"
@@ -18,8 +18,9 @@ void Physics::AddCollider(const Collider& collider) {
 }
 
 void Physics::RemoveCollider(const Collider& collider) {
-  colliders_.erase(std::remove(colliders_.begin(), colliders_.end(), &collider),
-                   colliders_.end());
+  colliders_.erase(
+      std::ranges::begin(std::ranges::remove(colliders_, &collider)),
+      std::end(colliders_));
 }
 
 const Collider* Physics::Overlap(const Collider& collider) {

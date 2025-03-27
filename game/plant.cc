@@ -1,22 +1,29 @@
 #include "plant.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 
-#include "engine/input.h"
+#include <cstdint>
+#include <memory>
+#include <utility>
+#include "engine/collider.h"
+#include "engine/node.h"
 #include "engine/physics.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
+#include "engine/state.h"
+#include "engine/tilemap.h"
 #include "mario.h"
 #include "plant_bullet.h"
-#include "tile_id.h"
 
 namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
 Plant::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Plant/Idle (44x42).png", kAnimationTPF, {44, 42}) {}
 
 void Plant::IdleState::OnEnter() {
@@ -31,7 +38,7 @@ Plant::AttackState::AttackState(ng::State::ID id, sf::Sprite& sprite,
                                 const ng::Node& node,
                                 const ng::Tilemap& tilemap,
                                 sf::Vector2f direction, bool& attack_completed)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Plant/Attack (44x42).png", kAnimationTPF, {44, 42}),
       node_(&node),
       tilemap_(&tilemap),
@@ -59,12 +66,12 @@ void Plant::AttackState::OnExit() {
 void Plant::AttackState::Attack() {
   auto bullet = std::make_unique<PlantBullet>(*tilemap_, direction_);
   bullet->SetLocalPosition(node_->GetLocalTransform().getPosition() +
-                           sf::Vector2f{-16.f, -6.f});
+                           sf::Vector2f{-16.F, -6.F});
   node_->GetParent()->AddChild(std::move(bullet));
 }
 
 Plant::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
-    : ng::State(id),
+    : ng::State(std::move(id)),
       animation_(sprite, "Plant/Hit (44x42).png", kAnimationTPF, {44, 42}),
       node_(&node),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
@@ -143,9 +150,9 @@ void Plant::Update() {
   }
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
-  if (other) {
+  if (other != nullptr) {
     if (other->GetParent()->GetName() == "Mario") {
-      Mario* mario = static_cast<Mario*>(other->GetParent());
+      auto* mario = dynamic_cast<Mario*>(other->GetParent());
       if (mario->GetVelocity().y <= 0) {
         mario->TakeDamage();
       }
@@ -154,7 +161,7 @@ void Plant::Update() {
 }
 
 void Plant::Draw(sf::RenderTarget& target) {
-  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.f});
+  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.F});
   target.draw(sprite_, GetGlobalTransform().getTransform());
 }
 

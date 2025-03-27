@@ -2,7 +2,7 @@
 #include "state.h"
 
 #include <functional>
-#include <string>
+#include <utility>
 
 namespace ng {
 

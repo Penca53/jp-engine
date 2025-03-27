@@ -2,27 +2,34 @@
 
 #include "resource_manager.h"
 
+#include <SFML/Graphics/Sprite.hpp>
+#include <cstdint>
+#include <functional>
+#include <string>
+#include <utility>
+
 namespace ng {
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
-                                           std::string texture,
+                                           const std::string& texture,
                                            int32_t ticks_per_frame)
     : sprite_(&sprite),
       texture_(&ng::ResourceManager::GetInstance().LoadTexture(texture)),
       ticks_per_frame_(ticks_per_frame),
-      frame_size_(sf::Vector2i(texture_->getSize().y, texture_->getSize().y)) {
-  frames_count_ = texture_->getSize().x / frame_size_.x;
+      frame_size_({static_cast<int32_t>(texture_->getSize().y),
+                   static_cast<int32_t>(texture_->getSize().y)}) {
+  frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;
 }
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
-                                           std::string texture,
+                                           const std::string& texture,
                                            int32_t ticks_per_frame,
                                            sf::Vector2i frame_size)
     : sprite_(&sprite),
       texture_(&ng::ResourceManager::GetInstance().LoadTexture(texture)),
       ticks_per_frame_(ticks_per_frame),
       frame_size_(frame_size) {
-  frames_count_ = texture_->getSize().x / frame_size_.x;
+  frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;
 }
 
 int32_t SpriteSheetAnimation::GetFrameIndex() const {

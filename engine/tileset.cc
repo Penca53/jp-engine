@@ -1,5 +1,9 @@
 #include "tileset.h"
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
+#include "tile.h"
+
 namespace ng {
 
 Tileset::Tileset(sf::Vector2u tile_size, const sf::Texture& texture)

@@ -1,10 +1,11 @@
 #include "game_manager.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
+#include <memory>
+#include <utility>
 #include "default_scene.h"
-
 #include "engine/app.h"
 #include "engine/input.h"
 #include "engine/resource_manager.h"

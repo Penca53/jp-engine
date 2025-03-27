@@ -1,11 +1,16 @@
 #include "app.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Window/VideoMode.hpp>
+#include <chrono>
+#include <cstdint>
+#include <memory>
+#include <optional>
+#include <string>
+#include <utility>
 
 #include "input.h"
 #include "node.h"
-#include "resource_manager.h"
-#include "tilemap.h"
 
 namespace ng {
 
@@ -14,8 +19,8 @@ App& App::GetInstance() {
   return instance;
 }
 
-App& App::SetWindowTitle(std::string title) {
-  window_.setTitle(std::move(title));
+App& App::SetWindowTitle(const std::string& title) {
+  window_.setTitle(title);
   return *this;
 }
 
@@ -74,11 +79,12 @@ void App::Run(uint32_t tps, uint32_t fps) {
 }
 
 float App::SecondsPerTick() const {
-  return 1.f / tps_;
+  return 1.F / static_cast<float>(tps_);
 }
 
 uint64_t App::NanosecondsPerTick() const {
-  return 1000000000LL / tps_;
+  static constexpr uint64_t kNanosInSecond = 1000000000ULL;
+  return kNanosInSecond / tps_;
 }
 
 const sf::RenderWindow& App::GetWindow() const {
@@ -119,11 +125,13 @@ void App::RemoveValidNode(const Node& node) {
 }
 
 bool App::IsValid(const Node* node) const {
-  return valid_nodes_.count(node);
+  return valid_nodes_.contains(node);
 }
 
 App::App() {
-  window_ = sf::RenderWindow(sf::VideoMode({800, 600}), "Default title");
+  static constexpr sf::Vector2u kDefaultWindowSize = {800, 600};
+  window_ =
+      sf::RenderWindow(sf::VideoMode(kDefaultWindowSize), "Default title");
 }
 
 void App::PollInput() {

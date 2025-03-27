@@ -1,10 +1,11 @@
 #include "plant_bullet.h"
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <memory>
+#include <utility>
 #include "engine/circle_collider.h"
-#include "engine/input.h"
+#include "engine/collider.h"
 #include "engine/physics.h"
 #include "engine/resource_manager.h"
 #include "engine/tilemap.h"
@@ -67,16 +68,16 @@ void PlantBullet::Update() {
   Translate(direction_ * kMovementSpeed);
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
-  if (other) {
+  if (other != nullptr) {
     if (other->GetParent()->GetName() == "Mario") {
-      Mario* mario = static_cast<Mario*>(other->GetParent());
+      auto* mario = dynamic_cast<Mario*>(other->GetParent());
       mario->TakeDamage();
     }
   }
 }
 
 void PlantBullet::Draw(sf::RenderTarget& target) {
-  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.f});
+  sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.F});
   target.draw(sprite_, GetGlobalTransform().getTransform());
 }
 

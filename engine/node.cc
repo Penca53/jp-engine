@@ -1,10 +1,23 @@
 #include "node.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Transform.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/System/Angle.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include <algorithm>
-#include <iostream>
+#include <cmath>
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <span>
+#include <string>
+#include <utility>
 
 #include "app.h"
+#include "layer.h"
 
 namespace ng {
 
@@ -52,7 +65,7 @@ void Node::DestroyChild(const Node& child_to_destroy) {
 }
 
 void Node::Destroy() {
-  if (parent_) {
+  if (parent_ != nullptr) {
     parent_->DestroyChild(*this);
   } else {
     App::GetInstance().UnloadScene();
@@ -65,21 +78,23 @@ const sf::Transformable& Node::GetLocalTransform() const {
 
 const sf::Transformable& Node::GetGlobalTransform() const {
   if (is_global_transform_dirty_) {
-    if (parent_) {
+    if (parent_ != nullptr) {
       sf::Transform new_transform =
           parent_->GetGlobalTransform().getTransform() *
           GetLocalTransform().getTransform();
 
-      float a00 = new_transform.getMatrix()[0];
-      float a01 = new_transform.getMatrix()[4];
-      float a02 = new_transform.getMatrix()[12];
-      float a10 = new_transform.getMatrix()[1];
-      float a11 = new_transform.getMatrix()[5];
-      float a12 = new_transform.getMatrix()[13];
+      auto matrix = std::span(new_transform.getMatrix(), 16);
+
+      float a00 = matrix[0];
+      float a01 = matrix[4];
+      float a02 = matrix[12];
+      float a10 = matrix[1];
+      float a11 = matrix[5];
+      float a12 = matrix[13];
 
       sf::Angle rotation(sf::radians(std::atan2(-a01, a00)));
-      sf::Vector2 scale(std::sqrt(a00 * a00 + a10 * a10),
-                        std::sqrt(a01 * a01 + a11 * a11));
+      sf::Vector2 scale(std::sqrt((a00 * a00) + (a10 * a10)),
+                        std::sqrt((a01 * a01) + (a11 * a11)));
       sf::Vector2f position(a02, a12);
 
       global_transform_.setRotation(rotation);
@@ -122,15 +137,14 @@ void Node::Update() {}
 void Node::Draw(sf::RenderTarget& target) {}
 
 void Node::EraseDestroyedChildren() {
-  if (children_to_erase_.size() == 0) {
+  if (children_to_erase_.empty()) {
     return;
   }
 
   auto prev_frame_children_to_erase = std::move(children_to_erase_);
-  std::sort(prev_frame_children_to_erase.begin(),
-            prev_frame_children_to_erase.end(), std::greater<>());
+  std::ranges::sort(prev_frame_children_to_erase, std::greater<>());
   for (size_t to_erase : prev_frame_children_to_erase) {
-    children_.erase(children_.begin() + to_erase);
+    children_.erase(children_.begin() + static_cast<int64_t>(to_erase));
   }
 }
 
@@ -152,19 +166,20 @@ void Node::InternalUpdate() {
   AddQueuedChildren();
 
   Update();
-  for (size_t i = 0; i < children_.size(); ++i) {
-    children_[i]->InternalUpdate();
+  for (auto& child : children_) {
+    child->InternalUpdate();
   }
 }
 
 void Node::InternalDraw(const Camera& camera, sf::RenderTarget& target) {
-  if (!(std::to_underlying(layer_) & std::to_underlying(camera.GetLayer()))) {
+  if ((std::to_underlying(layer_) & std::to_underlying(camera.GetLayer())) ==
+      0) {
     return;
   }
 
   Draw(target);
-  for (size_t i = 0; i < children_.size(); ++i) {
-    children_[i]->InternalDraw(camera, target);
+  for (auto& child : children_) {
+    child->InternalDraw(camera, target);
   }
 }
 
