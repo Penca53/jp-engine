@@ -9,14 +9,15 @@ namespace ng {
 
 class Transition {
  public:
-  Transition(State::ID from, State::ID to, std::function<bool()> condition);
+  Transition(ng::State::ID from, ng::State::ID to,
+             std::function<bool()> condition);
   bool MeetsCondition();
-  const State::ID& GetFrom() const;
-  const State::ID& GetTo() const;
+  const ng::State::ID& GetFrom() const;
+  const ng::State::ID& GetTo() const;
 
  private:
-  State::ID from_;
-  State::ID to_;
+  ng::State::ID from_;
+  ng::State::ID to_;
   std::function<bool()> condition_;
 };
 

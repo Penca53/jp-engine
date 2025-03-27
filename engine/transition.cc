@@ -6,7 +6,7 @@
 
 namespace ng {
 
-Transition::Transition(State::ID from, State::ID to,
+Transition::Transition(ng::State::ID from, ng::State::ID to,
                        std::function<bool()> condition)
     : from_(std::move(from)),
       to_(std::move(to)),
@@ -16,11 +16,11 @@ bool Transition::MeetsCondition() {
   return condition_();
 }
 
-const State::ID& Transition::GetFrom() const {
+const ng::State::ID& Transition::GetFrom() const {
   return from_;
 }
 
-const State::ID& Transition::GetTo() const {
+const ng::State::ID& Transition::GetTo() const {
   return to_;
 }
 
