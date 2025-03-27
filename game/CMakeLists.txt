@@ -7,10 +7,6 @@ add_executable(game main.cc background.cc banana.cc default_scene.cc end.cc foll
 target_compile_features(game PRIVATE cxx_std_23)
 set_target_properties(game PROPERTIES CXX_EXTENSIONS OFF)
 
-if (MSVC)
-    target_compile_options(game PRIVATE "/std:c++latest")
-endif()
-
 target_link_libraries(game PRIVATE engine)
 
 add_custom_target(copy_assets

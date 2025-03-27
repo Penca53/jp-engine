@@ -14,9 +14,5 @@ add_library(engine app.cc camera.cc circle_collider.cc collider.cc fsm.cc input.
 target_compile_features(engine PRIVATE cxx_std_23)
 set_target_properties(engine PROPERTIES CXX_EXTENSIONS OFF)
 
-if (MSVC)
-    target_compile_options(engine PRIVATE "/std:c++latest")
-endif()
-
 target_link_libraries(engine PUBLIC SFML::Audio SFML::Graphics)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR})
