@@ -24,7 +24,7 @@ PlantBullet::PlantBullet(const ng::Tilemap& tilemap, sf::Vector2f direction)
   sprite_.setOrigin({8, 8});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
 
-  auto collider = std::make_unique<ng::CircleCollider>(4);
+  auto collider = std::make_unique<ng::CircleCollider>(4.F);
   collider_ = collider.get();
   AddChild(std::move(collider));
 }
