@@ -1,12 +1,18 @@
 # SFML Engine
 
-![Win](https://github.com/user-attachments/assets/1ea11c98-c4f3-4d39-adff-52fa45713a63)
+## Win
+![Win](https://github.com/user-attachments/assets/2aed5a89-1601-4a53-8160-eff83c9bd329)
 
-![DeathFall](https://github.com/user-attachments/assets/37c83c1c-ae4d-4f6e-a1e2-e235b26f326b)
 
-![DeathMushroom](https://github.com/user-attachments/assets/49d48558-0089-493b-aa39-d18370eb8d5f)
 
-![DeathPlantBullet](https://github.com/user-attachments/assets/f60f7ab8-6085-4839-9936-5705fcb0ff8c)
+## Loss conditions
+
+![DeathFall](https://github.com/user-attachments/assets/93409bb5-18d4-4a05-8e61-38836c6b7e7b)
+
+![DeathMushroom](https://github.com/user-attachments/assets/3f3f906a-3dda-40d7-9e2d-279038d7c693)
+![DeathPlantBullet](https://github.com/user-attachments/assets/5e7e30f2-cad1-4f77-a6c6-80503322d287)
+
+
 
 
 
