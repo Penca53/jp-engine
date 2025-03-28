@@ -1,9 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <cstddef>
+#include <memory>
 #include <string>
 #include <vector>
+
 #include "derived.h"
 #include "layer.h"
 

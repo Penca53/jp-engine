@@ -1,8 +1,6 @@
 #include "physics.h"
 
-#include <algorithm>
-#include <ranges>
-#include <vector>
+#include <unordered_set>
 
 #include "collider.h"
 
@@ -14,13 +12,11 @@ Physics& Physics::GetInstance() {
 }
 
 void Physics::AddCollider(const Collider& collider) {
-  colliders_.push_back(&collider);
+  colliders_.insert(&collider);
 }
 
 void Physics::RemoveCollider(const Collider& collider) {
-  colliders_.erase(
-      std::ranges::begin(std::ranges::remove(colliders_, &collider)),
-      std::end(colliders_));
+  colliders_.erase(&collider);
 }
 
 const Collider* Physics::Overlap(const Collider& collider) {

@@ -1,7 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <cstdint>
 #include <functional>
+#include <optional>
 #include <string>
 
 namespace ng {

@@ -1,7 +1,13 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <filesystem>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <unordered_map>
 
 namespace ng {
 

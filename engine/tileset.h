@@ -1,6 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <unordered_map>
+
 #include "tile.h"
 
 namespace ng {

@@ -1,5 +1,10 @@
 #pragma once
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <vector>
+
 #include "node.h"
 #include "tile.h"
 #include "tileset.h"

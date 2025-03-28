@@ -1,7 +1,9 @@
 #include "win_canvas.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
+
 #include "engine/app.h"
 #include "engine/layer.h"
 #include "engine/resource_manager.h"

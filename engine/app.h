@@ -1,6 +1,7 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <cstdint>
 #include <memory>
 #include <set>
 #include <unordered_set>
@@ -91,10 +92,12 @@ class App {
   // The one and only active window.
   sf::RenderWindow window_;
 
-  // The cameras must be declared before scene because of destruction order.
+  // Note: The cameras must be declared before scene because of destruction order.
   // The cameras in the scene will unregister in their destructor,
   // so their destructor must be called before the destructor of the cameras field).
+  // Contains all the active cameras in the loaded scene.
   std::set<Camera*, decltype(cmp_ascending_draw_order)> cameras_;
+  // Contains all the valid, registered nodes in the entire application.
   std::unordered_set<const Node*> valid_nodes_;
 
   // The one and only loaded scene.
