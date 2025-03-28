@@ -40,7 +40,7 @@ Goomba::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
       node_(&node),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Mushroom/Hit_2.wav")) {
-  animation_.RegisterOnEndCallback([this] -> void { Die(); });
+  animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
 void Goomba::HitState::OnEnter() {

@@ -87,7 +87,7 @@ Mario::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
       animation_(sprite, "Player/Hit (32x32).png", kAnimationTPF),
       node_(&node),
       game_manager_(&game_manager) {
-  animation_.RegisterOnEndCallback([this] -> void { Die(); });
+  animation_.RegisterOnEndCallback([this](void) { Die(); });
 }
 
 void Mario::HitState::OnEnter() {

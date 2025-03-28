@@ -34,7 +34,7 @@ End::PressedState::PressedState(ng::State::ID id, sf::Sprite& sprite,
 
 void End::PressedState::OnEnter() {
   animation_.Start();
-  animation_.RegisterOnEndCallback([this] -> void { game_manager_->Win(); });
+  animation_.RegisterOnEndCallback([this]() { game_manager_->Win(); });
 }
 
 void End::PressedState::Update() {

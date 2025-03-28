@@ -44,8 +44,7 @@ Plant::AttackState::AttackState(ng::State::ID id, sf::Sprite& sprite,
       tilemap_(&tilemap),
       direction_(direction),
       attack_completed_(&attack_completed) {
-  animation_.RegisterOnEndCallback(
-      [this] -> void { *attack_completed_ = true; });
+  animation_.RegisterOnEndCallback([this]() { *attack_completed_ = true; });
 }
 
 void Plant::AttackState::OnEnter() {
@@ -76,7 +75,7 @@ Plant::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
       node_(&node),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Mushroom/Hit_2.wav")) {
-  animation_.RegisterOnEndCallback([this] -> void { Die(); });
+  animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
 void Plant::HitState::OnEnter() {
