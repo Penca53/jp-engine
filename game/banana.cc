@@ -34,7 +34,7 @@ Banana::Banana()
   sprite_.setOrigin({16, 16});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {32, 32}));
 
-  auto collider = std::make_unique<ng::CircleCollider>(16);
+  auto collider = std::make_unique<ng::CircleCollider>(16.F);
   AddChild(std::move(collider));
 }
 
