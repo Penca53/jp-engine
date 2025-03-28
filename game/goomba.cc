@@ -106,7 +106,7 @@ bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
 
 }  // namespace
 
-void Goomba::Update() {
+void Goomba::Update() {  // NOLINT
   animator_.Update();
 
   if (is_dead_) {

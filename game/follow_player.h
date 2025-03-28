@@ -7,7 +7,7 @@ namespace game {
 
 class FollowPlayer : public ng::Node {
  public:
-  FollowPlayer(const Mario& mario);
+  explicit FollowPlayer(const Mario& mario);
 
  protected:
   void Start() override;
@@ -16,7 +16,6 @@ class FollowPlayer : public ng::Node {
  private:
   void Follow();
 
- private:
   const Mario* mario_ = nullptr;
 };
 

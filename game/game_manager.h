@@ -11,7 +11,7 @@ namespace game {
 
 class GameManager : public ng::Node {
  public:
-  enum class State : uint32_t {
+  enum class State : uint8_t {
     BEGIN = 0,
     PLAY,
     WON,

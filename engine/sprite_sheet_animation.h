@@ -13,8 +13,8 @@ class SpriteSheetAnimation {
   SpriteSheetAnimation(sf::Sprite& sprite, const std::string& texture,
                        int32_t ticks_per_frame, sf::Vector2i frame_size);
 
-  int32_t GetFrameIndex() const;
-  int32_t GetTicksCounter() const;
+  [[nodiscard]] int32_t GetFrameIndex() const;
+  [[nodiscard]] int32_t GetTicksCounter() const;
   void RegisterOnEndCallback(std::function<void()> on_end_callback);
 
   void Start();

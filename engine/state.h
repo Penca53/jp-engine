@@ -10,11 +10,16 @@ class State {
  public:
   using ID = std::string;
 
-  State(ID id);
+  explicit State(ID id);
+
+  State(const State& other) = default;
+  State& operator=(const State& other) = default;
+  State(State&& other) = default;
+  State& operator=(State&& other) = default;
 
   virtual ~State() = default;
 
-  const ID& GetID() const;
+  [[nodiscard]] const ID& GetID() const;
 
  protected:
   virtual void OnEnter();

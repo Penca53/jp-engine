@@ -13,7 +13,7 @@ namespace game {
 
 class Plant : public ng::Node {
  public:
-  Plant(const ng::Tilemap& tilemap);
+  explicit Plant(const ng::Tilemap& tilemap);
   bool GetIsDead() const;
   void TakeDamage();
 
@@ -51,7 +51,6 @@ class Plant : public ng::Node {
    private:
     void Attack();
 
-   private:
     ng::SpriteSheetAnimation animation_;
     const ng::Node* node_ = nullptr;
     const ng::Tilemap* tilemap_ = nullptr;
@@ -71,13 +70,11 @@ class Plant : public ng::Node {
    private:
     void Die();
 
-   private:
     ng::SpriteSheetAnimation animation_;
     ng::Node* node_ = nullptr;
     sf::Sound sound_;
   };
 
- private:
   sf::Vector2f direction_{-1, 0};
   const ng::Tilemap* tilemap_ = nullptr;
   const ng::RectangleCollider* collider_ = nullptr;

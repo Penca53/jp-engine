@@ -12,7 +12,7 @@ namespace game {
 
 class End : public ng::Node {
  public:
-  End(GameManager& game_manager);
+  explicit End(GameManager& game_manager);
 
   void EndGame();
 
@@ -49,7 +49,6 @@ class End : public ng::Node {
     GameManager* game_manager_ = nullptr;
   };
 
- private:
   sf::Sprite sprite_;
   ng::FSM animator_;
   GameManager* game_manager_ = nullptr;

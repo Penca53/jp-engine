@@ -1,8 +1,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <iostream>
 
+#include <string>
+#include <vector>
 #include "derived.h"
 #include "layer.h"
 
@@ -17,6 +18,11 @@ class Node {
 
   Node();
   virtual ~Node();
+
+  Node(const Node& other) = delete;
+  Node& operator=(const Node& other) = delete;
+  Node(Node&& other) = delete;
+  Node& operator=(Node&& other) = delete;
 
   const std::string& GetName() const;
   void SetName(std::string name);
@@ -39,10 +45,10 @@ class Node {
 
   template <Derived<Node> T>
   T* GetChild() {
-    for (size_t i = 0; i < children_.size(); ++i) {
-      T* child = dynamic_cast<T*>(children_[i].get());
-      if (child != nullptr) {
-        return child;
+    for (const auto& child : children_) {
+      T* c = dynamic_cast<T*>(child.get());
+      if (c != nullptr) {
+        return c;
       }
     }
 
@@ -64,7 +70,6 @@ class Node {
 
   void DirtyGlobalTransform();
 
- private:
   std::string name_;
   sf::Transformable local_transform_;
   mutable sf::Transformable global_transform_;

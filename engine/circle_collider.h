@@ -6,9 +6,8 @@ namespace ng {
 
 class CircleCollider : public Collider {
  public:
-  CircleCollider(float radius);
+  explicit CircleCollider(float radius);
 
- public:
   float GetRadius() const;
 
   bool Collides(const Collider& other) const override;

@@ -9,7 +9,12 @@ class Camera : public Node {
  public:
   Camera();
   Camera(int32_t draw_order, Layer layer);
-  virtual ~Camera();
+  ~Camera() override;
+
+  Camera(const Camera& other) = delete;
+  Camera& operator=(const Camera& other) = delete;
+  Camera(Camera&& other) = delete;
+  Camera& operator=(Camera&& other) = delete;
 
   const sf::View& GetView() const;
   sf::View& GetMutableView();

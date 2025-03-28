@@ -17,7 +17,6 @@ class Physics {
  private:
   Physics() = default;
 
- private:
   std::vector<const Collider*> colliders_;
 };
 

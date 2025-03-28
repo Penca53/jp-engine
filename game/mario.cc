@@ -87,7 +87,7 @@ Mario::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
       animation_(sprite, "Player/Hit (32x32).png", kAnimationTPF),
       node_(&node),
       game_manager_(&game_manager) {
-  animation_.RegisterOnEndCallback([this](void) { Die(); });
+  animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
 void Mario::HitState::OnEnter() {
@@ -190,7 +190,7 @@ bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
 
 }  // namespace
 
-void Mario::Update() {
+void Mario::Update() {  // NOLINT
   animator_.Update();
 
   if (is_dead_) {

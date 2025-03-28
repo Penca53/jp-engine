@@ -36,7 +36,6 @@ class Banana : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
- private:
   sf::Sprite sprite_;
   bool is_collected_ = false;
   ng::FSM animator_;

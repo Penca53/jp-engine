@@ -8,11 +8,11 @@ namespace ng {
 
 class Tile {
  public:
-  Tile(TileID id);
+  explicit Tile(TileID id);
   Tile(TileID id, sf::IntRect texture_coords);
 
-  TileID GetID() const;
-  const std::optional<sf::IntRect>& GetTextureCoords() const;
+  [[nodiscard]] TileID GetID() const;
+  [[nodiscard]] const std::optional<sf::IntRect>& GetTextureCoords() const;
 
  private:
   TileID id_{};

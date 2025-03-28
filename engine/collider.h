@@ -11,7 +11,13 @@ class RectangleCollider;
 
 class Collider : public Node {
  public:
-  virtual ~Collider();
+  Collider() = default;
+  ~Collider() override;
+
+  Collider(const Collider& other) = delete;
+  Collider& operator=(const Collider& other) = delete;
+  Collider(Collider&& other) = delete;
+  Collider& operator=(Collider&& other) = delete;
 
   virtual bool Collides(const Collider& other) const = 0;
   virtual bool Collides(const CircleCollider& other) const = 0;

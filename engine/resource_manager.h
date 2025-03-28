@@ -9,8 +9,10 @@ class ResourceManager {
  public:
   static ResourceManager& GetInstance();
 
-  ResourceManager(ResourceManager const&) = delete;
-  void operator=(ResourceManager const&) = delete;
+  ResourceManager(const ResourceManager& other) = delete;
+  ResourceManager& operator=(const ResourceManager& other) = delete;
+  ResourceManager(ResourceManager&& other) = delete;
+  ResourceManager& operator=(ResourceManager&& other) = delete;
 
   sf::Font& LoadFont(const std::filesystem::path& filename);
   sf::Texture& LoadTexture(const std::filesystem::path& filename);
@@ -18,8 +20,8 @@ class ResourceManager {
 
  private:
   ResourceManager() = default;
+  ~ResourceManager() = default;
 
- private:
   static constexpr std::string_view kPrefix_ = "resources/";
   std::unordered_map<std::string, std::unique_ptr<sf::Font>> fonts_;
   std::unordered_map<std::string, std::unique_ptr<sf::Texture>> textures_;

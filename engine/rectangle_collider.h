@@ -6,9 +6,8 @@ namespace ng {
 
 class RectangleCollider : public Collider {
  public:
-  RectangleCollider(sf::Vector2f size);
+  explicit RectangleCollider(sf::Vector2f size);
 
- public:
   const sf::Vector2f& GetSize() const;
 
   bool Collides(const Collider& other) const override;

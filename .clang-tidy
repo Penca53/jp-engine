@@ -7,5 +7,5 @@ CheckOptions:
       value: IgnoreClassesWithAllMemberVariablesBeingPublic,
     },
   ]
-HeaderFilterRegex: ""
+HeaderFilterRegex: ".*"
 FormatStyle: none

@@ -20,7 +20,6 @@ class ScoreManager : public ng::Node {
  private:
   void UpdateUI();
 
- private:
   sf::Text score_text_;
   int32_t score_ = 0;
 };

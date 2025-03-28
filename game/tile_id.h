@@ -1,6 +1,6 @@
 #pragma once
 
-enum class TileID : uint64_t {
+enum class TileID : uint64_t {  // NOLINT
   kVoid = 0,
   kInvisibleBarrier,
   kDirtTopLeft,

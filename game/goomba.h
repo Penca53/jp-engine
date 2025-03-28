@@ -13,7 +13,7 @@ namespace game {
 
 class Goomba : public ng::Node {
  public:
-  Goomba(const ng::Tilemap& tilemap);
+  explicit Goomba(const ng::Tilemap& tilemap);
   bool GetIsDead() const;
   void TakeDamage();
 
@@ -47,13 +47,11 @@ class Goomba : public ng::Node {
    private:
     void Die();
 
-   private:
     ng::SpriteSheetAnimation animation_;
     ng::Node* node_ = nullptr;
     sf::Sound sound_;
   };
 
- private:
   sf::RectangleShape shape_;
   sf::Vector2f direction_{-1, 0};
   sf::Vector2f velocity_;

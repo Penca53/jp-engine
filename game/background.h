@@ -8,7 +8,7 @@ namespace game {
 
 class Background : public ng::Node {
  public:
-  Background(sf::Vector2u size);
+  explicit Background(sf::Vector2u size);
 
  protected:
   void Update() override;

@@ -91,13 +91,11 @@ class Mario : public ng::Node {
    private:
     void Die();
 
-   private:
     ng::SpriteSheetAnimation animation_;
     ng::Node* node_ = nullptr;
     GameManager* game_manager_ = nullptr;
   };
 
- private:
   sf::RectangleShape shape_;
   sf::Vector2f velocity_;
   ng::Tilemap* tilemap_ = nullptr;
