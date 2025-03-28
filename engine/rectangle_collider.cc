@@ -3,7 +3,9 @@
 #include "circle_collider.h"
 #include "collider.h"
 
+#ifdef DEBUG
 #include <SFML/Graphics/RectangleShape.hpp>
+#endif
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -44,7 +46,7 @@ bool RectangleCollider::Collides(const RectangleCollider& other) const {
 }
 
 void RectangleCollider::Draw(sf::RenderTarget& target) {
-  return;
+#ifdef DEBUG
   sf::RectangleShape shape(
       size_.componentWiseMul(GetGlobalTransform().getScale()));
   shape.setOutlineColor(sf::Color(0, 255, 0, 150));
@@ -53,6 +55,7 @@ void RectangleCollider::Draw(sf::RenderTarget& target) {
   shape.setOrigin(size_.componentWiseMul(GetGlobalTransform().getScale()) /
                   2.F);
   target.draw(shape, GetGlobalTransform().getTransform());
+#endif
 }
 
 }  // namespace ng

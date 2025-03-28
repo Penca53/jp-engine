@@ -24,7 +24,6 @@ jobs:
             }
           - { name: macOS, os: macos-latest }
         config:
-          - { name: Shared, flags: -DBUILD_SHARED_LIBS=TRUE }
           - { name: Static, flags: -DBUILD_SHARED_LIBS=FALSE }
 
     steps:
