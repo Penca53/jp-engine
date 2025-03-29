@@ -1,11 +1,11 @@
 #include "camera.h"
 
-#include "app.h"
-#include "layer.h"
-
+#include <SFML/Graphics/View.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <cstdint>
 
-#include <SFML/Graphics/View.hpp>
+#include "app.h"
+#include "layer.h"
 
 namespace ng {
 

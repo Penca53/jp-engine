@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/View.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <cstdint>
 
 #include "layer.h"
