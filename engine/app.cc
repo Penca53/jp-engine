@@ -142,8 +142,7 @@ void App::PollInput() {
       window_.close();
     } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
       for (Camera* camera : cameras_) {
-        camera->GetMutableView().setSize({static_cast<float>(resized->size.x),
-                                          static_cast<float>(resized->size.y)});
+        camera->SetViewSize(sf::Vector2f(resized->size));
       }
     }
 

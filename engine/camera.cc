@@ -22,10 +22,6 @@ const sf::View& Camera::GetView() const {
   return view_;
 }
 
-sf::View& Camera::GetMutableView() {
-  return view_;
-}
-
 int32_t Camera::GetDrawOrder() const {
   return draw_order_;
 }
@@ -34,10 +30,12 @@ Layer Camera::GetRenderLayer() const {
   return render_layer_;
 }
 
+void Camera::SetViewSize(sf::Vector2f size) {
+  view_.setSize(size);
+}
+
 void Camera::Start() {
-  view_.setSize(
-      {static_cast<float>(App::GetInstance().GetWindow().getSize().x),
-       static_cast<float>(App::GetInstance().GetWindow().getSize().y)});
+  SetViewSize(sf::Vector2f(App::GetInstance().GetWindow().getSize()));
   view_.setCenter(GetGlobalTransform().getPosition());
   App::GetInstance().AddCamera(*this);
 }

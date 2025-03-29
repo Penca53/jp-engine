@@ -25,12 +25,12 @@ class Camera : public Node {
 
   // Returns the camera's view.
   const sf::View& GetView() const;
-  // Returns the mutable camera's view.
-  sf::View& GetMutableView();
   // Returns the camera's draw order.
   int32_t GetDrawOrder() const;
   // Returns the camera's render layer.
   Layer GetRenderLayer() const;
+  // Sets the camera's view size.
+  void SetViewSize(sf::Vector2f size);
 
  protected:
   void Start() override;
