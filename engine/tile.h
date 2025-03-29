@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <optional>
+#include <cstdint>
 
 // Represents a unique identifier for a tile.
 // This MUST be defined by the user of the engine.
