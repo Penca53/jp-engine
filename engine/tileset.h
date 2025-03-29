@@ -8,8 +8,8 @@
 
 namespace ng {
 
-// A tileset represents a collection of tiles, managed from a texture sheet,
-// and accessed by tile IDs.
+// Represents a collection of tiles, managed from a texture sheet, and accessed
+// by tile IDs.
 class Tileset {
  public:
   // Creates a tileset given the size of a tile in pixels,
