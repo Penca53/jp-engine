@@ -117,6 +117,8 @@ class Node {
   // Parent node.
   Node* parent_ = nullptr;
   // Child nodes.
+  // The container is a vector because the order of children determines the
+  // update and draw order (lower index = earlier update / draw).
   std::vector<std::unique_ptr<Node>> children_;
   // Indices of child nodes pending to be erased.
   // Nodes are erased at the beginning of the following Update call.
