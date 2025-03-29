@@ -13,7 +13,7 @@ namespace ng {
 // transitions.
 class FSM {
  public:
-  // Creates an FSM with an entry, default state.
+  // Creates an FSM with an entry state.
   explicit FSM(std::unique_ptr<State> entry_state);
 
   // Adds a state to the FSM.
@@ -30,7 +30,8 @@ class FSM {
   std::unordered_map<State::ID, std::unique_ptr<State>> states_;
   // Map of state IDs to their associated transitions.
   std::unordered_map<State::ID, std::vector<Transition>> transitions_;
-  // Current active state.
+  // Current active state. After the construction of a FSM, the current state
+  // is never null.
   State* current_state_ = nullptr;
 };
 

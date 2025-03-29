@@ -16,9 +16,9 @@ class CircleCollider : public Collider {
   // Checks for collision with another collider. This is used to leverage
   // double dispatch to call the specialized Collides method.
   bool Collides(const Collider& other) const override;
-  // Checks for collision with another circle collider
+  // Checks for collision with another CircleCollider.
   bool Collides(const CircleCollider& other) const override;
-  // Checks for collision with another rectangle collider
+  // Checks for collision with another RectangleCollider.
   bool Collides(const RectangleCollider& other) const override;
 
  protected:

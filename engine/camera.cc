@@ -11,8 +11,8 @@ namespace ng {
 
 Camera::Camera() : Camera(0, Layer::kDefault) {}
 
-Camera::Camera(int32_t draw_order, Layer layer)
-    : draw_order_(draw_order), layer_(layer) {}
+Camera::Camera(int32_t draw_order, Layer render_layer)
+    : draw_order_(draw_order), render_layer_(render_layer) {}
 
 Camera::~Camera() {
   App::GetInstance().RemoveCamera(*this);
@@ -30,8 +30,8 @@ int32_t Camera::GetDrawOrder() const {
   return draw_order_;
 }
 
-Layer Camera::GetLayer() const {
-  return layer_;
+Layer Camera::GetRenderLayer() const {
+  return render_layer_;
 }
 
 void Camera::Start() {
