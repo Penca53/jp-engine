@@ -32,6 +32,11 @@ class App {
   // Returns the singleton instance of the App.
   static App& GetInstance();
 
+  App(const App& other) = delete;
+  App& operator=(const App& other) = delete;
+  App(App&& other) = delete;
+  App& operator=(App&& other) = delete;
+
   // Sets the title of the window.
   App& SetWindowTitle(const std::string& title);
   // Sets the size of the window in pixels.
@@ -82,6 +87,8 @@ class App {
 
  private:
   App();
+  ~App() = default;
+
   void PollInput();
 
   // Ticks Per Second (update/tick).
