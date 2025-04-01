@@ -15,9 +15,9 @@
 #include "engine/tileset.h"
 #include "follow_player.h"
 #include "game_manager.h"
-#include "goomba.h"
-#include "mario.h"
+#include "mushroom.h"
 #include "plant.h"
+#include "player.h"
 #include "score_manager.h"
 #include "tile_id.h"
 
@@ -190,9 +190,9 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
 
   std::unique_ptr<GameManager> game_manager = std::make_unique<GameManager>();
 
-  std::unique_ptr<Mario> mario =
-      std::make_unique<Mario>(*tilemap, *score_manager, *game_manager);
-  mario->SetLocalPosition(
+  std::unique_ptr<Player> player =
+      std::make_unique<Player>(*tilemap, *score_manager, *game_manager);
+  player->SetLocalPosition(
       {8.F * static_cast<float>(tilemap->GetTileSize().x),
        25.F * static_cast<float>(tilemap->GetTileSize().y)});
 
@@ -201,7 +201,7 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
 
   std::unique_ptr<ng::Camera> camera = std::make_unique<ng::Camera>();
   std::unique_ptr<FollowPlayer> follow_player =
-      std::make_unique<FollowPlayer>(*mario);
+      std::make_unique<FollowPlayer>(*player);
   camera->AddChild(std::move(follow_player));
 
   std::unique_ptr<Background> background = std::make_unique<Background>(
@@ -210,10 +210,10 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
   std::unique_ptr<End> end = std::make_unique<End>(*game_manager);
   end->SetLocalPosition({61 * 32, 24 * 32});
 
-  std::unique_ptr<Goomba> g = std::make_unique<Goomba>(*tilemap);
+  std::unique_ptr<Mushroom> g = std::make_unique<Mushroom>(*tilemap);
   g->SetLocalPosition({38 * 32, 27 * 32});
 
-  std::unique_ptr<Goomba> g1 = std::make_unique<Goomba>(*tilemap);
+  std::unique_ptr<Mushroom> g1 = std::make_unique<Mushroom>(*tilemap);
   g1->SetLocalPosition({40 * 32, 27 * 32});
 
   std::unique_ptr<Plant> p = std::make_unique<Plant>(*tilemap);
@@ -232,7 +232,7 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
   scene->AddChild(std::move(tilemap));
   scene->AddChild(std::move(ui_camera));
   scene->AddChild(std::move(camera));
-  scene->AddChild(std::move(mario));
+  scene->AddChild(std::move(player));
   scene->AddChild(std::move(end));
   scene->AddChild(std::move(g));
   scene->AddChild(std::move(g1));

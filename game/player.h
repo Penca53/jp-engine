@@ -13,10 +13,10 @@
 
 namespace game {
 
-class Mario : public ng::Node {
+class Player : public ng::Node {
  public:
-  Mario(ng::Tilemap& tilemap, ScoreManager& score_manager,
-        GameManager& game_manager);
+  Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
+         GameManager& game_manager);
   sf::Vector2f GetVelocity() const;
   void TakeDamage();
 

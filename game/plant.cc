@@ -15,8 +15,8 @@
 #include "engine/resource_manager.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
-#include "mario.h"
 #include "plant_bullet.h"
+#include "player.h"
 
 namespace game {
 
@@ -150,10 +150,10 @@ void Plant::Update() {
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
   if (other != nullptr) {
-    if (other->GetParent()->GetName() == "Mario") {
-      auto* mario = dynamic_cast<Mario*>(other->GetParent());
-      if (mario->GetVelocity().y <= 0) {
-        mario->TakeDamage();
+    if (other->GetParent()->GetName() == "Player") {
+      auto* player = dynamic_cast<Player*>(other->GetParent());
+      if (player->GetVelocity().y <= 0) {
+        player->TakeDamage();
       }
     }
   }

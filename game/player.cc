@@ -1,4 +1,4 @@
-#include "mario.h"
+#include "player.h"
 
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -21,7 +21,7 @@
 #include "engine/state.h"
 #include "engine/tilemap.h"
 #include "game_manager.h"
-#include "goomba.h"
+#include "mushroom.h"
 #include "plant.h"
 #include "score_manager.h"
 #include "tile_id.h"
@@ -30,59 +30,59 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Mario::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
+Player::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Idle (32x32).png", kAnimationTPF) {}
 
-void Mario::IdleState::OnEnter() {
+void Player::IdleState::OnEnter() {
   animation_.Start();
 }
 
-void Mario::IdleState::Update() {
+void Player::IdleState::Update() {
   animation_.Update();
 }
 
-Mario::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
+Player::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Run (32x32).png", kAnimationTPF) {}
 
-void Mario::RunState::OnEnter() {
+void Player::RunState::OnEnter() {
   animation_.Start();
 }
 
-void Mario::RunState::Update() {
+void Player::RunState::Update() {
   animation_.Update();
 }
 
-Mario::JumpState::JumpState(ng::State::ID id, sf::Sprite& sprite)
+Player::JumpState::JumpState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Jump (32x32).png", kAnimationTPF),
       sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Player/Jump_2.wav")) {}
 
-void Mario::JumpState::OnEnter() {
+void Player::JumpState::OnEnter() {
   animation_.Start();
   sound_.play();
 }
 
-void Mario::JumpState::Update() {
+void Player::JumpState::Update() {
   animation_.Update();
 }
 
-Mario::FallState::FallState(ng::State::ID id, sf::Sprite& sprite)
+Player::FallState::FallState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Fall (32x32).png", kAnimationTPF) {}
 
-void Mario::FallState::OnEnter() {
+void Player::FallState::OnEnter() {
   animation_.Start();
 }
 
-void Mario::FallState::Update() {
+void Player::FallState::Update() {
   animation_.Update();
 }
 
-Mario::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
-                          GameManager& game_manager)
+Player::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
+                           GameManager& game_manager)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Hit (32x32).png", kAnimationTPF),
       node_(&node),
@@ -90,21 +90,21 @@ Mario::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
-void Mario::HitState::OnEnter() {
+void Player::HitState::OnEnter() {
   animation_.Start();
 }
 
-void Mario::HitState::Update() {
+void Player::HitState::Update() {
   animation_.Update();
 }
 
-void Mario::HitState::Die() {
+void Player::HitState::Die() {
   game_manager_->Lose();
   node_->Destroy();
 }
 
-Mario::Mario(ng::Tilemap& tilemap, ScoreManager& score_manager,
-             GameManager& game_manager)
+Player::Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
+               GameManager& game_manager)
     : shape_({64.F, 64.F}),
       tilemap_(&tilemap),
       score_manager_(&score_manager),
@@ -116,7 +116,7 @@ Mario::Mario(ng::Tilemap& tilemap, ScoreManager& score_manager,
           ng::ResourceManager::GetInstance().LoadSoundBuffer("Hit_1.wav")),
       banana_sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Banana/Collectibles_2.wav")) {
-  SetName("Mario");
+  SetName("Player");
 
   shape_.setFillColor(sf::Color(230, 50, 50));
   shape_.setOrigin({32, 32});
@@ -165,11 +165,11 @@ Mario::Mario(ng::Tilemap& tilemap, ScoreManager& score_manager,
       ng::Transition("fall", "hit", [&]() -> bool { return is_dead_; }));
 }
 
-sf::Vector2f Mario::GetVelocity() const {
+sf::Vector2f Player::GetVelocity() const {
   return velocity_;
 }
 
-void Mario::TakeDamage() {
+void Player::TakeDamage() {
   if (is_dead_) {
     return;
   }
@@ -190,7 +190,7 @@ bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
 
 }  // namespace
 
-void Mario::Update() {  // NOLINT
+void Player::Update() {  // NOLINT
   animator_.Update();
 
   if (is_dead_) {
@@ -322,11 +322,11 @@ void Mario::Update() {  // NOLINT
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
   if (other != nullptr) {
-    if (other->GetParent()->GetName() == "Goomba") {
+    if (other->GetParent()->GetName() == "Mushroom") {
       if (velocity_.y > 0) {
-        auto* goomba = dynamic_cast<Goomba*>(other->GetParent());
-        if (!goomba->GetIsDead()) {
-          goomba->TakeDamage();
+        auto* mushroom = dynamic_cast<Mushroom*>(other->GetParent());
+        if (!mushroom->GetIsDead()) {
+          mushroom->TakeDamage();
           velocity_.y = -10;
           score_manager_->AddScore(100);
         }
@@ -357,7 +357,7 @@ void Mario::Update() {  // NOLINT
   }
 }
 
-void Mario::Draw(sf::RenderTarget& target) {
+void Player::Draw(sf::RenderTarget& target) {
   target.draw(sprite_, GetGlobalTransform().getTransform());
 }
 

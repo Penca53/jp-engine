@@ -11,9 +11,9 @@
 
 namespace game {
 
-class Goomba : public ng::Node {
+class Mushroom : public ng::Node {
  public:
-  explicit Goomba(const ng::Tilemap& tilemap);
+  explicit Mushroom(const ng::Tilemap& tilemap);
   bool GetIsDead() const;
   void TakeDamage();
 

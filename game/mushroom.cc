@@ -1,4 +1,4 @@
-#include "goomba.h"
+#include "mushroom.h"
 
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -15,26 +15,27 @@
 #include "engine/resource_manager.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
-#include "mario.h"
+#include "player.h"
 #include "tile_id.h"
 
 namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Goomba::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
+Mushroom::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Mushroom/Run (32x32).png", kAnimationTPF) {}
 
-void Goomba::RunState::OnEnter() {
+void Mushroom::RunState::OnEnter() {
   animation_.Start();
 }
 
-void Goomba::RunState::Update() {
+void Mushroom::RunState::Update() {
   animation_.Update();
 }
 
-Goomba::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
+Mushroom::HitState::HitState(ng::State::ID id, sf::Sprite& sprite,
+                             ng::Node& node)
     : ng::State(std::move(id)),
       animation_(sprite, "Mushroom/Hit.png", kAnimationTPF),
       node_(&node),
@@ -43,26 +44,26 @@ Goomba::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
-void Goomba::HitState::OnEnter() {
+void Mushroom::HitState::OnEnter() {
   animation_.Start();
   sound_.play();
 }
 
-void Goomba::HitState::Update() {
+void Mushroom::HitState::Update() {
   animation_.Update();
 }
 
-void Goomba::HitState::Die() {
+void Mushroom::HitState::Die() {
   node_->Destroy();
 }
 
-Goomba::Goomba(const ng::Tilemap& tilemap)
+Mushroom::Mushroom(const ng::Tilemap& tilemap)
     : shape_({64.F, 64.F}),
       tilemap_(&tilemap),
       sprite_(ng::ResourceManager::GetInstance().LoadTexture(
           "Mushroom/Run (32x32).png")),
       animator_(std::make_unique<RunState>("run", sprite_)) {
-  SetName("Goomba");
+  SetName("Mushroom");
   shape_.setFillColor(sf::Color(105, 58, 34));
   shape_.setOrigin({32, 32});
 
@@ -81,11 +82,11 @@ Goomba::Goomba(const ng::Tilemap& tilemap)
       ng::Transition("run", "hit", [&]() -> bool { return is_dead_; }));
 }
 
-bool Goomba::GetIsDead() const {
+bool Mushroom::GetIsDead() const {
   return is_dead_;
 }
 
-void Goomba::TakeDamage() {
+void Mushroom::TakeDamage() {
   if (is_dead_) {
     return;
   }
@@ -106,7 +107,7 @@ bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
 
 }  // namespace
 
-void Goomba::Update() {  // NOLINT
+void Mushroom::Update() {  // NOLINT
   animator_.Update();
 
   if (is_dead_) {
@@ -211,22 +212,22 @@ void Goomba::Update() {  // NOLINT
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
   if (other != nullptr) {
-    if (other->GetParent()->GetName() == "Mario") {
-      auto* mario = dynamic_cast<Mario*>(other->GetParent());
-      if (mario->GetVelocity().y <= 0) {
-        mario->TakeDamage();
+    if (other->GetParent()->GetName() == "Player") {
+      auto* player = dynamic_cast<Player*>(other->GetParent());
+      if (player->GetVelocity().y <= 0) {
+        player->TakeDamage();
       }
-    } else if (other->GetParent()->GetName() == "Goomba") {
-      auto* goomba = dynamic_cast<Goomba*>(other->GetParent());
-      if (!goomba->GetIsDead()) {
-        goomba->direction_.x = -goomba->direction_.x;
+    } else if (other->GetParent()->GetName() == "Mushroom") {
+      auto* mushroom = dynamic_cast<Mushroom*>(other->GetParent());
+      if (!mushroom->GetIsDead()) {
+        mushroom->direction_.x = -mushroom->direction_.x;
         direction_.x = -direction_.x;
       }
     }
   }
 }
 
-void Goomba::Draw(sf::RenderTarget& target) {
+void Mushroom::Draw(sf::RenderTarget& target) {
   sprite_.setScale(sf::Vector2f{-direction_.x * 2, 2.F});
   target.draw(sprite_, GetGlobalTransform().getTransform());
 }

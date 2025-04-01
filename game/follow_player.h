@@ -1,13 +1,13 @@
 #pragma once
 
 #include "engine/node.h"
-#include "mario.h"
+#include "player.h"
 
 namespace game {
 
 class FollowPlayer : public ng::Node {
  public:
-  explicit FollowPlayer(const Mario& mario);
+  explicit FollowPlayer(const Player& player);
 
  protected:
   void Start() override;
@@ -16,7 +16,7 @@ class FollowPlayer : public ng::Node {
  private:
   void Follow();
 
-  const Mario* mario_ = nullptr;
+  const Player* player_ = nullptr;
 };
 
 }  // namespace game

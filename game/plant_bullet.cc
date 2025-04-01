@@ -9,7 +9,7 @@
 #include "engine/physics.h"
 #include "engine/resource_manager.h"
 #include "engine/tilemap.h"
-#include "mario.h"
+#include "player.h"
 #include "tile_id.h"
 
 namespace game {
@@ -69,9 +69,9 @@ void PlantBullet::Update() {
 
   const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
   if (other != nullptr) {
-    if (other->GetParent()->GetName() == "Mario") {
-      auto* mario = dynamic_cast<Mario*>(other->GetParent());
-      mario->TakeDamage();
+    if (other->GetParent()->GetName() == "Player") {
+      auto* player = dynamic_cast<Player*>(other->GetParent());
+      player->TakeDamage();
     }
   }
 }

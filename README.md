@@ -27,9 +27,9 @@ The demo `game` features:
 
 * **Entry Point (`main`):** Initializes the engine's `App` and starts the game.
 * **Scene Setup (`default_scene`, `background`):** `default_scene` constructs the entire game level layout, including placing the `background`.
-* **Player (`mario`):** The controllable player character.
-* **Camera Control (`follow_player`):** A component likely attached to the `Camera` node to make it follow the player (`mario`).
-* **Enemies (`goomba`, `plant`, `plant_bullet`):** Different types of enemies with their specific behaviors and projectiles (`plant_bullet`).
+* **Player (`player`):** The controllable player character.
+* **Camera Control (`follow_player`):** A component likely attached to the `Camera` node to make it follow the player (`player`).
+* **Enemies (`mushroom`, `plant`, `plant_bullet`):** Different types of enemies with their specific behaviors and projectiles (`plant_bullet`).
 * **Collectibles (`banana`):** Items the player can collect, represented as bananas.
 * **Level Goal (`end`):** Represents the end-of-level trigger or object (e.g., the cup).
 * **Game Logic (`game_manager`, `score_manager`):**
