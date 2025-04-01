@@ -1,7 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <cstddef>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <cstdint>
 
 #include "engine/node.h"
 

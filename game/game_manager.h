@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <cstdint>
 
 #include "engine/node.h"
 #include "lose_canvas.h"

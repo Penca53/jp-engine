@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+
 #include "engine/circle_collider.h"
 #include "engine/resource_manager.h"
 #include "engine/state.h"

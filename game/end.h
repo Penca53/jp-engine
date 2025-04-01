@@ -1,11 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "engine/fsm.h"
 #include "engine/node.h"
 #include "engine/sprite_sheet_animation.h"
-
 #include "game_manager.h"
 
 namespace game {

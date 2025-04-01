@@ -1,7 +1,9 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "engine/fsm.h"
 #include "engine/node.h"
@@ -52,7 +54,6 @@ class Mushroom : public ng::Node {
     sf::Sound sound_;
   };
 
-  sf::RectangleShape shape_;
   sf::Vector2f direction_{-1, 0};
   sf::Vector2f velocity_;
   const ng::Tilemap* tilemap_ = nullptr;

@@ -1,7 +1,10 @@
 #pragma once
 
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include "engine/fsm.h"
 #include "engine/node.h"
@@ -96,7 +99,6 @@ class Player : public ng::Node {
     GameManager* game_manager_ = nullptr;
   };
 
-  sf::RectangleShape shape_;
   sf::Vector2f velocity_;
   ng::Tilemap* tilemap_ = nullptr;
   ScoreManager* score_manager_ = nullptr;

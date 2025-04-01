@@ -105,8 +105,7 @@ void Player::HitState::Die() {
 
 Player::Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
                GameManager& game_manager)
-    : shape_({64.F, 64.F}),
-      tilemap_(&tilemap),
+    : tilemap_(&tilemap),
       score_manager_(&score_manager),
       game_manager_(&game_manager),
       sprite_(ng::ResourceManager::GetInstance().LoadTexture(
@@ -117,9 +116,6 @@ Player::Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
       banana_sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
           "Banana/Collectibles_2.wav")) {
   SetName("Player");
-
-  shape_.setFillColor(sf::Color(230, 50, 50));
-  shape_.setOrigin({32, 32});
 
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});

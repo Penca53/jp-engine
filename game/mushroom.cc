@@ -58,14 +58,11 @@ void Mushroom::HitState::Die() {
 }
 
 Mushroom::Mushroom(const ng::Tilemap& tilemap)
-    : shape_({64.F, 64.F}),
-      tilemap_(&tilemap),
+    : tilemap_(&tilemap),
       sprite_(ng::ResourceManager::GetInstance().LoadTexture(
           "Mushroom/Run (32x32).png")),
       animator_(std::make_unique<RunState>("run", sprite_)) {
   SetName("Mushroom");
-  shape_.setFillColor(sf::Color(105, 58, 34));
-  shape_.setOrigin({32, 32});
 
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});
