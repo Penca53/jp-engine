@@ -134,7 +134,7 @@ void Node::Start() {}
 
 void Node::Update() {}
 
-void Node::Draw(sf::RenderTarget& target) {}
+void Node::Draw([[maybe_unused]] sf::RenderTarget& target) {}
 
 void Node::EraseDestroyedChildren() {
   if (children_to_erase_.empty()) {

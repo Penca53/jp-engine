@@ -84,7 +84,6 @@ class Plant : public ng::Node {
   sf::Sprite sprite_;
   bool is_dead_ = false;
   int32_t attack_timer_ = 0;
-  int32_t attack_cooldown_timer_ = 0;
   ng::FSM animator_;
   bool begin_attack_ = false;
   bool attack_completed_ = false;

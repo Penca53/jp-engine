@@ -92,10 +92,10 @@ void Plant::HitState::Die() {
 }
 
 Plant::Plant(const ng::Tilemap& tilemap)
-    : sprite_(ng::ResourceManager::GetInstance().LoadTexture(
+    : tilemap_(&tilemap),
+      sprite_(ng::ResourceManager::GetInstance().LoadTexture(
           "Plant/Idle (44x42).png")),
-      animator_(std::make_unique<IdleState>("idle", sprite_)),
-      tilemap_(&tilemap) {
+      animator_(std::make_unique<IdleState>("idle", sprite_)) {
   SetName("Plant");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({22, 21});

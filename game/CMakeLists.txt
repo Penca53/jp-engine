@@ -7,6 +7,14 @@ add_executable(game main.cc background.cc banana.cc default_scene.cc end.cc foll
 target_compile_features(game PRIVATE cxx_std_23)
 set_target_properties(game PROPERTIES CXX_EXTENSIONS OFF)
 
+target_compile_options(game PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+)
+
+target_compile_options(game PRIVATE $<$<CONFIG:DEBUG>:-fsanitize=address,undefined>)
+target_link_options(game PRIVATE $<$<CONFIG:DEBUG>:-fsanitize=address,undefined>)
+
 target_link_libraries(game PRIVATE engine)
 
 add_custom_target(copy_assets

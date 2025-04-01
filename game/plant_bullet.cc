@@ -16,10 +16,10 @@
 namespace game {
 
 PlantBullet::PlantBullet(const ng::Tilemap& tilemap, sf::Vector2f direction)
-    : sprite_(
-          ng::ResourceManager::GetInstance().LoadTexture("Plant/Bullet.png")),
-      tilemap_(&tilemap),
-      direction_(direction) {
+    : tilemap_(&tilemap),
+      direction_(direction),
+      sprite_(
+          ng::ResourceManager::GetInstance().LoadTexture("Plant/Bullet.png")) {
   SetName("PlantBullet");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({8, 8});

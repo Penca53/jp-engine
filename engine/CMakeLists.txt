@@ -14,6 +14,11 @@ add_library(engine app.cc camera.cc circle_collider.cc collider.cc fsm.cc input.
 target_compile_features(engine PRIVATE cxx_std_23)
 set_target_properties(engine PROPERTIES CXX_EXTENSIONS OFF)
 
+target_compile_options(engine PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+)
+
 target_link_libraries(engine PUBLIC SFML::Audio SFML::Graphics)
 target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR})
 

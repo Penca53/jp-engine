@@ -21,8 +21,8 @@ class PlantBullet : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  sf::Vector2f direction_{-1, 0};
   const ng::Tilemap* tilemap_ = nullptr;
+  sf::Vector2f direction_{-1, 0};
   const ng::CircleCollider* collider_ = nullptr;
   sf::Sprite sprite_;
   bool is_dead_ = false;
