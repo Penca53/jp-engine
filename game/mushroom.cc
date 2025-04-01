@@ -120,7 +120,7 @@ void Mushroom::Update() {  // NOLINT
   sf::Vector2f col_size = collider_->GetSize() / 2.F;
   sf::Vector2f tilemap_size = sf::Vector2f(tilemap_->GetTileSize());
 
-  static constexpr float kEps = 0.001;
+  static constexpr float kEps = 0.001F;
   sf::Vector2f top_left = {new_pos.x - (col_size.x - kEps),
                            old_pos.y - (col_size.y - kEps)};
   sf::Vector2f middle_left = {new_pos.x + (col_size.x - kEps),
