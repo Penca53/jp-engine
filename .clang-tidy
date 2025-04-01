@@ -1,11 +1,4 @@
 ---
 Checks: "*,-fuchsia-*,-altera-*,-boost-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,-misc-const-correctness,-misc-no-recursion,-readability-identifier-length,-readability-static-definition-in-anonymous-namespace,-clang-analyzer-optin.core.EnumCastOutOfRange,-llvm-*,-llvmlibc-*"
-CheckOptions:
-  [
-    {
-      key: misc-non-private-member-variables-in-classes,
-      value: IgnoreClassesWithAllMemberVariablesBeingPublic,
-    },
-  ]
 HeaderFilterRegex: ".*"
 FormatStyle: none
