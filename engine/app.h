@@ -8,6 +8,7 @@
 
 #include "camera.h"
 #include "node.h"
+#include "physics.h"
 
 namespace ng {
 
@@ -56,6 +57,11 @@ class App {
   // Returns the mutable window.
   sf::RenderWindow& GetMutableWindow();
 
+  // Returns the physics instance.
+  const Physics& GetPhysics() const;
+  // Returns the mutable physics instance.
+  Physics& GetMutablePhysics();
+
   // Returns the loaded scene.
   const Node* GetScene() const;
 
@@ -99,13 +105,19 @@ class App {
   // The one and only active window.
   sf::RenderWindow window_;
 
-  // Note: The cameras must be declared before scene because of destruction order.
+  // Note: Cameras must be declared before scene because of destruction order.
   // The cameras in the scene will unregister in their destructor,
   // so their destructor must be called before the destructor of the cameras field).
   // Contains all the active cameras in the loaded scene.
   std::set<Camera*, decltype(cmp_ascending_draw_order)> cameras_;
   // Contains all the valid, registered nodes in the entire application.
   std::unordered_set<const Node*> valid_nodes_;
+
+  // Note: Physics must be declared before scene because of destruction order.
+  // The colliders in the scene will unregister in their destructor,
+  // so their destructor must be called before the destructor of the physics field).
+  // Manages the physics simulation in the application.
+  Physics physics_;
 
   // The one and only loaded scene.
   std::unique_ptr<Node> scene_;

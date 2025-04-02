@@ -6,12 +6,11 @@
 
 namespace ng {
 
-// Provides a singleton interface for handling physics interactions within the
-// engine.
+// Manages the physics simulation, handling colliders and overlap checks.
 class Physics {
  public:
-  // Returns the singleton instance of the Physics.
-  static Physics& GetInstance();
+  Physics() = default;
+  ~Physics() = default;
 
   Physics(const Physics& other) = delete;
   Physics& operator=(const Physics& other) = delete;
@@ -26,12 +25,9 @@ class Physics {
   void RemoveCollider(const Collider& collider);
   // Checks for overlaps between the given collider and other colliders
   // registered in the system.
-  const Collider* Overlap(const Collider& collider);
+  [[nodiscard]] const Collider* Overlap(const Collider& collider) const;
 
  private:
-  Physics() = default;
-  ~Physics() = default;
-
   // Registered colliders in the physics system.
   std::unordered_set<const Collider*> colliders_;
 };

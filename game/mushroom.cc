@@ -8,9 +8,9 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+#include "engine/app.h"
 #include "engine/collider.h"
 #include "engine/node.h"
-#include "engine/physics.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
 #include "engine/state.h"
@@ -207,7 +207,8 @@ void Mushroom::Update() {  // NOLINT
 
   SetLocalPosition(new_pos - sf::Vector2f{0, 16});
 
-  const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
+  const ng::Collider* other =
+      ng::App::GetInstance().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

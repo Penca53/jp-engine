@@ -4,18 +4,18 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Keyboard.hpp>
-
 #include <cmath>
 #include <cstdint>
 #include <memory>
 #include <utility>
+
 #include "banana.h"
 #include "end.h"
+#include "engine/app.h"
 #include "engine/collider.h"
 #include "engine/fsm.h"
 #include "engine/input.h"
 #include "engine/node.h"
-#include "engine/physics.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
 #include "engine/state.h"
@@ -316,7 +316,8 @@ void Player::Update() {  // NOLINT
 
   SetLocalPosition(new_pos - sf::Vector2f{0, 8});
 
-  const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
+  const ng::Collider* other =
+      ng::App::GetInstance().GetMutablePhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Mushroom") {
       if (velocity_.y > 0) {

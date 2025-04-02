@@ -5,9 +5,9 @@
 #include <memory>
 #include <utility>
 
+#include "engine/app.h"
 #include "engine/circle_collider.h"
 #include "engine/collider.h"
-#include "engine/physics.h"
 #include "engine/resource_manager.h"
 #include "engine/tilemap.h"
 #include "player.h"
@@ -68,7 +68,8 @@ void PlantBullet::Update() {
   static constexpr float kMovementSpeed = 6;
   Translate(direction_ * kMovementSpeed);
 
-  const ng::Collider* other = ng::Physics::GetInstance().Overlap(*collider_);
+  const ng::Collider* other =
+      ng::App::GetInstance().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

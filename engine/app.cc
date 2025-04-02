@@ -11,6 +11,7 @@
 
 #include "input.h"
 #include "node.h"
+#include "physics.h"
 
 namespace ng {
 
@@ -93,6 +94,14 @@ const sf::RenderWindow& App::GetWindow() const {
 
 sf::RenderWindow& App::GetMutableWindow() {
   return window_;
+}
+
+const Physics& App::GetPhysics() const {
+  return physics_;
+}
+
+Physics& App::GetMutablePhysics() {
+  return physics_;
 }
 
 const Node* App::GetScene() const {
