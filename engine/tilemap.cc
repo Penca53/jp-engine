@@ -15,12 +15,8 @@
 
 namespace ng {
 
-namespace {
-
 static constexpr size_t kTriangleVertexCount = 3;
 static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
-
-}  // namespace
 
 Tilemap::Tilemap(sf::Vector2u size, Tileset tileset)
     : size_(size),
