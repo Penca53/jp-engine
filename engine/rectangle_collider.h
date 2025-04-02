@@ -25,7 +25,9 @@ class RectangleCollider : public Collider {
   bool Collides(const RectangleCollider& other) const override;
 
  protected:
+#ifdef DEBUG
   void Draw(sf::RenderTarget& target) override;
+#endif
 
  private:
   // Size of the whole rectangle.

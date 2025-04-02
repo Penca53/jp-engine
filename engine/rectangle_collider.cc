@@ -5,8 +5,8 @@
 
 #ifdef DEBUG
 #include <SFML/Graphics/RectangleShape.hpp>
-#endif
 #include <SFML/Graphics/RenderTarget.hpp>
+#endif
 #include <SFML/System/Vector2.hpp>
 
 namespace ng {
@@ -45,8 +45,8 @@ bool RectangleCollider::Collides(const RectangleCollider& other) const {
   return !(AisToTheRightOfB || AisToTheLeftOfB || AisAboveB || AisBelowB);
 }
 
-void RectangleCollider::Draw(sf::RenderTarget& target) {
 #ifdef DEBUG
+void RectangleCollider::Draw(sf::RenderTarget& target) {
   sf::RectangleShape shape(
       size_.componentWiseMul(GetGlobalTransform().getScale()));
   shape.setOutlineColor(sf::Color(0, 255, 0, 150));
@@ -55,7 +55,7 @@ void RectangleCollider::Draw(sf::RenderTarget& target) {
   shape.setOrigin(size_.componentWiseMul(GetGlobalTransform().getScale()) /
                   2.F);
   target.draw(shape, GetGlobalTransform().getTransform());
-#endif
 }
+#endif
 
 }  // namespace ng
