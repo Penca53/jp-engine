@@ -20,6 +20,6 @@ target_compile_options(engine PRIVATE
 )
 
 target_link_libraries(engine PUBLIC SFML::Audio SFML::Graphics)
-target_include_directories(engine PUBLIC ${CMAKE_SOURCE_DIR})
+target_include_directories(engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 target_compile_definitions(engine PRIVATE "$<$<CONFIG:DEBUG>:DEBUG>")
