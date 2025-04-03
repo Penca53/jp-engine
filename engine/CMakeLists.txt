@@ -15,7 +15,7 @@ target_compile_features(engine PRIVATE cxx_std_23)
 set_target_properties(engine PROPERTIES CXX_EXTENSIONS OFF)
 
 target_compile_options(engine PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 

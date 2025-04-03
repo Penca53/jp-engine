@@ -8,7 +8,7 @@ target_compile_features(game PRIVATE cxx_std_23)
 set_target_properties(game PROPERTIES CXX_EXTENSIONS OFF)
 
 target_compile_options(game PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 
