@@ -14,15 +14,15 @@ class RectangleCollider : public Collider {
   explicit RectangleCollider(sf::Vector2f size);
 
   // Returns the size of the collider.
-  const sf::Vector2f& GetSize() const;
+  [[nodiscard]] const sf::Vector2f& GetSize() const;
 
   // Checks for collision with another collider. This is used to leverage
   // double dispatch to call the specialized Collides method.
-  bool Collides(const Collider& other) const override;
+  [[nodiscard]] bool Collides(const Collider& other) const override;
   // Checks for collision with another CircleCollider.
-  bool Collides(const CircleCollider& other) const override;
+  [[nodiscard]] bool Collides(const CircleCollider& other) const override;
   // Checks for collision with another RectangleCollider.
-  bool Collides(const RectangleCollider& other) const override;
+  [[nodiscard]] bool Collides(const RectangleCollider& other) const override;
 
  protected:
 #ifdef DEBUG

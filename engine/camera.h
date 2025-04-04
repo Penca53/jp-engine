@@ -25,11 +25,11 @@ class Camera : public Node {
   Camera& operator=(Camera&& other) = delete;
 
   // Returns the camera's view.
-  const sf::View& GetView() const;
+  [[nodiscard]] const sf::View& GetView() const;
   // Returns the camera's draw order.
-  int32_t GetDrawOrder() const;
+  [[nodiscard]] int32_t GetDrawOrder() const;
   // Returns the camera's render layer.
-  Layer GetRenderLayer() const;
+  [[nodiscard]] Layer GetRenderLayer() const;
   // Sets the camera's view size.
   void SetViewSize(sf::Vector2f size);
 

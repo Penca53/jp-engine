@@ -44,10 +44,10 @@ class Input {
 // convenience.
 
 // Returns true if a key was just pressed, false otherwise.
-bool GetKeyDown(sf::Keyboard::Scancode key);
+[[nodiscard]] bool GetKeyDown(sf::Keyboard::Scancode key);
 // Returns true if a key is currently held down, false otherwise.
-bool GetKey(sf::Keyboard::Scancode key);
+[[nodiscard]] bool GetKey(sf::Keyboard::Scancode key);
 // Returns true if a key was just released, false otherwise.
-bool GetKeyUp(sf::Keyboard::Scancode key);
+[[nodiscard]] bool GetKeyUp(sf::Keyboard::Scancode key);
 
 }  // namespace ng

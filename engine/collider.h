@@ -21,11 +21,11 @@ class Collider : public Node {
 
   // Checks for collision with another collider. This is used to leverage
   // double dispatch to call the specialized Collides method.
-  virtual bool Collides(const Collider& other) const = 0;
+  [[nodiscard]] virtual bool Collides(const Collider& other) const = 0;
 
   // Collision detection between specific shapes.
-  virtual bool Collides(const CircleCollider& other) const = 0;
-  virtual bool Collides(const RectangleCollider& other) const = 0;
+  [[nodiscard]] virtual bool Collides(const CircleCollider& other) const = 0;
+  [[nodiscard]] virtual bool Collides(const RectangleCollider& other) const = 0;
 
  protected:
   void Start() override;

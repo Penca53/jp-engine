@@ -12,7 +12,7 @@ Transition::Transition(ng::State::ID from, ng::State::ID to,
       to_(std::move(to)),
       condition_(std::move(condition)) {}
 
-bool Transition::MeetsCondition() {
+bool Transition::MeetsCondition() const {
   return condition_();
 }
 

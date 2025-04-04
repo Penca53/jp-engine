@@ -48,22 +48,22 @@ class App {
   void Run(uint32_t tps, uint32_t fps);
 
   // Returns the number of seconds in a "tick".
-  float SecondsPerTick() const;
+  [[nodiscard]] float SecondsPerTick() const;
   // Returns the number of nanoseconds in a "tick".
-  uint64_t NanosecondsPerTick() const;
+  [[nodiscard]] uint64_t NanosecondsPerTick() const;
 
   // Returns the window.
-  const sf::RenderWindow& GetWindow() const;
+  [[nodiscard]] const sf::RenderWindow& GetWindow() const;
   // Returns the mutable window.
-  sf::RenderWindow& GetMutableWindow();
+  [[nodiscard]] sf::RenderWindow& GetMutableWindow();
 
   // Returns the physics instance.
-  const Physics& GetPhysics() const;
+  [[nodiscard]] const Physics& GetPhysics() const;
   // Returns the mutable physics instance.
-  Physics& GetMutablePhysics();
+  [[nodiscard]] Physics& GetMutablePhysics();
 
   // Returns the loaded scene.
-  const Node* GetScene() const;
+  [[nodiscard]] const Node* GetScene() const;
 
   // Loads a new scene. The old scene will be swapped
   // at the beginning of the next game loop iteration.
@@ -89,7 +89,7 @@ class App {
   // valid nodes set.
   // This method should be used whenever the lifetime
   // of a pointer to a node is unsure.
-  bool IsValid(const Node* node) const;
+  [[nodiscard]] bool IsValid(const Node* node) const;
 
  private:
   App();

@@ -21,26 +21,27 @@ class Tilemap : public Node {
   Tilemap(sf::Vector2u size, Tileset tileset);
 
   // Returns the size of the tilemap in tiles.
-  sf::Vector2u GetSize() const;
+  [[nodiscard]] sf::Vector2u GetSize() const;
   // Returns the size of each tile in the tilemap.
-  sf::Vector2u GetTileSize() const;
+  [[nodiscard]] sf::Vector2u GetTileSize() const;
 
   // Checks if the given tile position is within the bounds of the tilemap.
-  bool IsWithinBounds(sf::Vector2u position) const;
+  [[nodiscard]] bool IsWithinBounds(sf::Vector2u position) const;
   // Returns the tile at the given tile position.
-  const Tile& GetTile(sf::Vector2u position) const;
+  [[nodiscard]] const Tile& GetTile(sf::Vector2u position) const;
   // Sets the tile at the given tile position.
   void SetTile(sf::Vector2u position, TileID tile_id);
 
   // Checks if the given world position is within the bounds of the tilemap.
-  bool IsWithinWorldBounds(sf::Vector2f world_position) const;
+  [[nodiscard]] bool IsWithinWorldBounds(sf::Vector2f world_position) const;
   // Returns the tile at the given world position.
-  const Tile& GetWorldTile(sf::Vector2f world_position) const;
+  [[nodiscard]] const Tile& GetWorldTile(sf::Vector2f world_position) const;
   // Sets the tile at the given world position.
   void SetWorldTile(sf::Vector2f world_position, TileID tile_id);
 
   // Converts world coordinates to tile coordinates.
-  sf::Vector2u WorldToTileSpace(sf::Vector2f world_position) const;
+  [[nodiscard]] sf::Vector2u WorldToTileSpace(
+      sf::Vector2f world_position) const;
 
  protected:
   void Draw(sf::RenderTarget& target) override;

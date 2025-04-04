@@ -22,7 +22,7 @@ class Transition {
   [[nodiscard]] const ng::State::ID& GetTo() const;
 
   // Invokes the condition function and returns its return value.
-  bool MeetsCondition();
+  [[nodiscard]] bool MeetsCondition() const;
 
  private:
   // The source state of the transition.

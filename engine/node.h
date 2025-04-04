@@ -38,15 +38,15 @@ class Node {
   Node& operator=(Node&& other) = delete;
 
   // Returns the name of the node.
-  const std::string& GetName() const;
+  [[nodiscard]] const std::string& GetName() const;
   // Sets the name of the node.
   void SetName(std::string name);
   // Returns the parent node.
   // If the parent is null, then this node is a scene root.
-  Node* GetParent() const;
+  [[nodiscard]] Node* GetParent() const;
 
   // Returns the layer of the node.
-  Layer GetLayer() const;
+  [[nodiscard]] Layer GetLayer() const;
   // Sets the layer of the node.
   void SetLayer(Layer layer);
 
@@ -58,9 +58,9 @@ class Node {
   void Destroy();
 
   // Returns the local transform of the node.
-  const sf::Transformable& GetLocalTransform() const;
+  [[nodiscard]] const sf::Transformable& GetLocalTransform() const;
   // Returns the global transform of the node.
-  const sf::Transformable& GetGlobalTransform() const;
+  [[nodiscard]] const sf::Transformable& GetGlobalTransform() const;
 
   // Sets the local position of the node.
   void SetLocalPosition(sf::Vector2f position);
@@ -73,7 +73,7 @@ class Node {
 
   // Returns a child node of the specified type, if any.
   template <Derived<Node> T>
-  T* GetChild() {
+  [[nodiscard]] T* GetChild() {
     for (const auto& child : children_) {
       T* c = dynamic_cast<T*>(child.get());
       if (c != nullptr) {
