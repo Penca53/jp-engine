@@ -2,7 +2,7 @@
 
 This repository contains a custom game engine and a sample 2D platfomer game demonstrating its features. The engine provides foundational components for building 2D games, including scene management, rendering, basic physics, input handling, and resource management.
 
-Are you interested in learning how to build the project from scratch? Check out the [SFML Engine guide](https://penca53.gitbook.io/sfml-engine)!
+Are you interested in learning how to build the project from scratch? Check out the [SFML Engine guide](https://penca53.gitbook.io/sfml-engine)! (Still early WIP 🚧)
 
 ## Core Engine Components
 
