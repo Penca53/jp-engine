@@ -24,9 +24,13 @@ class Mushroom : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  class RunState : public ng::State {
+  struct Context {
+    bool is_dead = false;
+  };
+
+  class RunState : public ng::State<Context> {
    public:
-    RunState(ng::State::ID id, sf::Sprite& sprite);
+    RunState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -37,9 +41,9 @@ class Mushroom : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class HitState : public ng::State {
+  class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node);
+    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, ng::Node& node);
 
    protected:
     void OnEnter() override;
@@ -50,8 +54,8 @@ class Mushroom : public ng::Node {
     void Die();
 
     ng::SpriteSheetAnimation animation_;
-    ng::Node* node_ = nullptr;
     sf::Sound sound_;
+    ng::Node* node_ = nullptr;
   };
 
   sf::Vector2f direction_{-1, 0};
@@ -60,8 +64,8 @@ class Mushroom : public ng::Node {
   const ng::RectangleCollider* collider_ = nullptr;
   bool is_on_ground_ = false;
   sf::Sprite sprite_;
-  bool is_dead_ = false;
-  ng::FSM animator_;
+  Context context_;
+  ng::FSM<Context> animator_;
 };
 
 }  // namespace game

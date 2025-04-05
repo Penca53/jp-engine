@@ -23,9 +23,11 @@ class Banana : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  class IdleState : public ng::State {
+  struct Context {};
+
+  class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -38,7 +40,8 @@ class Banana : public ng::Node {
 
   sf::Sprite sprite_;
   bool is_collected_ = false;
-  ng::FSM animator_;
+  Context context_;
+  ng::FSM<Context> animator_;
 };
 
 }  // namespace game

@@ -28,9 +28,15 @@ class Player : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  class IdleState : public ng::State {
+  struct Context {
+    sf::Vector2f velocity;
+    bool is_on_ground = false;
+    bool is_dead = false;
+  };
+
+  class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -41,9 +47,9 @@ class Player : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class RunState : public ng::State {
+  class RunState : public ng::State<Context> {
    public:
-    RunState(ng::State::ID id, sf::Sprite& sprite);
+    RunState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -54,9 +60,9 @@ class Player : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class JumpState : public ng::State {
+  class JumpState : public ng::State<Context> {
    public:
-    JumpState(ng::State::ID id, sf::Sprite& sprite);
+    JumpState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -68,9 +74,9 @@ class Player : public ng::Node {
     sf::Sound sound_;
   };
 
-  class FallState : public ng::State {
+  class FallState : public ng::State<Context> {
    public:
-    FallState(ng::State::ID id, sf::Sprite& sprite);
+    FallState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -81,9 +87,9 @@ class Player : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class HitState : public ng::State {
+  class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node,
+    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, ng::Node& node,
              GameManager& game_manager);
 
    protected:
@@ -99,16 +105,14 @@ class Player : public ng::Node {
     GameManager* game_manager_ = nullptr;
   };
 
-  sf::Vector2f velocity_;
   ng::Tilemap* tilemap_ = nullptr;
   ScoreManager* score_manager_ = nullptr;
   GameManager* game_manager_ = nullptr;
   const ng::RectangleCollider* collider_ = nullptr;
   sf::Sprite sprite_;
-  bool is_on_ground_ = false;
-  bool is_dead_ = false;
   bool has_won_ = false;
-  ng::FSM animator_;
+  Context context_;
+  ng::FSM<Context> animator_;
   sf::Sound plastic_block_sound_;
   sf::Sound banana_sound_;
 };

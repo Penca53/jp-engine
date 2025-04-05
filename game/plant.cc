@@ -4,16 +4,17 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
-
 #include <cstdint>
 #include <memory>
 #include <utility>
+
 #include "engine/app.h"
 #include "engine/collider.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
+#include "engine/transition.h"
 #include "plant_bullet.h"
 #include "player.h"
 
@@ -21,8 +22,8 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Plant::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(std::move(id)),
+Plant::IdleState::IdleState(ng::State<Context>::ID id, sf::Sprite& sprite)
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Plant/Idle (44x42).png", kAnimationTPF, {44, 42}) {}
 
 void Plant::IdleState::OnEnter() {
@@ -33,17 +34,16 @@ void Plant::IdleState::Update() {
   animation_.Update();
 }
 
-Plant::AttackState::AttackState(ng::State::ID id, sf::Sprite& sprite,
-                                const ng::Node& node,
-                                const ng::Tilemap& tilemap,
-                                sf::Vector2f direction, bool& attack_completed)
-    : ng::State(std::move(id)),
+Plant::AttackState::AttackState(ng::State<Context>::ID id, sf::Sprite& sprite,
+                                const Plant& plant, const ng::Tilemap& tilemap,
+                                sf::Vector2f direction)
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Plant/Attack (44x42).png", kAnimationTPF, {44, 42}),
-      node_(&node),
+      plant_(&plant),
       tilemap_(&tilemap),
-      direction_(direction),
-      attack_completed_(&attack_completed) {
-  animation_.RegisterOnEndCallback([this]() { *attack_completed_ = true; });
+      direction_(direction) {
+  animation_.RegisterOnEndCallback(
+      [this]() -> void { GetContext()->is_attacking = false; });
 }
 
 void Plant::AttackState::OnEnter() {
@@ -57,23 +57,20 @@ void Plant::AttackState::Update() {
   }
 }
 
-void Plant::AttackState::OnExit() {
-  *attack_completed_ = false;
-}
-
 void Plant::AttackState::Attack() {
   auto bullet = std::make_unique<PlantBullet>(*tilemap_, direction_);
-  bullet->SetLocalPosition(node_->GetLocalTransform().getPosition() +
+  bullet->SetLocalPosition(plant_->GetLocalTransform().getPosition() +
                            sf::Vector2f{-16.F, -6.F});
-  node_->GetParent()->AddChild(std::move(bullet));
+  plant_->GetParent()->AddChild(std::move(bullet));
 }
 
-Plant::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
-    : ng::State(std::move(id)),
+Plant::HitState::HitState(ng::State<Context>::ID id, sf::Sprite& sprite,
+                          Plant& plant)
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Plant/Hit (44x42).png", kAnimationTPF, {44, 42}),
-      node_(&node),
       sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-          "Mushroom/Hit_2.wav")) {
+          "Mushroom/Hit_2.wav")),
+      plant_(&plant) {
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
@@ -87,14 +84,14 @@ void Plant::HitState::Update() {
 }
 
 void Plant::HitState::Die() {
-  node_->Destroy();
+  plant_->Destroy();
 }
 
 Plant::Plant(const ng::Tilemap& tilemap)
     : tilemap_(&tilemap),
       sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
           "Plant/Idle (44x42).png")),
-      animator_(std::make_unique<IdleState>("idle", sprite_)) {
+      animator_(context_, std::make_unique<IdleState>("idle", sprite_)) {
   SetName("Plant");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({22, 21});
@@ -105,45 +102,43 @@ Plant::Plant(const ng::Tilemap& tilemap)
   collider_ = collider.get();
   AddChild(std::move(collider));
 
-  animator_.AddState(std::make_unique<AttackState>(
-      "attack", sprite_, *this, *tilemap_, direction_, attack_completed_));
+  animator_.AddState(std::make_unique<AttackState>("attack", sprite_, *this,
+                                                   *tilemap_, direction_));
   animator_.AddState(std::make_unique<HitState>("hit", sprite_, *this));
 
-  animator_.AddTransition(
-      ng::Transition("idle", "hit", [&]() -> bool { return is_dead_; }));
-  animator_.AddTransition(ng::Transition(
-      "idle", "attack", [&]() -> bool { return begin_attack_; }));
-  animator_.AddTransition(ng::Transition(
-      "attack", "idle", [&]() -> bool { return attack_completed_; }));
-  animator_.AddTransition(
-      ng::Transition("attack", "hit", [&]() -> bool { return is_dead_; }));
+  animator_.AddTransition(ng::Transition<Context>(
+      "idle", "hit", [](Context context) -> bool { return context.is_dead; }));
+  animator_.AddTransition(ng::Transition<Context>(
+      "idle", "attack",
+      [](Context context) -> bool { return context.is_attacking; }));
+  animator_.AddTransition(ng::Transition<Context>(
+      "attack", "idle",
+      [](Context context) -> bool { return !context.is_attacking; }));
+  animator_.AddTransition(ng::Transition<Context>(
+      "attack", "hit",
+      [](Context context) -> bool { return context.is_dead; }));
 }
 
 bool Plant::GetIsDead() const {
-  return is_dead_;
+  return context_.is_dead;
 }
 
 void Plant::TakeDamage() {
-  if (is_dead_) {
-    return;
-  }
-
-  is_dead_ = true;
+  context_.is_dead = true;
 }
 
 void Plant::Update() {
   animator_.Update();
 
-  if (is_dead_) {
+  if (context_.is_dead) {
     return;
   }
 
   static constexpr int32_t kAttackCooldown = 240;
   if (attack_timer_ > 0) {
     --attack_timer_;
-    begin_attack_ = false;
   } else {
-    begin_attack_ = true;
+    context_.is_attacking = true;
     attack_timer_ = kAttackCooldown;
   }
 

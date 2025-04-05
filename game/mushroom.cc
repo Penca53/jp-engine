@@ -3,17 +3,18 @@
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-
 #include <cmath>
 #include <cstdint>
 #include <memory>
 #include <utility>
+
 #include "engine/app.h"
 #include "engine/collider.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
+#include "engine/transition.h"
 #include "player.h"
 #include "tile_id.h"
 
@@ -21,8 +22,8 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Mushroom::RunState::RunState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(std::move(id)),
+Mushroom::RunState::RunState(ng::State<Context>::ID id, sf::Sprite& sprite)
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Mushroom/Run (32x32).png", kAnimationTPF) {}
 
 void Mushroom::RunState::OnEnter() {
@@ -33,14 +34,14 @@ void Mushroom::RunState::Update() {
   animation_.Update();
 }
 
-Mushroom::HitState::HitState(ng::State::ID id, sf::Sprite& sprite,
+Mushroom::HitState::HitState(ng::State<Context>::ID id, sf::Sprite& sprite,
                              ng::Node& node)
-    : ng::State(std::move(id)),
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Mushroom/Hit.png", kAnimationTPF),
-      node_(&node),
       sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-          "Mushroom/Hit_2.wav")) {
-  animation_.RegisterOnEndCallback([this]() { Die(); });
+          "Mushroom/Hit_2.wav")),
+      node_(&node) {
+  animation_.RegisterOnEndCallback([this]() -> void { Die(); });
 }
 
 void Mushroom::HitState::OnEnter() {
@@ -60,7 +61,7 @@ Mushroom::Mushroom(const ng::Tilemap& tilemap)
     : tilemap_(&tilemap),
       sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
           "Mushroom/Run (32x32).png")),
-      animator_(std::make_unique<RunState>("run", sprite_)) {
+      animator_(context_, std::make_unique<RunState>("run", sprite_)) {
   SetName("Mushroom");
 
   sprite_.setScale({2, 2});
@@ -74,20 +75,16 @@ Mushroom::Mushroom(const ng::Tilemap& tilemap)
 
   animator_.AddState(std::make_unique<HitState>("hit", sprite_, *this));
 
-  animator_.AddTransition(
-      ng::Transition("run", "hit", [&]() -> bool { return is_dead_; }));
+  animator_.AddTransition(ng::Transition<Context>(
+      "run", "hit", [](Context context) -> bool { return context.is_dead; }));
 }
 
 bool Mushroom::GetIsDead() const {
-  return is_dead_;
+  return context_.is_dead;
 }
 
 void Mushroom::TakeDamage() {
-  if (is_dead_) {
-    return;
-  }
-
-  is_dead_ = true;
+  context_.is_dead = true;
 }
 
 namespace {
@@ -106,7 +103,7 @@ bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
 void Mushroom::Update() {  // NOLINT
   animator_.Update();
 
-  if (is_dead_) {
+  if (context_.is_dead) {
     return;
   }
 
@@ -130,7 +127,7 @@ void Mushroom::Update() {  // NOLINT
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(middle_left) ||
       !tilemap_->IsWithinWorldBounds(bottom_left)) {
-    is_dead_ = true;
+    context_.is_dead = true;
     return;
   }
 
@@ -153,7 +150,7 @@ void Mushroom::Update() {  // NOLINT
   if (!tilemap_->IsWithinWorldBounds(top_right) ||
       !tilemap_->IsWithinWorldBounds(middle_right) ||
       !tilemap_->IsWithinWorldBounds(bottom_right)) {
-    is_dead_ = true;
+    context_.is_dead = true;
     return;
   }
 
@@ -172,7 +169,7 @@ void Mushroom::Update() {  // NOLINT
 
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(top_right)) {
-    is_dead_ = true;
+    context_.is_dead = true;
     return;
   }
 
@@ -190,7 +187,7 @@ void Mushroom::Update() {  // NOLINT
 
   if (!tilemap_->IsWithinWorldBounds(bottom_left) ||
       !tilemap_->IsWithinWorldBounds(bottom_right)) {
-    is_dead_ = true;
+    context_.is_dead = true;
     return;
   }
 

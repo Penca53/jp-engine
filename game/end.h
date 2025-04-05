@@ -22,9 +22,13 @@ class End : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  class IdleState : public ng::State {
+  struct Context {
+    bool is_pressed_ = false;
+  };
+
+  class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -35,9 +39,9 @@ class End : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class PressedState : public ng::State {
+  class PressedState : public ng::State<Context> {
    public:
-    PressedState(ng::State::ID id, sf::Sprite& sprite,
+    PressedState(ng::State<Context>::ID id, sf::Sprite& sprite,
                  GameManager& game_manager);
 
    protected:
@@ -51,10 +55,9 @@ class End : public ng::Node {
   };
 
   sf::Sprite sprite_;
-  ng::FSM animator_;
+  Context context_;
+  ng::FSM<Context> animator_;
   GameManager* game_manager_ = nullptr;
-  bool is_pressed_ = false;
-  bool is_end_ = false;
 };
 
 }  // namespace game

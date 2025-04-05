@@ -14,8 +14,8 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Banana::IdleState::IdleState(ng::State::ID id, sf::Sprite& sprite)
-    : ng::State(std::move(id)),
+Banana::IdleState::IdleState(ng::State<Context>::ID id, sf::Sprite& sprite)
+    : ng::State<Context>(std::move(id)),
       animation_(sprite, "Banana/Bananas.png", kAnimationTPF) {}
 
 void Banana::IdleState::OnEnter() {
@@ -29,7 +29,7 @@ void Banana::IdleState::Update() {
 Banana::Banana()
     : sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
           "Banana/Bananas.png")),
-      animator_(std::make_unique<IdleState>("run", sprite_)) {
+      animator_(context_, std::make_unique<IdleState>("run", sprite_)) {
   SetName("Banana");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});

@@ -9,28 +9,35 @@ namespace ng {
 
 // Represents a transition between two states in a state machine, governed by
 // a condition.
+template <typename TContext>
 class Transition {
  public:
   // Creates a transition given the source and destination state IDs, and a
   // condition function.
-  Transition(ng::State::ID from, ng::State::ID to,
-             std::function<bool()> condition);
+  Transition(State<TContext>::ID from, State<TContext>::ID to,  // NOLINT
+             std::function<bool(TContext)> condition)
+      : from_(std::move(from)),
+        to_(std::move(to)),
+        condition_(std::move(condition)) {}
 
   // Returns the source state ID.
-  [[nodiscard]] const ng::State::ID& GetFrom() const;
+  [[nodiscard]] const State<TContext>::ID& GetFrom() const { return from_; }
+
   // Returns the destination state ID.
-  [[nodiscard]] const ng::State::ID& GetTo() const;
+  [[nodiscard]] const State<TContext>::ID& GetTo() const { return to_; }
 
   // Invokes the condition function and returns its return value.
-  [[nodiscard]] bool MeetsCondition() const;
+  [[nodiscard]] bool MeetsCondition(TContext& context) const {
+    return condition_(context);
+  }
 
  private:
   // The source state of the transition.
-  ng::State::ID from_;
+  State<TContext>::ID from_;
   // The destination state of the transition.
-  ng::State::ID to_;
+  State<TContext>::ID to_;
   // The condition bound to the transition.
-  std::function<bool()> condition_;
+  std::function<bool(TContext)> condition_;
 };
 
 }  // namespace ng

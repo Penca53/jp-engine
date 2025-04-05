@@ -25,9 +25,14 @@ class Plant : public ng::Node {
   void Draw(sf::RenderTarget& target) override;
 
  private:
-  class IdleState : public ng::State {
+  struct Context {
+    bool is_attacking = false;
+    bool is_dead = false;
+  };
+
+  class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
 
    protected:
     void OnEnter() override;
@@ -38,32 +43,29 @@ class Plant : public ng::Node {
     ng::SpriteSheetAnimation animation_;
   };
 
-  class AttackState : public ng::State {
+  class AttackState : public ng::State<Context> {
    public:
-    AttackState(ng::State::ID id, sf::Sprite& sprite, const ng::Node& node,
-                const ng::Tilemap& tilemap, sf::Vector2f direction,
-                bool& attack_completed);
+    AttackState(ng::State<Context>::ID id, sf::Sprite& sprite,
+                const Plant& plant, const ng::Tilemap& tilemap,
+                sf::Vector2f direction);
 
    protected:
     void OnEnter() override;
 
     void Update() override;
-
-    void OnExit() override;
 
    private:
     void Attack();
 
     ng::SpriteSheetAnimation animation_;
-    const ng::Node* node_ = nullptr;
+    const Plant* plant_ = nullptr;
     const ng::Tilemap* tilemap_ = nullptr;
     sf::Vector2f direction_;
-    bool* attack_completed_ = nullptr;
   };
 
-  class HitState : public ng::State {
+  class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node);
+    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, Plant& plant);
 
    protected:
     void OnEnter() override;
@@ -74,19 +76,17 @@ class Plant : public ng::Node {
     void Die();
 
     ng::SpriteSheetAnimation animation_;
-    ng::Node* node_ = nullptr;
     sf::Sound sound_;
+    Plant* plant_ = nullptr;
   };
 
   sf::Vector2f direction_{-1, 0};
   const ng::Tilemap* tilemap_ = nullptr;
   const ng::RectangleCollider* collider_ = nullptr;
   sf::Sprite sprite_;
-  bool is_dead_ = false;
   int32_t attack_timer_ = 0;
-  ng::FSM animator_;
-  bool begin_attack_ = false;
-  bool attack_completed_ = false;
+  Context context_;
+  ng::FSM<Context> animator_;
 };
 
 }  // namespace game
