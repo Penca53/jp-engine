@@ -29,7 +29,7 @@ class Node {
   // InternalDraw.
   friend class Scene;
 
-  Node();
+  Node() = default;
   virtual ~Node();
 
   Node(const Node& other) = delete;

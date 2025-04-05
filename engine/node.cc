@@ -21,10 +21,6 @@
 
 namespace ng {
 
-Node::Node() {
-  App::GetInstance().AddValidNode(*this);
-}
-
 Node::~Node() {
   App::GetInstance().RemoveValidNode(*this);
 }
@@ -156,6 +152,7 @@ void Node::AddQueuedChildren() {
 }
 
 void Node::InternalStart() {
+  App::GetInstance().AddValidNode(*this);
   Start();
 }
 
