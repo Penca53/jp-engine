@@ -12,6 +12,7 @@
 #include "input.h"
 #include "node.h"
 #include "physics.h"
+#include "resource_manager.h"
 
 namespace ng {
 
@@ -102,6 +103,10 @@ const Physics& App::GetPhysics() const {
 
 Physics& App::GetMutablePhysics() {
   return physics_;
+}
+
+ResourceManager& App::GetMutableResourceManager() {
+  return resource_manager_;
 }
 
 const Node* App::GetScene() const {

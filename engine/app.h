@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "node.h"
 #include "physics.h"
+#include "resource_manager.h"
 
 namespace ng {
 
@@ -61,6 +62,9 @@ class App {
   [[nodiscard]] const Physics& GetPhysics() const;
   // Returns the mutable physics instance.
   [[nodiscard]] Physics& GetMutablePhysics();
+
+  // Returns the mutable physics instance.
+  [[nodiscard]] ResourceManager& GetMutableResourceManager();
 
   // Returns the loaded scene.
   [[nodiscard]] const Node* GetScene() const;
@@ -118,6 +122,10 @@ class App {
   // so their destructor must be called before the destructor of the physics field).
   // Manages the physics simulation in the application.
   Physics physics_;
+
+  // The instance of the resource manager responsible for loading textures,
+  // fonts, sounds, ...
+  ResourceManager resource_manager_;
 
   // The one and only loaded scene.
   std::unique_ptr<Node> scene_;

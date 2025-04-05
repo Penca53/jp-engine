@@ -9,7 +9,6 @@
 #include "default_scene.h"
 #include "engine/app.h"
 #include "engine/input.h"
-#include "engine/resource_manager.h"
 #include "lose_canvas.h"
 #include "win_canvas.h"
 
@@ -17,9 +16,11 @@ namespace game {
 
 GameManager::GameManager()
     : win_sound_(
-          ng::ResourceManager::GetInstance().LoadSoundBuffer("Win_2.wav")),
+          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
+              "Win_2.wav")),
       lose_sound_(
-          ng::ResourceManager::GetInstance().LoadSoundBuffer("Loose_2.wav")) {}
+          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
+              "Loose_2.wav")) {}
 
 void GameManager::Start() {
   auto win_canvas = std::make_unique<WinCanvas>();

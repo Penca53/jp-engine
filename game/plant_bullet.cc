@@ -8,7 +8,6 @@
 #include "engine/app.h"
 #include "engine/circle_collider.h"
 #include "engine/collider.h"
-#include "engine/resource_manager.h"
 #include "engine/tilemap.h"
 #include "player.h"
 #include "tile_id.h"
@@ -18,8 +17,8 @@ namespace game {
 PlantBullet::PlantBullet(const ng::Tilemap& tilemap, sf::Vector2f direction)
     : tilemap_(&tilemap),
       direction_(direction),
-      sprite_(
-          ng::ResourceManager::GetInstance().LoadTexture("Plant/Bullet.png")) {
+      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+          "Plant/Bullet.png")) {
   SetName("PlantBullet");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({8, 8});

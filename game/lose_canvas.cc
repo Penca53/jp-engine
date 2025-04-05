@@ -4,15 +4,14 @@
 #include <SFML/System/Vector2.hpp>
 #include "engine/app.h"
 #include "engine/layer.h"
-#include "engine/resource_manager.h"
 
 namespace game {
 
 LoseCanvas::LoseCanvas()
-    : title_text_(
-          ng::ResourceManager::GetInstance().LoadFont("Roboto-Regular.ttf")),
-      restart_text_(
-          ng::ResourceManager::GetInstance().LoadFont("Roboto-Regular.ttf")) {
+    : title_text_(ng::App::GetInstance().GetMutableResourceManager().LoadFont(
+          "Roboto-Regular.ttf")),
+      restart_text_(ng::App::GetInstance().GetMutableResourceManager().LoadFont(
+          "Roboto-Regular.ttf")) {
   SetName("LoseCanvas");
   SetLayer(ng::Layer::kUI);
 

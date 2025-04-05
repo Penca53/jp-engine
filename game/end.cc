@@ -5,8 +5,9 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+
+#include "engine/app.h"
 #include "engine/rectangle_collider.h"
-#include "engine/resource_manager.h"
 #include "engine/state.h"
 #include "game_manager.h"
 
@@ -42,8 +43,8 @@ void End::PressedState::Update() {
 }
 
 End::End(GameManager& game_manager)
-    : sprite_(
-          ng::ResourceManager::GetInstance().LoadTexture("End/End (Idle).png")),
+    : sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+          "End/End (Idle).png")),
       animator_(std::make_unique<IdleState>("idle", sprite_)),
       game_manager_(&game_manager) {
   SetName("End");

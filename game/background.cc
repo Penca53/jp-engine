@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "engine/resource_manager.h"
+#include "engine/app.h"
 
 namespace game {
 
@@ -16,7 +16,8 @@ static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
 
 Background::Background(sf::Vector2u size)
     : size_(size),
-      texture_(&ng::ResourceManager::GetInstance().LoadTexture("Gray.png")),
+      texture_(&ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+          "Gray.png")),
       image_vertices_(sf::PrimitiveType::Triangles, kTrisInQuad) {
   texture_->setRepeated(true);
 

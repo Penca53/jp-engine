@@ -57,7 +57,7 @@ void Player::RunState::Update() {
 Player::JumpState::JumpState(ng::State::ID id, sf::Sprite& sprite)
     : ng::State(std::move(id)),
       animation_(sprite, "Player/Jump (32x32).png", kAnimationTPF),
-      sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
+      sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
           "Player/Jump_2.wav")) {}
 
 void Player::JumpState::OnEnter() {
@@ -108,13 +108,15 @@ Player::Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
     : tilemap_(&tilemap),
       score_manager_(&score_manager),
       game_manager_(&game_manager),
-      sprite_(ng::ResourceManager::GetInstance().LoadTexture(
+      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
           "Player/Idle (32x32).png")),
       animator_(std::make_unique<IdleState>("idle", sprite_)),
       plastic_block_sound_(
-          ng::ResourceManager::GetInstance().LoadSoundBuffer("Hit_1.wav")),
-      banana_sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
-          "Banana/Collectibles_2.wav")) {
+          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
+              "Hit_1.wav")),
+      banana_sound_(
+          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
+              "Banana/Collectibles_2.wav")) {
   SetName("Player");
 
   sprite_.setScale({2, 2});

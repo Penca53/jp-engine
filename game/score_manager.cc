@@ -3,15 +3,15 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <cstdint>
 #include <string>
+
 #include "engine/app.h"
 #include "engine/layer.h"
-#include "engine/resource_manager.h"
 
 namespace game {
 
 ScoreManager::ScoreManager()
-    : score_text_(
-          ng::ResourceManager::GetInstance().LoadFont("Roboto-Regular.ttf")) {
+    : score_text_(ng::App::GetInstance().GetMutableResourceManager().LoadFont(
+          "Roboto-Regular.ttf")) {
   SetLayer(ng::Layer::kUI);
 
   UpdateUI();

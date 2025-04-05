@@ -7,10 +7,10 @@
 #include "background.h"
 #include "banana.h"
 #include "end.h"
+#include "engine/app.h"
 #include "engine/camera.h"
 #include "engine/layer.h"
 #include "engine/node.h"
-#include "engine/resource_manager.h"
 #include "engine/tile.h"
 #include "engine/tilemap.h"
 #include "engine/tileset.h"
@@ -31,8 +31,9 @@ std::unique_ptr<ng::Node> MakeDefaultScene() {
       static_cast<ng::Layer>(std::to_underlying(ng::Layer::kDefault) |
                              std::to_underlying(ng::Layer::kUI)));
 
-  ng::Tileset tileset({32, 32}, ng::ResourceManager::GetInstance().LoadTexture(
-                                    "Terrain (16x16).png"));
+  ng::Tileset tileset(
+      {32, 32}, ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+                    "Terrain (16x16).png"));
 
   {
     tileset.AddTile(ng::Tile(TileID::kVoid));

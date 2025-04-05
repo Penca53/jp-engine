@@ -13,12 +13,10 @@ namespace ng {
 
 // Manages the loading and caching of game resources, such as fonts, textures,
 // and sound buffers.
-// The ResourceManager class provides a singleton interface for loading and
-// storing game resources.
 class ResourceManager {
  public:
-  // Returns the singleton instance of the ResourceManager.
-  static ResourceManager& GetInstance();
+  ResourceManager() = default;
+  ~ResourceManager() = default;
 
   ResourceManager(const ResourceManager& other) = delete;
   ResourceManager& operator=(const ResourceManager& other) = delete;
@@ -39,17 +37,15 @@ class ResourceManager {
   sf::SoundBuffer& LoadSoundBuffer(const std::filesystem::path& filename);
 
  private:
-  ResourceManager() = default;
-  ~ResourceManager() = default;
-
   // Prefix for resource file paths.
   static constexpr std::string_view kPrefix_ = "resources/";
   // Stores loaded cached fonts.
-  std::unordered_map<std::string, std::unique_ptr<sf::Font>> fonts_;
+  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Font>> fonts_;
   // Stores loaded cached textures.
-  std::unordered_map<std::string, std::unique_ptr<sf::Texture>> textures_;
+  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Texture>>
+      textures_;
   // Stores loaded cached sound buffers.
-  std::unordered_map<std::string, std::unique_ptr<sf::SoundBuffer>>
+  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::SoundBuffer>>
       sound_buffers_;
 };
 

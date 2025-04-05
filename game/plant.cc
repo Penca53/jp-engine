@@ -12,7 +12,6 @@
 #include "engine/collider.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
-#include "engine/resource_manager.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
 #include "plant_bullet.h"
@@ -73,7 +72,7 @@ Plant::HitState::HitState(ng::State::ID id, sf::Sprite& sprite, ng::Node& node)
     : ng::State(std::move(id)),
       animation_(sprite, "Plant/Hit (44x42).png", kAnimationTPF, {44, 42}),
       node_(&node),
-      sound_(ng::ResourceManager::GetInstance().LoadSoundBuffer(
+      sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
           "Mushroom/Hit_2.wav")) {
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
@@ -93,7 +92,7 @@ void Plant::HitState::Die() {
 
 Plant::Plant(const ng::Tilemap& tilemap)
     : tilemap_(&tilemap),
-      sprite_(ng::ResourceManager::GetInstance().LoadTexture(
+      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
           "Plant/Idle (44x42).png")),
       animator_(std::make_unique<IdleState>("idle", sprite_)) {
   SetName("Plant");

@@ -6,15 +6,14 @@
 
 #include "engine/app.h"
 #include "engine/layer.h"
-#include "engine/resource_manager.h"
 
 namespace game {
 
 WinCanvas::WinCanvas()
-    : title_text_(
-          ng::ResourceManager::GetInstance().LoadFont("Roboto-Regular.ttf")),
-      restart_text_(
-          ng::ResourceManager::GetInstance().LoadFont("Roboto-Regular.ttf")) {
+    : title_text_(ng::App::GetInstance().GetMutableResourceManager().LoadFont(
+          "Roboto-Regular.ttf")),
+      restart_text_(ng::App::GetInstance().GetMutableResourceManager().LoadFont(
+          "Roboto-Regular.ttf")) {
   SetName("WinCanvas");
   SetLayer(ng::Layer::kUI);
 

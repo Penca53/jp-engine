@@ -6,8 +6,8 @@
 #include <memory>
 #include <utility>
 
+#include "engine/app.h"
 #include "engine/circle_collider.h"
-#include "engine/resource_manager.h"
 #include "engine/state.h"
 
 namespace game {
@@ -27,8 +27,8 @@ void Banana::IdleState::Update() {
 }
 
 Banana::Banana()
-    : sprite_(
-          ng::ResourceManager::GetInstance().LoadTexture("Banana/Bananas.png")),
+    : sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+          "Banana/Bananas.png")),
       animator_(std::make_unique<IdleState>("run", sprite_)) {
   SetName("Banana");
   sprite_.setScale({2, 2});
