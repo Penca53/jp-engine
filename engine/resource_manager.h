@@ -23,10 +23,6 @@ class ResourceManager {
   ResourceManager(ResourceManager&& other) = delete;
   ResourceManager& operator=(ResourceManager&& other) = delete;
 
-  // Loads a font from the specified file.
-  // If the resource was already loaded, it returns the cached value.
-  // Otherwise, it loads the resource from disk.
-  sf::Font& LoadFont(const std::filesystem::path& filename);
   // Loads a texture from the specified file.
   // If the resource was already loaded, it returns the cached value.
   // Otherwise, it loads the resource from disk.
@@ -35,18 +31,23 @@ class ResourceManager {
   // If the resource was already loaded, it returns the cached value.
   // Otherwise, it loads the resource from disk.
   sf::SoundBuffer& LoadSoundBuffer(const std::filesystem::path& filename);
+  // Loads a font from the specified file.
+  // If the resource was already loaded, it returns the cached value.
+  // Otherwise, it loads the resource from disk.
+  sf::Font& LoadFont(const std::filesystem::path& filename);
 
  private:
   // Prefix for resource file paths.
   static constexpr std::string_view kPrefix_ = "resources/";
-  // Stores loaded cached fonts.
-  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Font>> fonts_;
+
   // Stores loaded cached textures.
   std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Texture>>
       textures_;
   // Stores loaded cached sound buffers.
   std::unordered_map<std::filesystem::path, std::unique_ptr<sf::SoundBuffer>>
       sound_buffers_;
+  // Stores loaded cached fonts.
+  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Font>> fonts_;
 };
 
 }  // namespace ng
