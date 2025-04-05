@@ -13,6 +13,7 @@
 #include "node.h"
 #include "physics.h"
 #include "resource_manager.h"
+#include "scene.h"
 
 namespace ng {
 
@@ -109,11 +110,11 @@ ResourceManager& App::GetMutableResourceManager() {
   return resource_manager_;
 }
 
-const Node* App::GetScene() const {
+const Scene* App::GetScene() const {
   return scene_.get();
 }
 
-App& App::LoadScene(std::unique_ptr<Node> scene) {
+App& App::LoadScene(std::unique_ptr<Scene> scene) {
   scheduled_scene_to_load_ = std::move(scene);
   return *this;
 }

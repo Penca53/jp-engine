@@ -11,6 +11,7 @@
 #include "engine/camera.h"
 #include "engine/layer.h"
 #include "engine/node.h"
+#include "engine/scene.h"
 #include "engine/tile.h"
 #include "engine/tilemap.h"
 #include "engine/tileset.h"
@@ -24,12 +25,9 @@
 
 namespace game {
 
-std::unique_ptr<ng::Node> MakeDefaultScene() {
-  auto scene = std::make_unique<ng::Node>();
+std::unique_ptr<ng::Scene> MakeDefaultScene() {
+  auto scene = std::make_unique<ng::Scene>();
   scene->SetName("Scene");
-  scene->SetLayer(
-      static_cast<ng::Layer>(std::to_underlying(ng::Layer::kDefault) |
-                             std::to_underlying(ng::Layer::kUI)));
 
   ng::Tileset tileset(
       {32, 32}, ng::App::GetInstance().GetMutableResourceManager().LoadTexture(

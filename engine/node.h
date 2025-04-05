@@ -25,9 +25,9 @@ class Camera;
 // parent's transform.
 class Node {
  public:
-  // App needs to be able to call InternalStart, InternalUpdate, and
+  // Scene needs to be able to call InternalStart, InternalUpdate, and
   // InternalDraw.
-  friend class App;
+  friend class Scene;
 
   Node();
   virtual ~Node();

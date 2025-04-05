@@ -67,8 +67,6 @@ void Node::DestroyChild(const Node& child_to_destroy) {
 void Node::Destroy() {
   if (parent_ != nullptr) {
     parent_->DestroyChild(*this);
-  } else {
-    App::GetInstance().UnloadScene();
   }
 }
 

@@ -10,6 +10,7 @@
 #include "node.h"
 #include "physics.h"
 #include "resource_manager.h"
+#include "scene.h"
 
 namespace ng {
 
@@ -67,11 +68,11 @@ class App {
   [[nodiscard]] ResourceManager& GetMutableResourceManager();
 
   // Returns the loaded scene.
-  [[nodiscard]] const Node* GetScene() const;
+  [[nodiscard]] const Scene* GetScene() const;
 
   // Loads a new scene. The old scene will be swapped
   // at the beginning of the next game loop iteration.
-  App& LoadScene(std::unique_ptr<Node> scene);
+  App& LoadScene(std::unique_ptr<Scene> scene);
   // Unloads the current scene. The scene will be unloaded
   // at the beginning of the next game loop iteration.
   void UnloadScene();
@@ -128,10 +129,10 @@ class App {
   ResourceManager resource_manager_;
 
   // The one and only loaded scene.
-  std::unique_ptr<Node> scene_;
+  std::unique_ptr<Scene> scene_;
 
   // The scene enqueued to be loaded next tick.
-  std::unique_ptr<Node> scheduled_scene_to_load_;
+  std::unique_ptr<Scene> scheduled_scene_to_load_;
   // Whether we need to unload the current scene next tick.
   bool is_scene_unloading_scheduled_ = false;
 };

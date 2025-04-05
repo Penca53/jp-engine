@@ -10,7 +10,7 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_library(engine app.cc camera.cc circle_collider.cc collider.cc input.cc node.cc physics.cc rectangle_collider.cc resource_manager.cc sprite_sheet_animation.cc tile.cc tilemap.cc tileset.cc)
+add_library(engine app.cc camera.cc circle_collider.cc collider.cc input.cc node.cc physics.cc rectangle_collider.cc resource_manager.cc scene.cc sprite_sheet_animation.cc tile.cc tilemap.cc tileset.cc)
 target_compile_features(engine PRIVATE cxx_std_23)
 set_target_properties(engine PROPERTIES CXX_EXTENSIONS OFF)
 

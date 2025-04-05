@@ -2,10 +2,10 @@
 
 #include <memory>
 
-#include "engine/node.h"
+#include "engine/scene.h"
 
 namespace game {
 
-std::unique_ptr<ng::Node> MakeDefaultScene();
+std::unique_ptr<ng::Scene> MakeDefaultScene();
 
 }  // namespace game
