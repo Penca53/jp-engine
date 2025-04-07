@@ -16,8 +16,8 @@ class App;
 
 class Scene {
  public:
-  // App needs to be able to call InternalStart, InternalUpdate, and
-  // InternalDraw.
+  // App needs to be able to call InternalOnAdd, InternalUpdate,
+  // InternalDraw, and InternalOnDestroy.
   friend class App;
   // Node needs to be able to call RegisterNode, and UnregisterNode.
   friend class Node;

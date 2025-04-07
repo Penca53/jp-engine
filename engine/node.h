@@ -26,8 +26,8 @@ class Scene;
 // parent's transform.
 class Node {
  public:
-  // Scene needs to be able to call InternalStart, InternalUpdate, and
-  // InternalDraw.
+  // Scene needs to be able to call InternalOnAdd, InternalUpdate,
+  // InternalDraw, and InternalOnDestroy.
   friend class Scene;
 
   explicit Node(App& app);
