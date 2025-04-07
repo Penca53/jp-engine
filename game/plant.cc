@@ -12,6 +12,7 @@
 #include "engine/collider.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
+#include "engine/sprite_sheet_animation.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
 #include "engine/transition.h"
@@ -22,9 +23,9 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Plant::IdleState::IdleState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Plant/Idle (44x42).png", kAnimationTPF, {44, 42}) {}
+Plant::IdleState::IdleState(ng::State<Context>::ID id,
+                            ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Plant::IdleState::OnEnter() {
   animation_.Start();
@@ -34,11 +35,12 @@ void Plant::IdleState::Update() {
   animation_.Update();
 }
 
-Plant::AttackState::AttackState(ng::State<Context>::ID id, sf::Sprite& sprite,
+Plant::AttackState::AttackState(ng::State<Context>::ID id,
+                                ng::SpriteSheetAnimation animation,
                                 const Plant& plant, const ng::Tilemap& tilemap,
                                 sf::Vector2f direction)
     : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Plant/Attack (44x42).png", kAnimationTPF, {44, 42}),
+      animation_(std::move(animation)),
       plant_(&plant),
       tilemap_(&tilemap),
       direction_(direction) {
@@ -58,18 +60,18 @@ void Plant::AttackState::Update() {
 }
 
 void Plant::AttackState::Attack() {
-  auto bullet = std::make_unique<PlantBullet>(*tilemap_, direction_);
-  bullet->SetLocalPosition(plant_->GetLocalTransform().getPosition() +
-                           sf::Vector2f{-16.F, -6.F});
-  plant_->GetParent()->AddChild(std::move(bullet));
+  auto& bullet =
+      plant_->GetParent()->MakeChild<PlantBullet>(*tilemap_, direction_);
+  bullet.SetLocalPosition(plant_->GetLocalTransform().getPosition() +
+                          sf::Vector2f{-16.F, -6.F});
 }
 
-Plant::HitState::HitState(ng::State<Context>::ID id, sf::Sprite& sprite,
-                          Plant& plant)
+Plant::HitState::HitState(ng::State<Context>::ID id,
+                          ng::SpriteSheetAnimation animation,
+                          const sf::SoundBuffer& sound_buffer, Plant& plant)
     : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Plant/Hit (44x42).png", kAnimationTPF, {44, 42}),
-      sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-          "Mushroom/Hit_2.wav")),
+      animation_(std::move(animation)),
+      sound_(sound_buffer),
       plant_(&plant) {
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
@@ -87,24 +89,39 @@ void Plant::HitState::Die() {
   plant_->Destroy();
 }
 
-Plant::Plant(const ng::Tilemap& tilemap)
-    : tilemap_(&tilemap),
-      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          "Plant/Idle (44x42).png")),
-      animator_(context_, std::make_unique<IdleState>("idle", sprite_)) {
+Plant::Plant(ng::App& app, const ng::Tilemap& tilemap)
+    : ng::Node(app),
+      tilemap_(&tilemap),
+      sprite_(
+          GetApp().GetResourceManager().LoadTexture("Plant/Idle (44x42).png")),
+      animator_(context_, std::make_unique<IdleState>(
+                              "idle", ng::SpriteSheetAnimation(
+                                          sprite_, &sprite_.getTexture(),
+                                          kAnimationTPF, {44, 42}))) {
   SetName("Plant");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({22, 21});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {44, 42}));
 
-  auto collider = std::make_unique<ng::RectangleCollider>(sf::Vector2f(40, 42));
-  collider->SetLocalPosition({8, 0});
-  collider_ = collider.get();
-  AddChild(std::move(collider));
+  auto& collider = MakeChild<ng::RectangleCollider>(sf::Vector2f(40, 42));
+  collider.SetLocalPosition({8, 0});
+  collider_ = &collider;
 
-  animator_.AddState(std::make_unique<AttackState>("attack", sprite_, *this,
-                                                   *tilemap_, direction_));
-  animator_.AddState(std::make_unique<HitState>("hit", sprite_, *this));
+  animator_.AddState(std::make_unique<AttackState>(
+      "attack",
+      ng::SpriteSheetAnimation(sprite_,
+                               &GetApp().GetResourceManager().LoadTexture(
+                                   "Plant/Attack (44x42).png"),
+                               kAnimationTPF, {44, 42}),
+      *this, *tilemap_, direction_));
+  animator_.AddState(std::make_unique<HitState>(
+      "hit",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Plant/Hit (44x42).png"),
+          kAnimationTPF, {44, 42}),
+      GetApp().GetResourceManager().LoadSoundBuffer("Mushroom/Hit_2.wav"),
+      *this));
 
   animator_.AddTransition(ng::Transition<Context>(
       "idle", "hit", [](Context context) -> bool { return context.is_dead; }));
@@ -142,8 +159,7 @@ void Plant::Update() {
     attack_timer_ = kAttackCooldown;
   }
 
-  const ng::Collider* other =
-      ng::App::GetInstance().GetPhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

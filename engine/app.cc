@@ -10,16 +10,13 @@
 #include <utility>
 
 #include "input.h"
-#include "node.h"
-#include "physics.h"
 #include "resource_manager.h"
 #include "scene.h"
 
 namespace ng {
 
-App& App::GetInstance() {
-  static App instance;
-  return instance;
+App::App(sf::Vector2u window_size, const std::string& window_title) {
+  window_ = sf::RenderWindow(sf::VideoMode(window_size), window_title);
 }
 
 App& App::SetWindowTitle(const std::string& title) {
@@ -51,12 +48,14 @@ void App::Run(uint32_t tps, uint32_t fps) {
     lag += elapsed;
 
     if (is_scene_unloading_scheduled_) {
+      scene_->InternalOnDestroy();
       scene_ = nullptr;
       is_scene_unloading_scheduled_ = false;
     }
 
     if (scheduled_scene_to_load_) {
       scene_ = std::move(scheduled_scene_to_load_);
+      scene_->InternalOnAdd();
       scheduled_scene_to_load_ = nullptr;
     }
 
@@ -71,10 +70,7 @@ void App::Run(uint32_t tps, uint32_t fps) {
     window_.clear();
 
     if (scene_) {
-      for (const Camera* camera : cameras_) {
-        window_.setView(camera->GetView());
-        scene_->InternalDraw(*camera, window_);
-      }
+      scene_->InternalDraw(window_);
     }
 
     window_.display();
@@ -94,24 +90,12 @@ const sf::RenderWindow& App::GetWindow() const {
   return window_;
 }
 
-sf::RenderWindow& App::GetMutableWindow() {
-  return window_;
-}
-
-const Physics& App::GetPhysics() const {
-  return physics_;
-}
-
-Physics& App::GetMutablePhysics() {
-  return physics_;
-}
-
-ResourceManager& App::GetMutableResourceManager() {
+ResourceManager& App::GetResourceManager() {
   return resource_manager_;
 }
 
-const Scene* App::GetScene() const {
-  return scene_.get();
+const Input& App::GetInput() const {
+  return input_;
 }
 
 App& App::LoadScene(std::unique_ptr<Scene> scene) {
@@ -123,45 +107,17 @@ void App::UnloadScene() {
   is_scene_unloading_scheduled_ = true;
 }
 
-void App::AddCamera(Camera& camera) {
-  cameras_.insert(&camera);
-}
-
-void App::RemoveCamera(Camera& camera) {
-  cameras_.erase(&camera);
-}
-
-void App::AddValidNode(const Node& node) {
-  valid_nodes_.insert(&node);
-}
-
-void App::RemoveValidNode(const Node& node) {
-  valid_nodes_.erase(&node);
-}
-
-bool App::IsValid(const Node* node) const {
-  return valid_nodes_.contains(node);
-}
-
-App::App() {
-  static constexpr sf::Vector2u kDefaultWindowSize = {800, 600};
-  window_ =
-      sf::RenderWindow(sf::VideoMode(kDefaultWindowSize), "Default title");
-}
-
 void App::PollInput() {
-  Input::GetInstance().Advance();
+  input_.Advance();
 
   while (std::optional event = window_.pollEvent()) {
     if (event->is<sf::Event::Closed>()) {
       window_.close();
     } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-      for (Camera* camera : cameras_) {
-        camera->SetViewSize(sf::Vector2f(resized->size));
-      }
+      scene_->OnWindowResize(resized->size);
     }
 
-    Input::GetInstance().Handle(*event);
+    input_.Handle(*event);
   }
 }
 

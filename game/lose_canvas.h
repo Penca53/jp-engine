@@ -10,7 +10,7 @@ namespace game {
 
 class LoseCanvas : public ng::Node {
  public:
-  LoseCanvas();
+  explicit LoseCanvas(ng::App& app);
 
   void Enable();
   void Disable();

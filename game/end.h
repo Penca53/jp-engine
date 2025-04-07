@@ -13,7 +13,7 @@ namespace game {
 
 class End : public ng::Node {
  public:
-  explicit End(GameManager& game_manager);
+  End(ng::App& app, GameManager& game_manager);
 
   void EndGame();
 
@@ -28,7 +28,7 @@ class End : public ng::Node {
 
   class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -41,7 +41,7 @@ class End : public ng::Node {
 
   class PressedState : public ng::State<Context> {
    public:
-    PressedState(ng::State<Context>::ID id, sf::Sprite& sprite,
+    PressedState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
                  GameManager& game_manager);
 
    protected:

@@ -1,5 +1,6 @@
 #include "rectangle_collider.h"
 
+#include "app.h"
 #include "circle_collider.h"
 #include "collider.h"
 
@@ -11,7 +12,8 @@
 
 namespace ng {
 
-RectangleCollider::RectangleCollider(sf::Vector2f size) : size_(size) {
+RectangleCollider::RectangleCollider(App& app, sf::Vector2f size)
+    : Collider(app), size_(size) {
   SetName("RectangleCollider");
 }
 

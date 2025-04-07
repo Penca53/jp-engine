@@ -18,7 +18,7 @@ namespace game {
 
 class Player : public ng::Node {
  public:
-  Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
+  Player(ng::App& app, ng::Tilemap& tilemap, ScoreManager& score_manager,
          GameManager& game_manager);
   sf::Vector2f GetVelocity() const;
   void TakeDamage();
@@ -36,7 +36,7 @@ class Player : public ng::Node {
 
   class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -49,7 +49,7 @@ class Player : public ng::Node {
 
   class RunState : public ng::State<Context> {
    public:
-    RunState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    RunState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -62,7 +62,8 @@ class Player : public ng::Node {
 
   class JumpState : public ng::State<Context> {
    public:
-    JumpState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    JumpState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
+              const sf::SoundBuffer& sound_buffer);
 
    protected:
     void OnEnter() override;
@@ -76,7 +77,7 @@ class Player : public ng::Node {
 
   class FallState : public ng::State<Context> {
    public:
-    FallState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    FallState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -89,8 +90,8 @@ class Player : public ng::Node {
 
   class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, ng::Node& node,
-             GameManager& game_manager);
+    HitState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
+             ng::Node& node, GameManager& game_manager);
 
    protected:
     void OnEnter() override;

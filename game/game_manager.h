@@ -18,7 +18,7 @@ class GameManager : public ng::Node {
     LOST,
   };
 
-  GameManager();
+  explicit GameManager(ng::App& app);
 
   void Win();
   void Lose();
@@ -26,7 +26,7 @@ class GameManager : public ng::Node {
   State GetState() const;
 
  protected:
-  void Start() override;
+  void OnAdd() override;
   void Update() override;
 
  private:

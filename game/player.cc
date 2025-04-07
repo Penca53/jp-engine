@@ -18,6 +18,7 @@
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
 #include "engine/resource_manager.h"
+#include "engine/sprite_sheet_animation.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
 #include "engine/transition.h"
@@ -31,9 +32,9 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Player::IdleState::IdleState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Player/Idle (32x32).png", kAnimationTPF) {}
+Player::IdleState::IdleState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Player::IdleState::OnEnter() {
   animation_.Start();
@@ -43,9 +44,9 @@ void Player::IdleState::Update() {
   animation_.Update();
 }
 
-Player::RunState::RunState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Player/Run (32x32).png", kAnimationTPF) {}
+Player::RunState::RunState(ng::State<Context>::ID id,
+                           ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Player::RunState::OnEnter() {
   animation_.Start();
@@ -55,11 +56,12 @@ void Player::RunState::Update() {
   animation_.Update();
 }
 
-Player::JumpState::JumpState(ng::State<Context>::ID id, sf::Sprite& sprite)
+Player::JumpState::JumpState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation,
+                             const sf::SoundBuffer& sound_buffer)
     : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Player/Jump (32x32).png", kAnimationTPF),
-      sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-          "Player/Jump_2.wav")) {}
+      animation_(std::move(animation)),
+      sound_(sound_buffer) {}
 
 void Player::JumpState::OnEnter() {
   animation_.Start();
@@ -70,9 +72,9 @@ void Player::JumpState::Update() {
   animation_.Update();
 }
 
-Player::FallState::FallState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Player/Fall (32x32).png", kAnimationTPF) {}
+Player::FallState::FallState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Player::FallState::OnEnter() {
   animation_.Start();
@@ -82,10 +84,11 @@ void Player::FallState::Update() {
   animation_.Update();
 }
 
-Player::HitState::HitState(ng::State<Context>::ID id, sf::Sprite& sprite,
-                           ng::Node& node, GameManager& game_manager)
+Player::HitState::HitState(ng::State<Context>::ID id,
+                           ng::SpriteSheetAnimation animation, ng::Node& node,
+                           GameManager& game_manager)
     : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Player/Hit (32x32).png", kAnimationTPF),
+      animation_(std::move(animation)),
       node_(&node),
       game_manager_(&game_manager) {
   animation_.RegisterOnEndCallback([this]() { Die(); });
@@ -104,36 +107,58 @@ void Player::HitState::Die() {
   node_->Destroy();
 }
 
-Player::Player(ng::Tilemap& tilemap, ScoreManager& score_manager,
+Player::Player(ng::App& app, ng::Tilemap& tilemap, ScoreManager& score_manager,
                GameManager& game_manager)
-    : tilemap_(&tilemap),
+    : ng::Node(app),
+      tilemap_(&tilemap),
       score_manager_(&score_manager),
       game_manager_(&game_manager),
-      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          "Player/Idle (32x32).png")),
-      animator_(context_, std::make_unique<IdleState>("idle", sprite_)),
+      sprite_(
+          GetApp().GetResourceManager().LoadTexture("Player/Idle (32x32).png")),
+      animator_(context_, std::make_unique<IdleState>(
+                              "idle", ng::SpriteSheetAnimation(
+                                          sprite_, &sprite_.getTexture(),
+                                          kAnimationTPF))),
       plastic_block_sound_(
-          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-              "Hit_1.wav")),
-      banana_sound_(
-          ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-              "Banana/Collectibles_2.wav")) {
+          GetApp().GetResourceManager().LoadSoundBuffer("Hit_1.wav")),
+      banana_sound_(GetApp().GetResourceManager().LoadSoundBuffer(
+          "Banana/Collectibles_2.wav")) {
   SetName("Player");
 
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {32, 32}));
 
-  auto collider = std::make_unique<ng::RectangleCollider>(sf::Vector2f(32, 48));
-  collider->SetLocalPosition({0, 8});
-  collider_ = collider.get();
-  AddChild(std::move(collider));
+  auto& collider = MakeChild<ng::RectangleCollider>(sf::Vector2f(32, 48));
+  collider.SetLocalPosition({0, 8});
+  collider_ = &collider;
 
-  animator_.AddState(std::make_unique<RunState>("run", sprite_));
-  animator_.AddState(std::make_unique<JumpState>("jump", sprite_));
-  animator_.AddState(std::make_unique<FallState>("fall", sprite_));
-  animator_.AddState(
-      std::make_unique<HitState>("hit", sprite_, *this, *game_manager_));
+  animator_.AddState(std::make_unique<RunState>(
+      "run",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Player/Run (32x32).png"),
+          kAnimationTPF)));
+  animator_.AddState(std::make_unique<JumpState>(
+      "jump",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Player/Jump (32x32).png"),
+          kAnimationTPF),
+      GetApp().GetResourceManager().LoadSoundBuffer("Player/Jump_2.wav")));
+  animator_.AddState(std::make_unique<FallState>(
+      "fall",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Player/Fall (32x32).png"),
+          kAnimationTPF)));
+  animator_.AddState(std::make_unique<HitState>(
+      "hit",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Player/Hit (32x32).png"),
+          kAnimationTPF),
+      *this, *game_manager_));
 
   animator_.AddTransition(ng::Transition<Context>(
       "idle", "run",
@@ -201,11 +226,11 @@ void Player::Update() {  // NOLINT
 
   sf::Vector2f dir;
   if (!has_won_) {
-    if (ng::GetKey(sf::Keyboard::Scancode::A)) {
+    if (GetApp().GetInput().GetKey(sf::Keyboard::Scancode::A)) {
       dir.x += -1;
       sprite_.setScale(sf::Vector2f{-2.F, 2.F});
     }
-    if (ng::GetKey(sf::Keyboard::Scancode::D)) {
+    if (GetApp().GetInput().GetKey(sf::Keyboard::Scancode::D)) {
       dir.x += 1;
       sprite_.setScale(sf::Vector2f{2.F, 2.F});
     }
@@ -215,7 +240,7 @@ void Player::Update() {  // NOLINT
   context_.velocity.y += 1;
 
   if (!has_won_ && context_.is_on_ground &&
-      ng::GetKeyDown(sf::Keyboard::Scancode::Space)) {
+      GetApp().GetInput().GetKeyDown(sf::Keyboard::Scancode::Space)) {
     context_.velocity.y -= 15;
   }
 
@@ -322,8 +347,7 @@ void Player::Update() {  // NOLINT
 
   SetLocalPosition(new_pos - sf::Vector2f{0, 8});
 
-  const ng::Collider* other =
-      ng::App::GetInstance().GetMutablePhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Mushroom") {
       if (context_.velocity.y > 0) {

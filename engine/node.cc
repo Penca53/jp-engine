@@ -16,14 +16,12 @@
 #include <string>
 #include <utility>
 
-#include "app.h"
 #include "layer.h"
+#include "scene.h"
 
 namespace ng {
 
-Node::~Node() {
-  App::GetInstance().RemoveValidNode(*this);
-}
+Node::Node(App& app) : app_(&app) {}
 
 const std::string& Node::GetName() const {
   return name_;
@@ -31,6 +29,14 @@ const std::string& Node::GetName() const {
 
 void Node::SetName(std::string name) {
   name_ = std::move(name);
+}
+
+Scene& Node::GetScene() {
+  return *scene_;
+}
+
+App& Node::GetApp() {
+  return *app_;
 }
 
 Node* Node::GetParent() const {
@@ -124,11 +130,13 @@ void Node::Translate(sf::Vector2f delta) {
   DirtyGlobalTransform();
 }
 
-void Node::Start() {}
+void Node::OnAdd() {}
 
 void Node::Update() {}
 
 void Node::Draw([[maybe_unused]] sf::RenderTarget& target) {}
+
+void Node::OnDestroy() {}
 
 void Node::EraseDestroyedChildren() {
   if (children_to_erase_.empty()) {
@@ -138,6 +146,7 @@ void Node::EraseDestroyedChildren() {
   auto prev_frame_children_to_erase = std::move(children_to_erase_);
   std::ranges::sort(prev_frame_children_to_erase, std::greater<>());
   for (size_t to_erase : prev_frame_children_to_erase) {
+    children_[to_erase]->InternalOnDestroy();
     children_.erase(children_.begin() + static_cast<int64_t>(to_erase));
   }
 }
@@ -147,13 +156,14 @@ void Node::AddQueuedChildren() {
   for (auto& to_add : prev_frame_children_to_add) {
     Node* tmp = to_add.get();
     children_.push_back(std::move(to_add));
-    tmp->InternalStart();
+    tmp->InternalOnAdd(scene_);
   }
 }
 
-void Node::InternalStart() {
-  App::GetInstance().AddValidNode(*this);
-  Start();
+void Node::InternalOnAdd(Scene* scene) {
+  scene_ = scene;
+  scene_->RegisterNode(this);
+  OnAdd();
 }
 
 void Node::InternalUpdate() {
@@ -175,6 +185,14 @@ void Node::InternalDraw(const Camera& camera, sf::RenderTarget& target) {
   Draw(target);
   for (auto& child : children_) {
     child->InternalDraw(camera, target);
+  }
+}
+
+void Node::InternalOnDestroy() {
+  scene_->UnregisterNode(this);
+  OnDestroy();
+  for (auto& child : children_) {
+    child->InternalOnDestroy();
   }
 }
 

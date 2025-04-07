@@ -11,9 +11,10 @@ namespace game {
 
 class Background : public ng::Node {
  public:
-  explicit Background(sf::Vector2u size);
+  Background(ng::App& app, sf::Vector2u size);
 
  protected:
+  void OnAdd() override;
   void Update() override;
   void Draw(sf::RenderTarget& target) override;
 

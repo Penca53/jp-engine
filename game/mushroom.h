@@ -15,7 +15,7 @@ namespace game {
 
 class Mushroom : public ng::Node {
  public:
-  explicit Mushroom(const ng::Tilemap& tilemap);
+  Mushroom(ng::App& app, const ng::Tilemap& tilemap);
   bool GetIsDead() const;
   void TakeDamage();
 
@@ -30,7 +30,7 @@ class Mushroom : public ng::Node {
 
   class RunState : public ng::State<Context> {
    public:
-    RunState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    RunState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -43,7 +43,8 @@ class Mushroom : public ng::Node {
 
   class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, ng::Node& node);
+    HitState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
+             const sf::SoundBuffer& sound_buffer, ng::Node& node);
 
    protected:
     void OnEnter() override;

@@ -14,6 +14,7 @@ namespace ng {
 
 class App;
 class Camera;
+class Scene;
 
 // Represents a node in a hierarchical scene graph, providing transformation
 // and rendering capabilities.
@@ -29,8 +30,8 @@ class Node {
   // InternalDraw.
   friend class Scene;
 
-  Node() = default;
-  virtual ~Node();
+  explicit Node(App& app);
+  virtual ~Node() = default;
 
   Node(const Node& other) = delete;
   Node& operator=(const Node& other) = delete;
@@ -41,6 +42,9 @@ class Node {
   [[nodiscard]] const std::string& GetName() const;
   // Sets the name of the node.
   void SetName(std::string name);
+
+  [[nodiscard]] Scene& GetScene();
+  [[nodiscard]] App& GetApp();
   // Returns the parent node.
   // If the parent is null, then this node is a scene root.
   [[nodiscard]] Node* GetParent() const;
@@ -52,6 +56,15 @@ class Node {
 
   // Adds a child node to the node.
   void AddChild(std::unique_ptr<Node> new_child);
+
+  template <Derived<Node> T, typename... Args>
+  T& MakeChild(Args&&... args) {
+    auto child = std::make_unique<T>(*app_, std::forward<Args>(args)...);
+    T& ref = *child;
+    AddChild(std::move(child));
+    return ref;
+  }
+
   // Destroys a child node.
   void DestroyChild(const Node& child_to_destroy);
   // Destroys this node.
@@ -86,23 +99,25 @@ class Node {
 
  protected:
   // Called when the node is actually added to the scene graph.
-  // Start is not called right after a Node is constructed, but only after the
+  // OnAdd is not called right after a Node is constructed, but only after the
   // Node is actually added to the children container of the parent Node.
-  // This behaviour is useful to ensure that once Start is called, the scene
+  // This behaviour is useful to ensure that once OnAdd is called, the scene
   // graph is completely built and the Node is fully initialized.
-  virtual void Start();
+  virtual void OnAdd();
   // Called during each update cycle of the node.
   virtual void Update();
   // Called to render the node.
   virtual void Draw(sf::RenderTarget& target);
+  virtual void OnDestroy();
 
  private:
   void EraseDestroyedChildren();
   void AddQueuedChildren();
 
-  void InternalStart();
+  void InternalOnAdd(Scene* scene);
   void InternalUpdate();
   void InternalDraw(const Camera& camera, sf::RenderTarget& target);
+  void InternalOnDestroy();
 
   void DirtyGlobalTransform();
 
@@ -116,6 +131,8 @@ class Node {
   mutable bool is_global_transform_dirty_ = false;
   // Parent node.
   Node* parent_ = nullptr;
+  App* app_ = nullptr;
+  Scene* scene_ = nullptr;
   // Child nodes.
   // The container is a vector because the order of children determines the
   // update and draw order (lower index = earlier update / draw).

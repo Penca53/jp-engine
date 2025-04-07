@@ -12,6 +12,7 @@
 #include "engine/collider.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
+#include "engine/sprite_sheet_animation.h"
 #include "engine/state.h"
 #include "engine/tilemap.h"
 #include "engine/transition.h"
@@ -22,9 +23,9 @@ namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Mushroom::RunState::RunState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Mushroom/Run (32x32).png", kAnimationTPF) {}
+Mushroom::RunState::RunState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Mushroom::RunState::OnEnter() {
   animation_.Start();
@@ -34,12 +35,13 @@ void Mushroom::RunState::Update() {
   animation_.Update();
 }
 
-Mushroom::HitState::HitState(ng::State<Context>::ID id, sf::Sprite& sprite,
+Mushroom::HitState::HitState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation,
+                             const sf::SoundBuffer& sound_buffer,
                              ng::Node& node)
     : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Mushroom/Hit.png", kAnimationTPF),
-      sound_(ng::App::GetInstance().GetMutableResourceManager().LoadSoundBuffer(
-          "Mushroom/Hit_2.wav")),
+      animation_(std::move(animation)),
+      sound_(sound_buffer),
       node_(&node) {
   animation_.RegisterOnEndCallback([this]() -> void { Die(); });
 }
@@ -57,23 +59,33 @@ void Mushroom::HitState::Die() {
   node_->Destroy();
 }
 
-Mushroom::Mushroom(const ng::Tilemap& tilemap)
-    : tilemap_(&tilemap),
-      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
+Mushroom::Mushroom(ng::App& app, const ng::Tilemap& tilemap)
+    : ng::Node(app),
+      tilemap_(&tilemap),
+      sprite_(GetApp().GetResourceManager().LoadTexture(
           "Mushroom/Run (32x32).png")),
-      animator_(context_, std::make_unique<RunState>("run", sprite_)) {
+      animator_(context_, std::make_unique<RunState>(
+                              "run", ng::SpriteSheetAnimation(
+                                         sprite_, &sprite_.getTexture(),
+                                         kAnimationTPF))) {
   SetName("Mushroom");
 
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {32, 32}));
 
-  auto collider = std::make_unique<ng::RectangleCollider>(sf::Vector2f(32, 32));
-  collider->SetLocalPosition({0, 16});
-  collider_ = collider.get();
-  AddChild(std::move(collider));
+  auto& collider = MakeChild<ng::RectangleCollider>(sf::Vector2f(32, 32));
+  collider.SetLocalPosition({0, 16});
+  collider_ = &collider;
 
-  animator_.AddState(std::make_unique<HitState>("hit", sprite_, *this));
+  animator_.AddState(std::make_unique<HitState>(
+      "hit",
+      ng::SpriteSheetAnimation(
+          sprite_,
+          &GetApp().GetResourceManager().LoadTexture("Mushroom/Hit.png"),
+          kAnimationTPF),
+      GetApp().GetResourceManager().LoadSoundBuffer("Mushroom/Hit_2.wav"),
+      *this));
 
   animator_.AddTransition(ng::Transition<Context>(
       "run", "hit", [](Context context) -> bool { return context.is_dead; }));
@@ -203,8 +215,7 @@ void Mushroom::Update() {  // NOLINT
 
   SetLocalPosition(new_pos - sf::Vector2f{0, 16});
 
-  const ng::Collider* other =
-      ng::App::GetInstance().GetPhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

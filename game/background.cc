@@ -8,19 +8,17 @@
 #include <cstdint>
 
 #include "engine/app.h"
+#include "engine/node.h"
 
 namespace game {
 
 static constexpr size_t kTriangleVertexCount = 3;
 static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
 
-Background::Background(sf::Vector2u size)
-    : size_(size),
-      texture_(&ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          "Gray.png")),
+Background::Background(ng::App& app, sf::Vector2u size)
+    : ng::Node(app),
+      size_(size),
       image_vertices_(sf::PrimitiveType::Triangles, kTrisInQuad) {
-  texture_->setRepeated(true);
-
   sf::Vector2f fsize(size_);
   image_vertices_[0].position = sf::Vector2f(0, 0);
   image_vertices_[1].position = sf::Vector2f(fsize.x, 0);
@@ -28,6 +26,11 @@ Background::Background(sf::Vector2u size)
   image_vertices_[3].position = sf::Vector2f(0, fsize.y);
   image_vertices_[4].position = sf::Vector2f(fsize.x, 0);
   image_vertices_[5].position = sf::Vector2f(fsize.x, fsize.y);
+}
+
+void Background::OnAdd() {
+  texture_ = &GetApp().GetResourceManager().LoadTexture("Gray.png");
+  texture_->setRepeated(true);
 }
 
 void Background::Update() {

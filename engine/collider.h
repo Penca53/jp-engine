@@ -11,13 +11,7 @@ class RectangleCollider;
 // implementation of collision detection methods for various collider types.
 class Collider : public Node {
  public:
-  Collider() = default;
-  ~Collider() override;
-
-  Collider(const Collider& other) = delete;
-  Collider& operator=(const Collider& other) = delete;
-  Collider(Collider&& other) = delete;
-  Collider& operator=(Collider&& other) = delete;
+  explicit Collider(App& app);
 
   // Checks for collision with another collider. This is used to leverage
   // double dispatch to call the specialized Collides method.
@@ -28,7 +22,8 @@ class Collider : public Node {
   [[nodiscard]] virtual bool Collides(const RectangleCollider& other) const = 0;
 
  protected:
-  void Start() override;
+  void OnAdd() override;
+  void OnDestroy() override;
 };
 
 }  // namespace ng

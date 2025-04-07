@@ -1,5 +1,6 @@
 #include "circle_collider.h"
 
+#include "app.h"
 #include "collider.h"
 #include "rectangle_collider.h"
 
@@ -12,12 +13,13 @@
 
 namespace ng {
 
-float CircleCollider::GetRadius() const {
-  return radius_;
+CircleCollider::CircleCollider(App& app, float radius)
+    : Collider(app), radius_(radius) {
+  SetName("CircleCollider");
 }
 
-CircleCollider::CircleCollider(float radius) : radius_(radius) {
-  SetName("CircleCollider");
+float CircleCollider::GetRadius() const {
+  return radius_;
 }
 
 bool CircleCollider::Collides(const Collider& other) const {

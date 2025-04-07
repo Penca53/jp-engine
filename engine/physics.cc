@@ -6,12 +6,12 @@
 
 namespace ng {
 
-void Physics::AddCollider(const Collider& collider) {
-  colliders_.insert(&collider);
+void Physics::AddCollider(const Collider* collider) {
+  colliders_.insert(collider);
 }
 
-void Physics::RemoveCollider(const Collider& collider) {
-  colliders_.erase(&collider);
+void Physics::RemoveCollider(const Collider* collider) {
+  colliders_.erase(collider);
 }
 
 const Collider* Physics::Overlap(const Collider& collider) const {

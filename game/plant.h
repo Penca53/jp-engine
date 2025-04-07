@@ -16,7 +16,7 @@ namespace game {
 
 class Plant : public ng::Node {
  public:
-  explicit Plant(const ng::Tilemap& tilemap);
+  Plant(ng::App& app, const ng::Tilemap& tilemap);
   bool GetIsDead() const;
   void TakeDamage();
 
@@ -32,7 +32,7 @@ class Plant : public ng::Node {
 
   class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;
@@ -45,7 +45,7 @@ class Plant : public ng::Node {
 
   class AttackState : public ng::State<Context> {
    public:
-    AttackState(ng::State<Context>::ID id, sf::Sprite& sprite,
+    AttackState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
                 const Plant& plant, const ng::Tilemap& tilemap,
                 sf::Vector2f direction);
 
@@ -65,7 +65,8 @@ class Plant : public ng::Node {
 
   class HitState : public ng::State<Context> {
    public:
-    HitState(ng::State<Context>::ID id, sf::Sprite& sprite, Plant& plant);
+    HitState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
+             const sf::SoundBuffer& sound_buffer, Plant& plant);
 
    protected:
     void OnEnter() override;

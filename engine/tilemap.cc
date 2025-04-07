@@ -10,6 +10,8 @@
 #include <span>
 #include <utility>
 
+#include "app.h"
+#include "node.h"
 #include "tile.h"
 #include "tileset.h"
 
@@ -18,8 +20,9 @@ namespace ng {
 static constexpr size_t kTriangleVertexCount = 3;
 static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
 
-Tilemap::Tilemap(sf::Vector2u size, Tileset tileset)
-    : size_(size),
+Tilemap::Tilemap(App& app, sf::Vector2u size, Tileset tileset)
+    : Node(app),
+      size_(size),
       tileset_(std::move(tileset)),
       vertices_(sf::PrimitiveType::Triangles, static_cast<size_t>(size_.x) *
                                                   static_cast<size_t>(size_.y) *

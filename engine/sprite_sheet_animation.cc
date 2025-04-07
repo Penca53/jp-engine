@@ -1,21 +1,18 @@
 #include "sprite_sheet_animation.h"
 
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <cstdint>
 #include <functional>
-#include <string>
 #include <utility>
-
-#include "app.h"
 
 namespace ng {
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
-                                           const std::string& texture,
+                                           const sf::Texture* texture,
                                            int32_t ticks_per_frame)
     : sprite_(&sprite),
-      texture_(&ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          texture)),
+      texture_(texture),
       ticks_per_frame_(ticks_per_frame),
       frame_size_({static_cast<int32_t>(texture_->getSize().y),
                    static_cast<int32_t>(texture_->getSize().y)}) {
@@ -23,12 +20,11 @@ SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
 }
 
 SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
-                                           const std::string& texture,
+                                           const sf::Texture* texture,
                                            int32_t ticks_per_frame,
                                            sf::Vector2i frame_size)
     : sprite_(&sprite),
-      texture_(&ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          texture)),
+      texture_(texture),
       ticks_per_frame_(ticks_per_frame),
       frame_size_(frame_size) {
   frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;

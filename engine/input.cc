@@ -6,11 +6,6 @@
 
 namespace ng {
 
-Input& Input::GetInstance() {
-  static Input instance;
-  return instance;
-}
-
 void Input::Advance() {
   old_key_states_ = key_states_;
 }
@@ -35,18 +30,6 @@ bool Input::GetKey(sf::Keyboard::Scancode key) const {
 bool Input::GetKeyUp(sf::Keyboard::Scancode key) const {
   return (!key_states_[std::to_underlying(key)] &&
           old_key_states_[std::to_underlying(key)]);
-}
-
-bool GetKeyDown(sf::Keyboard::Scancode key) {
-  return Input::GetInstance().GetKeyDown(key);
-}
-
-bool GetKey(sf::Keyboard::Scancode key) {
-  return Input::GetInstance().GetKey(key);
-}
-
-bool GetKeyUp(sf::Keyboard::Scancode key) {
-  return Input::GetInstance().GetKeyUp(key);
 }
 
 }  // namespace ng

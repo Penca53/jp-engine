@@ -8,15 +8,17 @@
 
 #include "engine/app.h"
 #include "engine/circle_collider.h"
+#include "engine/node.h"
+#include "engine/sprite_sheet_animation.h"
 #include "engine/state.h"
 
 namespace game {
 
 static constexpr int32_t kAnimationTPF = 4;
 
-Banana::IdleState::IdleState(ng::State<Context>::ID id, sf::Sprite& sprite)
-    : ng::State<Context>(std::move(id)),
-      animation_(sprite, "Banana/Bananas.png", kAnimationTPF) {}
+Banana::IdleState::IdleState(ng::State<Context>::ID id,
+                             ng::SpriteSheetAnimation animation)
+    : ng::State<Context>(std::move(id)), animation_(std::move(animation)) {}
 
 void Banana::IdleState::OnEnter() {
   animation_.Start();
@@ -26,17 +28,19 @@ void Banana::IdleState::Update() {
   animation_.Update();
 }
 
-Banana::Banana()
-    : sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          "Banana/Bananas.png")),
-      animator_(context_, std::make_unique<IdleState>("run", sprite_)) {
+Banana::Banana(ng::App& app)
+    : ng::Node(app),
+      sprite_(GetApp().GetResourceManager().LoadTexture("Banana/Bananas.png")),
+      animator_(context_, std::make_unique<IdleState>(
+                              "run", ng::SpriteSheetAnimation(
+                                         sprite_, &sprite_.getTexture(),
+                                         kAnimationTPF))) {
   SetName("Banana");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {32, 32}));
 
-  auto collider = std::make_unique<ng::CircleCollider>(16.F);
-  AddChild(std::move(collider));
+  MakeChild<ng::CircleCollider>(16.F);
 }
 
 bool Banana::GetIsCollected() const {

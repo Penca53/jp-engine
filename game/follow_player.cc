@@ -2,14 +2,17 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <algorithm>
-#include "engine/app.h"
+
+#include "engine/node.h"
+#include "engine/scene.h"
 #include "player.h"
 
 namespace game {
 
-FollowPlayer::FollowPlayer(const Player& player) : player_(&player) {}
+FollowPlayer::FollowPlayer(ng::App& app, const Player& player)
+    : ng::Node(app), player_(&player) {}
 
-void FollowPlayer::Start() {
+void FollowPlayer::OnAdd() {
   Follow();
 }
 
@@ -18,7 +21,7 @@ void FollowPlayer::Update() {
 }
 
 void FollowPlayer::Follow() {
-  if (!ng::App::GetInstance().IsValid(player_)) {
+  if (!GetScene().IsValid(player_)) {
     return;
   }
 

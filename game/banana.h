@@ -13,7 +13,7 @@ namespace game {
 
 class Banana : public ng::Node {
  public:
-  Banana();
+  explicit Banana(ng::App& app);
 
   bool GetIsCollected() const;
   void Collect();
@@ -27,7 +27,7 @@ class Banana : public ng::Node {
 
   class IdleState : public ng::State<Context> {
    public:
-    IdleState(ng::State<Context>::ID id, sf::Sprite& sprite);
+    IdleState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation);
 
    protected:
     void OnEnter() override;

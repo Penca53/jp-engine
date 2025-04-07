@@ -10,7 +10,7 @@ namespace game {
 
 class ScoreManager : public ng::Node {
  public:
-  ScoreManager();
+  explicit ScoreManager(ng::App& app);
 
   void AddScore(int32_t score);
 

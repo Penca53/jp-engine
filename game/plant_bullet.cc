@@ -8,25 +8,26 @@
 #include "engine/app.h"
 #include "engine/circle_collider.h"
 #include "engine/collider.h"
+#include "engine/node.h"
 #include "engine/tilemap.h"
 #include "player.h"
 #include "tile_id.h"
 
 namespace game {
 
-PlantBullet::PlantBullet(const ng::Tilemap& tilemap, sf::Vector2f direction)
-    : tilemap_(&tilemap),
+PlantBullet::PlantBullet(ng::App& app, const ng::Tilemap& tilemap,
+                         sf::Vector2f direction)
+    : ng::Node(app),
+      tilemap_(&tilemap),
       direction_(direction),
-      sprite_(ng::App::GetInstance().GetMutableResourceManager().LoadTexture(
-          "Plant/Bullet.png")) {
+      sprite_(GetApp().GetResourceManager().LoadTexture("Plant/Bullet.png")) {
   SetName("PlantBullet");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({8, 8});
   sprite_.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
 
-  auto collider = std::make_unique<ng::CircleCollider>(4.F);
-  collider_ = collider.get();
-  AddChild(std::move(collider));
+  auto& collider = MakeChild<ng::CircleCollider>(4.F);
+  collider_ = &collider;
 }
 
 bool PlantBullet::GetIsDead() const {
@@ -67,8 +68,7 @@ void PlantBullet::Update() {
   static constexpr float kMovementSpeed = 6;
   Translate(direction_ * kMovementSpeed);
 
-  const ng::Collider* other =
-      ng::App::GetInstance().GetPhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

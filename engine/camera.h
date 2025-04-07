@@ -14,15 +14,9 @@ namespace ng {
 class Camera : public Node {
  public:
   // Creates a default Camera (draw order 0 and default render layer).
-  Camera();
+  explicit Camera(App& app);
   // Constructs a Camera with the specified draw order and rendering layer.
-  Camera(int32_t draw_order, Layer layer);
-  ~Camera() override;
-
-  Camera(const Camera& other) = delete;
-  Camera& operator=(const Camera& other) = delete;
-  Camera(Camera&& other) = delete;
-  Camera& operator=(Camera&& other) = delete;
+  Camera(App& app, int32_t draw_order, Layer layer);
 
   // Returns the camera's view.
   [[nodiscard]] const sf::View& GetView() const;
@@ -34,8 +28,9 @@ class Camera : public Node {
   void SetViewSize(sf::Vector2f size);
 
  protected:
-  void Start() override;
+  void OnAdd() override;
   void Update() override;
+  void OnDestroy() override;
 
  private:
   // The camera's view.

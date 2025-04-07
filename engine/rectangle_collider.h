@@ -11,7 +11,7 @@ namespace ng {
 class RectangleCollider : public Collider {
  public:
   // Creates a RectangleCollider with the specified size.
-  explicit RectangleCollider(sf::Vector2f size);
+  RectangleCollider(App& app, sf::Vector2f size);
 
   // Returns the size of the collider.
   [[nodiscard]] const sf::Vector2f& GetSize() const;

@@ -1,15 +1,18 @@
 #include "collider.h"
 
-#include "app.h"
+#include "node.h"
+#include "scene.h"
 
 namespace ng {
 
-Collider::~Collider() {
-  App::GetInstance().GetMutablePhysics().RemoveCollider(*this);
+Collider::Collider(App& app) : Node(app) {}
+
+void Collider::OnAdd() {
+  GetScene().GetMutablePhysics().AddCollider(this);
 }
 
-void Collider::Start() {
-  App::GetInstance().GetMutablePhysics().AddCollider(*this);
+void Collider::OnDestroy() {
+  GetScene().GetMutablePhysics().RemoveCollider(this);
 }
 
 }  // namespace ng
