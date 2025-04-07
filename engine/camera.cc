@@ -12,8 +12,8 @@ namespace ng {
 
 Camera::Camera(App& app) : Camera(app, 0, Layer::kDefault) {}
 
-Camera::Camera(App& app, int32_t draw_order, Layer render_layer)
-    : Node(app), draw_order_(draw_order), render_layer_(render_layer) {}
+Camera::Camera(App& app, int32_t draw_order, Layer render_layers)
+    : Node(app), draw_order_(draw_order), render_layers_(render_layers) {}
 
 const sf::View& Camera::GetView() const {
   return view_;
@@ -23,8 +23,8 @@ int32_t Camera::GetDrawOrder() const {
   return draw_order_;
 }
 
-Layer Camera::GetRenderLayer() const {
-  return render_layer_;
+Layer Camera::GetRenderLayers() const {
+  return render_layers_;
 }
 
 void Camera::SetViewSize(sf::Vector2f size) {

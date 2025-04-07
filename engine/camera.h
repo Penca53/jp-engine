@@ -16,14 +16,14 @@ class Camera : public Node {
   // Creates a default Camera (draw order 0 and default render layer).
   explicit Camera(App& app);
   // Constructs a Camera with the specified draw order and rendering layer.
-  Camera(App& app, int32_t draw_order, Layer layer);
+  Camera(App& app, int32_t draw_order, Layer layers);
 
   // Returns the camera's view.
   [[nodiscard]] const sf::View& GetView() const;
   // Returns the camera's draw order.
   [[nodiscard]] int32_t GetDrawOrder() const;
   // Returns the camera's render layer.
-  [[nodiscard]] Layer GetRenderLayer() const;
+  [[nodiscard]] Layer GetRenderLayers() const;
   // Sets the camera's view size.
   void SetViewSize(sf::Vector2f size);
 
@@ -41,7 +41,7 @@ class Camera : public Node {
   // The camera's render layer.
   // The layer acts as a bitmask, meaning that a camera can render multiple
   // layers at once.
-  Layer render_layer_ = Layer::kDefault;
+  Layer render_layers_ = Layer::kDefault;
 };
 
 }  // namespace ng

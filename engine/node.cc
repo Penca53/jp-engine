@@ -178,7 +178,7 @@ void Node::InternalUpdate() {
 
 void Node::InternalDraw(const Camera& camera, sf::RenderTarget& target) {
   if ((std::to_underlying(layer_) &
-       std::to_underlying(camera.GetRenderLayer())) == 0) {
+       std::to_underlying(camera.GetRenderLayers())) == 0) {
     return;
   }
 
