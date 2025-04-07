@@ -13,7 +13,7 @@ void CameraManager::OnWindowResize(sf::Vector2f size) {
   }
 }
 
-const std::set<Camera*, decltype(CameraManager::cmp_ascending_draw_order)>&
+const std::set<Camera*, CameraManager::DrawOrderCompare>&
 CameraManager::GetCameras() const {
   return cameras_;
 }
