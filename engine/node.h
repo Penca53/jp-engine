@@ -16,20 +16,16 @@ class App;
 class Camera;
 class Scene;
 
-// Represents a node in a hierarchical scene graph, providing transformation
-// and rendering capabilities.
-// The Node class forms the base for all objects within the game's scene graph.
-// It handles transformations, parenting, child management, layering, and
-// rendering.
-// Nodes can have children, forming a tree-like structure. Transformations are
-// hierarchical, meaning that a node's global transform is affected by its
-// parent's transform.
+/// @brief The base class for all entities in the game world, forming a scene graph.
+///        Manages local and global transformations, parent-child relationships, and rendering layers.
 class Node {
  public:
   // Scene needs to be able to call InternalOnAdd, InternalUpdate,
   // InternalDraw, and InternalOnDestroy.
   friend class Scene;
 
+  /// @brief Constructs a Node associated with a specific App instance.
+  /// @param app A pointer to the App instance this node belongs to. This pointer must not be null.
   explicit Node(App* app);
   virtual ~Node() = default;
 
@@ -38,26 +34,43 @@ class Node {
   Node(Node&& other) = delete;
   Node& operator=(Node&& other) = delete;
 
-  // Returns the name of the node.
+  /// @brief Returns the name of the node.
+  /// @return A constant reference to the node's name.
   [[nodiscard]] const std::string& GetName() const;
-  // Sets the name of the node.
+
+  /// @brief Sets the name of the node.
+  /// @param name The new name for the node.
   void SetName(std::string name);
 
-  [[nodiscard]] App* GetApp();
+  /// @brief Returns the App instance associated with this node.
+  /// @return A pointer to the App instance. This pointer is never null after construction.
+  [[nodiscard]] App* GetApp() const;
 
-  [[nodiscard]] Scene* GetScene();
-  // Returns the parent node.
-  // If the parent is null, then this node is a scene root.
+  /// @brief Returns the Scene this node belongs to. Can be null if the node is not yet added to a scene.
+  /// @return A pointer to the Scene, or null if the node is not part of a scene.
+  [[nodiscard]] Scene* GetScene() const;
+
+  /// @brief Returns the parent node in the scene graph. Can be null if this is the root node or not yet added as a child.
+  /// @return A pointer to the parent Node, or null if there is no parent.
   [[nodiscard]] Node* GetParent() const;
 
-  // Returns the layer of the node.
+  /// @brief Returns the rendering layer of this node.
+  /// @return The Layer this node belongs to.
   [[nodiscard]] Layer GetLayer() const;
-  // Sets the layer of the node.
+
+  /// @brief Sets the rendering layer of this node.
+  /// @param layer The new Layer for this node.
   void SetLayer(Layer layer);
 
-  // Adds a child node to the node.
+  /// @brief Adds a new child node to this node. Ownership of the child is transferred.
+  /// @param new_child A unique pointer to the Node to be added. This pointer must not be null.
   void AddChild(std::unique_ptr<Node> new_child);
 
+  /// @brief Creates and adds a new child node of the specified type to this node.
+  /// @tparam T The type of the Node to create, must derive from Node.
+  /// @tparam Args The constructor arguments for the Node type T.
+  /// @param args The arguments to forward to the constructor of T.
+  /// @return A reference to the newly created and added Node.
   template <Derived<Node> T, typename... Args>
   T& MakeChild(Args&&... args) {
     auto child = std::make_unique<T>(app_, std::forward<Args>(args)...);
@@ -66,26 +79,41 @@ class Node {
     return ref;
   }
 
-  // Destroys a child node.
+  /// @brief Schedules a child node for destruction. The actual removal happens at the beginning of the next frame.
+  /// @param child_to_destroy A constant reference to the child Node to be destroyed.
   void DestroyChild(const Node& child_to_destroy);
-  // Destroys this node.
+
+  /// @brief Schedules this node for destruction. The actual removal happens at the beginning of the next frame by its parent.
   void Destroy();
 
-  // Returns the local transform of the node.
+  /// @brief Returns the local transformation of this node.
+  /// @return A constant reference to the local SFML Transformable.
   [[nodiscard]] const sf::Transformable& GetLocalTransform() const;
-  // Returns the global transform of the node.
+
+  /// @brief Returns the global transformation of this node, taking into account its parent's transformations.
+  ///        This is calculated lazily and cached until the local transform changes.
+  /// @return A constant reference to the global SFML Transformable.
   [[nodiscard]] const sf::Transformable& GetGlobalTransform() const;
 
-  // Sets the local position of the node.
+  /// @brief Sets the local position of the node.
+  /// @param position The new local position.
   void SetLocalPosition(sf::Vector2f position);
-  // Sets the local rotation of the node.
+
+  /// @brief Sets the local rotation of the node.
+  /// @param rotation The new local rotation.
   void SetLocalRotation(sf::Angle rotation);
-  // Sets the local scale of the node.
+
+  /// @brief Sets the local scale of the node.
+  /// @param scale The new local scale.
   void SetLocalScale(sf::Vector2f scale);
-  // Translates the node by the given delta.
+
+  /// @brief Translates the node by a given delta vector in its local space.
+  /// @param delta The translation vector.
   void Translate(sf::Vector2f delta);
 
-  // Returns a child node of the specified type, if any.
+  /// @brief Returns the first child node of a specific type.
+  /// @tparam T The type of the child Node to retrieve, must derive from Node.
+  /// @return A pointer to the first child of type T, or nullptr if no such child exists.
   template <Derived<Node> T>
   [[nodiscard]] T* GetChild() {
     for (const auto& child : children_) {
@@ -94,63 +122,65 @@ class Node {
         return c;
       }
     }
-
     return nullptr;
   }
 
  protected:
-  // Called when the node is actually added to the scene graph.
-  // OnAdd is not called right after a Node is constructed, but only after the
-  // Node is actually added to the children container of the parent Node.
-  // This behaviour is useful to ensure that once OnAdd is called, the scene
-  // graph is completely built and the Node is fully initialized.
+  /// @brief Called when the node is added to a scene graph.
   virtual void OnAdd();
-  // Called during each update cycle of the node.
+  /// @brief Called during the update phase of the game loop.
   virtual void Update();
-  // Called to render the node.
+  /// @brief Called during the draw phase of the game loop.
+  /// @param target The SFML RenderTarget to draw to.
   virtual void Draw(sf::RenderTarget& target);
+  /// @brief Called when the node is about to be destroyed or removed from the scene graph.
   virtual void OnDestroy();
 
  private:
+  /// @brief Removes children that were scheduled for destruction in the previous frame.
   void EraseDestroyedChildren();
+  /// @brief Adds children that were queued to be added in the previous frame.
   void AddQueuedChildren();
 
+  /// @brief Internal method called when the node is added to a scene. Notifies the node and its children.
+  /// @param scene A pointer to the Scene this node is being added to. This pointer must not be null.
   void InternalOnAdd(Scene* scene);
+  /// @brief Internal method called during the update phase. Updates the node and its children.
   void InternalUpdate();
+  /// @brief Internal method called during the draw phase. Draws the node and its children if they belong to the camera's render layers.
+  /// @param camera The Camera used for rendering.
+  /// @param target The SFML RenderTarget to draw to.
   void InternalDraw(const Camera& camera, sf::RenderTarget& target);
+  /// @brief Internal method called when the node is about to be destroyed. Notifies the node and its children.
   void InternalOnDestroy();
 
+  /// @brief Marks the global transform as dirty, forcing a recalculation on the next GetGlobalTransform call and propagating the dirty flag to children.
   void DirtyGlobalTransform();
 
   // The name of the node.
   std::string name_;
-  // The local transform of the node.
+  // The local transformation of the node.
   sf::Transformable local_transform_;
-  // The global transform of the node.
+  // The cached global transformation of the node. Mutable for lazy evaluation.
   mutable sf::Transformable global_transform_;
-  // Flag indicating if the global transform needs to be recomputed.
+  // Flag indicating if the global transform needs to be recalculated. Mutable for lazy evaluation.
   mutable bool is_global_transform_dirty_ = false;
-  // Parent node.
+
+  // Pointer to the App instance. Never null after construction.
+  App* app_;
+
+  // Pointer to the parent node in the scene graph. Can be null for the root.
   Node* parent_ = nullptr;
-  App* app_ = nullptr;
+  // Pointer to the Scene this node belongs to. Can be null if not yet added to a scene.
   Scene* scene_ = nullptr;
-  // Child nodes.
-  // The container is a vector because the order of children determines the
-  // update and draw order (lower index = earlier update / draw).
+
+  // Vector of child nodes. Ownership is managed by this node.
   std::vector<std::unique_ptr<Node>> children_;
-  // Indices of child nodes pending to be erased.
-  // Nodes are erased at the beginning of the following Update call.
-  // The game logic runs in the Update phase, so deleting a node straight away
-  // would mean deleting an element from the children collection that is being
-  // iterated on, resulting in disaster, at best.
+  // Indices of children to be erased in the next update cycle.
   std::vector<size_t> children_to_erase_;
-  // Child nodes pending to be added.
-  // Nodes are erased at the beginning of the following Update call.
-  // The game logic runs in the Update phase, so adding a node straight away
-  // would mean adding an element to the children collection that is being
-  // iterated on, resulting in disaster, at best.
+  // Vector of children to be added in the next update cycle.
   std::vector<std::unique_ptr<Node>> children_to_add_;
-  // The layer of the node (i.e. used for conditional rendering).
+  // The rendering layer of this node.
   Layer layer_ = Layer::kDefault;
 };
 

@@ -4,10 +4,11 @@
 
 namespace ng {
 
-// Defines bitmask layers for organizing and filtering nodes.
-// It is used by cameras to determine which nodes to render (i.e. UI).
+/// @brief Defines bitmask flags for rendering layers, allowing selective rendering of objects.
 enum class Layer : uint64_t {  // NOLINT
+  /// @brief The default rendering layer.
   kDefault = 1ULL << 0ULL,
+  /// @brief The user interface rendering layer.
   kUI = 1ULL << 1ULL,
 };
 

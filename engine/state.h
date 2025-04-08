@@ -4,10 +4,8 @@
 
 namespace ng {
 
-// Represents a state in a Finite State Machine (FSM).
-// The State class serves as a base class for defining individual states within
-// an FSM. Each state has a unique ID, which is used to identify and manage
-// transitions between states.
+/// @brief Represents a state in a finite state machine (FSM).
+/// @tparam TContext The type of the context object that the state machine operates on.
 template <typename TContext>
 class State {
   // FSM needs to be able to call OnEnter, Update, OnExit and SetContext.
@@ -15,42 +13,47 @@ class State {
   friend class FSM;
 
  public:
+  /// @brief Type alias for the state identifier.
   using ID = std::string;
 
-  // Creates a state with the given unique ID.
+  /// @brief Constructs a State with a unique ID.
+  /// @param id The identifier for this state.
   explicit State(ID id) : id_(std::move(id)) {}
+
+  virtual ~State() = default;
 
   State(const State& other) = default;
   State& operator=(const State& other) = default;
   State(State&& other) = default;
   State& operator=(State&& other) = default;
 
-  virtual ~State() = default;
-
-  // Returns the ID of the state.
+  /// @brief Returns the unique identifier of the state.
+  /// @return The ID of this state.
   [[nodiscard]] const ID& GetID() const { return id_; }
 
  protected:
-  // Returns the context associated to the state.
-  // The context can be null, for example when a State is not added to a FSM.
+  /// @brief Returns a pointer to the context object.
+  /// @return A pointer to the context. Can be null if the state is not associated with an FSM yet.
   TContext* GetContext() { return context_; }
 
-  // Called when the state is entered.
+  /// @brief Called when the state is entered.
   virtual void OnEnter() {}
 
-  // Called during each update cycle of the state.
+  /// @brief Called during the update phase while this state is active.
   virtual void Update() {}
 
-  // Called when the state is exited.
+  /// @brief Called when the state is exited.
   virtual void OnExit() {}
 
  private:
+  /// @brief Sets the context object for this state. Called by the FSM.
+  /// @param context A pointer to the context object. This pointer must not be null.
   void SetContext(TContext* context) { context_ = context; }
 
-  // The unique ID of the state.
+  // The unique identifier of the state.
   ID id_;
-  // The (nullable) context, usually populated by the FSM once the state is
-  // added.
+  // Pointer to the context object that the FSM operates on.
+  // Can be null if the state is not associated with an FSM yet.
   TContext* context_ = nullptr;
 };
 

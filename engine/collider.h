@@ -7,18 +7,27 @@ namespace ng {
 class CircleCollider;
 class RectangleCollider;
 
-// Represents a base abstract class for collision shapes. It enforces the
-// implementation of collision detection methods for various collider types.
+/// @brief An abstract base class for all types of colliders used for physics interactions.
 class Collider : public Node {
  public:
+  /// @brief Constructs a Collider associated with a specific App instance.
+  /// @param app A pointer to the App instance this collider belongs to. This pointer must not be null.
   explicit Collider(App* app);
 
-  // Checks for collision with another collider. This is used to leverage
-  // double dispatch to call the specialized Collides method.
+  /// @brief Checks for collision with another Collider.
+  /// This method uses double-dispatch to call the correct overload based on the runtime type of 'other'.
+  /// @param other A constant reference to the other Collider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] virtual bool Collides(const Collider& other) const = 0;
 
-  // Collision detection between specific shapes.
+  /// @brief Checks for collision with a CircleCollider.
+  /// @param other A constant reference to the other CircleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] virtual bool Collides(const CircleCollider& other) const = 0;
+
+  /// @brief Checks for collision with a RectangleCollider.
+  /// @param other A constant reference to the other RectangleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] virtual bool Collides(const RectangleCollider& other) const = 0;
 
  protected:

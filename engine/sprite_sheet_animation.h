@@ -9,53 +9,58 @@
 
 namespace ng {
 
-// The SpriteSheetAnimation class provides functionality for animating a sprite
-// using a sprite sheet. It allows you to specify the texture, frame size, and
-// animation speed. The animation automatically loops around.
-// It supports registering a callback function to be executed when the
-// animation finishes.
+/// @brief Manages the animation of an SFML Sprite using a sprite sheet texture.
 class SpriteSheetAnimation {
  public:
-  // Creates a SpriteSheetAnimation.
-  // This overload deduces the frame's size to be a square
-  // with side equals to the height of the texture.
+  /// @brief Constructs a SpriteSheetAnimation with default frame size based on texture height.
+  /// @param sprite A pointer to the SFML Sprite to animate. This pointer must not be null.
+  /// @param texture A pointer to the SFML Texture containing the sprite sheet. This pointer must not be null.
+  /// @param ticks_per_frame The number of game ticks to wait before advancing to the next frame.
   SpriteSheetAnimation(sf::Sprite* sprite, const sf::Texture* texture,
                        int32_t ticks_per_frame);
-  // Constructs a SpriteSheetAnimation with a specified frame size.
-  // This overload is useful when a frame isn't a regular square.
+
+  /// @brief Constructs a SpriteSheetAnimation with a specified frame size.
+  /// @param sprite A pointer to the SFML Sprite to animate. This pointer must not be null.
+  /// @param texture A pointer to the SFML Texture containing the sprite sheet. This pointer must not be null.
+  /// @param ticks_per_frame The number of game ticks to wait before advancing to the next frame.
+  /// @param frame_size The size of each individual frame in the sprite sheet.
   SpriteSheetAnimation(sf::Sprite* sprite, const sf::Texture* texture,
                        int32_t ticks_per_frame, sf::Vector2i frame_size);
 
-  // Returns the current frame index.
+  /// @brief Returns the current frame index of the animation.
+  /// @return The index of the currently displayed frame (0-based).
   [[nodiscard]] int32_t GetFrameIndex() const;
-  // Returns the current ticks counter.
+
+  /// @brief Returns the current value of the ticks counter for the current frame.
+  /// @return The number of ticks elapsed since the current frame started displaying.
   [[nodiscard]] int32_t GetTicksCounter() const;
-  // Registers a callback function to be executed when the animation finishes.
+
+  /// @brief Registers a callback function to be executed when the animation completes a full cycle (returns to the first frame).
+  /// @param on_end_callback A function object (e.g., std::function, lambda) to be called when the animation loops. Can be empty to unregister a previous callback.
   void RegisterOnEndCallback(std::function<void()> on_end_callback);
 
-  // Starts the animation.
+  /// @brief Starts the animation from the first frame and sets the sprite's texture.
   void Start();
-  // Updates the animation, advancing to the next frame if necessary.
+
+  /// @brief Updates the animation, advancing to the next frame if the ticks per frame limit is reached.
   void Update();
 
  private:
-  // The sprite being animated.
+  // Pointer to the SFML Sprite being animated. Never null after construction.
   sf::Sprite* sprite_ = nullptr;
-  // Texture containing the sprite sheet.
+  // Pointer to the SFML Texture containing the sprite sheet. Never null after construction.
   const sf::Texture* texture_ = nullptr;
-  // Number of ticks per animation frame.
-  // Higher ticks = slower animation speed.
+  // Number of game ticks per animation frame.
   int32_t ticks_per_frame_ = 0;
-  // Current animation frame index.
+  // The current frame index of the animation.
   int32_t frame_index_ = 0;
-  // Current ticks counter.
-  // Used for timing the animation frame advancement.
+  // Counter for the number of ticks elapsed for the current frame.
   int32_t ticks_counter_ = 0;
-  // Size of each frame in the sprite sheet.
+  // The size of each individual frame in the sprite sheet.
   sf::Vector2i frame_size_;
-  // Total number of frames in the animation.
+  // The total number of frames in the sprite sheet animation.
   int32_t frames_count_ = 0;
-  // Optional callback function to be executed when the animation ends.
+  // Optional callback function to be executed when the animation loops.
   std::optional<std::function<void()>> on_end_callback_;
 };
 

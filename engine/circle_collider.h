@@ -4,30 +4,42 @@
 
 namespace ng {
 
-// Represents a circular collision shape for collision detection.
+/// @brief Represents a circular collider for physics interactions.
 class CircleCollider : public Collider {
  public:
-  // Creates a CircleCollider with the specified radius.
+  /// @brief Constructs a CircleCollider with the specified radius.
+  /// @param app A pointer to the App instance this collider belongs to. This pointer must not be null.
+  /// @param radius The radius of the circle collider.
   CircleCollider(App* app, float radius);
 
-  // Returns the radius of the collider.
+  /// @brief Returns the radius of the circle collider.
+  /// @return The radius of the circle.
   [[nodiscard]] float GetRadius() const;
 
-  // Checks for collision with another collider. This is used to leverage
-  // double dispatch to call the specialized Collides method.
+  /// @brief Checks for collision with another Collider. Uses double-dispatch.
+  /// @param other A constant reference to the other Collider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const Collider& other) const override;
-  // Checks for collision with another CircleCollider.
+
+  /// @brief Checks for collision with another CircleCollider.
+  /// @param other A constant reference to the other CircleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const CircleCollider& other) const override;
-  // Checks for collision with another RectangleCollider.
+
+  /// @brief Checks for collision with a RectangleCollider.
+  /// @param other A constant reference to the other RectangleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const RectangleCollider& other) const override;
 
  protected:
 #ifdef DEBUG
+  /// @brief Draw the collider's bounds for debugging purposes.
+  /// @param target The SFML RenderTarget to draw to.
   void Draw(sf::RenderTarget& target) override;
 #endif
 
  private:
-  // Radius of the circle collider.
+  // The radius of the circle collider.
   float radius_ = 0;
 };
 

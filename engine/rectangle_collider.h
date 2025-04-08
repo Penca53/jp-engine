@@ -7,30 +7,42 @@
 
 namespace ng {
 
-// Represents a rectangular collision shape for collision detection.
+/// @brief Represents a rectangular collider for physics interactions.
 class RectangleCollider : public Collider {
  public:
-  // Creates a RectangleCollider with the specified size.
+  /// @brief Constructs a RectangleCollider with the specified size.
+  /// @param app A pointer to the App instance this collider belongs to. This pointer must not be null.
+  /// @param size The size of the rectangle collider.
   RectangleCollider(App* app, sf::Vector2f size);
 
-  // Returns the size of the collider.
+  /// @brief Returns the size of the rectangle collider.
+  /// @return A constant reference to the size vector.
   [[nodiscard]] const sf::Vector2f& GetSize() const;
 
-  // Checks for collision with another collider. This is used to leverage
-  // double dispatch to call the specialized Collides method.
+  /// @brief Checks for collision with another Collider. Uses double-dispatch.
+  /// @param other A constant reference to the other Collider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const Collider& other) const override;
-  // Checks for collision with another CircleCollider.
+
+  /// @brief Checks for collision with a CircleCollider.
+  /// @param other A constant reference to the other CircleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const CircleCollider& other) const override;
-  // Checks for collision with another RectangleCollider.
+
+  /// @brief Checks for collision with another RectangleCollider.
+  /// @param other A constant reference to the other RectangleCollider.
+  /// @return True if a collision occurs, false otherwise.
   [[nodiscard]] bool Collides(const RectangleCollider& other) const override;
 
  protected:
 #ifdef DEBUG
+  /// @brief Draw the collider's bounds for debugging purposes.
+  /// @param target The SFML RenderTarget to draw to.
   void Draw(sf::RenderTarget& target) override;
 #endif
 
  private:
-  // Size of the whole rectangle.
+  // The size of the rectangle collider.
   sf::Vector2f size_;
 };
 

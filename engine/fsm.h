@@ -3,33 +3,39 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "state.h"
 #include "transition.h"
 
 namespace ng {
 
-// Represents a Finite State Machine (FSM) for managing game states and
-// transitions.
+/// @brief Implements a finite state machine (FSM) to manage the behavior of an object based on its current state and transitions.
+/// @tparam TContext The type of the context object that the state machine operates on.
 template <typename TContext>
 class FSM {
  public:
-  // Creates an FSM with a context and an entry state.
+  /// @brief Constructs an FSM with a context object and an initial entry state.
+  /// @param context A pointer to the context object that the FSM will operate on. This pointer must not be null.
+  /// @param entry_state A unique pointer to the initial state of the FSM. Ownership is transferred to the FSM.
   FSM(TContext* context, std::unique_ptr<State<TContext>> entry_state)
       : context_(context), current_state_(entry_state.get()) {
     AddState(std::move(entry_state));
   }
 
-  // Returns the associated context.
+  /// @brief Returns the context object associated with this FSM.
+  /// @return A pointer to the context object. Never null.
   TContext* GetContext() { return context_; }
 
-  // Adds a state to the FSM.
+  /// @brief Adds a new state to the FSM.
+  /// @param state A unique pointer to the State object to add. Ownership is transferred to the FSM.
   void AddState(std::unique_ptr<State<TContext>> state) {
     state->SetContext(context_);
     states_.insert({state->GetID(), std::move(state)});
   }
 
-  // Adds a transition to the FSM.
+  /// @brief Adds a new transition to the FSM.
+  /// @param transition The Transition object to add. It defines the source state, target state, and the condition for the transition.
   void AddTransition(Transition<TContext> transition) {
     auto it = transitions_.find(transition.GetFrom());
     if (it == transitions_.end()) {
@@ -39,7 +45,7 @@ class FSM {
     it->second.push_back(std::move(transition));
   }
 
-  // Updates the FSM, evaluating transitions and changing states if necessary.
+  /// @brief Updates the FSM. Checks for applicable transitions from the current state and updates the current state.
   void Update() {
     auto it = transitions_.find(current_state_->GetID());
     if (it != transitions_.end()) {
@@ -55,24 +61,23 @@ class FSM {
   }
 
  private:
+  /// @brief Performs a transition from the current state to a new state.
+  /// @param to_state A pointer to the State object to transition to. This pointer must not be null.
   void Transit(State<TContext>* to_state) {
     current_state_->OnExit();
     current_state_ = to_state;
     current_state_->OnEnter();
   }
 
-  // The context of the FSM.
-  // All the transitions and states will only be able to act and react
-  // on variables stored in the context.
+  // Pointer to the context object that the FSM operates on. Never null after construction.
   TContext* context_ = nullptr;
 
-  // Map of state IDs to states.
+  // Stores all the states of the FSM, indexed by their unique ID.
   std::unordered_map<std::string, std::unique_ptr<State<TContext>>> states_;
-  // Map of state IDs to their associated transitions.
+  // Stores the transitions of the FSM, where the key is the source state ID and the value is a vector of transitions.
   std::unordered_map<std::string, std::vector<Transition<TContext>>>
       transitions_;
-  // Current active state. After the construction of a FSM, the current state
-  // is never null.
+  // Pointer to the currently active state. Never null after construction.
   State<TContext>* current_state_ = nullptr;
 };
 
