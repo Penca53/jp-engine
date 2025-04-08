@@ -31,11 +31,11 @@ void Node::SetName(std::string name) {
   name_ = std::move(name);
 }
 
-App* Node::GetApp() {
+App* Node::GetApp() const {
   return app_;
 }
 
-Scene* Node::GetScene() {
+Scene* Node::GetScene() const {
   return scene_;
 }
 

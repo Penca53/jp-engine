@@ -14,8 +14,10 @@ SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite* sprite,
     : sprite_(sprite),
       texture_(texture),
       ticks_per_frame_(ticks_per_frame),
+      // If no explicit frame size is provided, assume square frames based on the texture height.
       frame_size_({static_cast<int32_t>(texture_->getSize().y),
                    static_cast<int32_t>(texture_->getSize().y)}) {
+  // Calculate the total number of frames in the sprite sheet.
   frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;
 }
 
@@ -27,6 +29,7 @@ SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite* sprite,
       texture_(texture),
       ticks_per_frame_(ticks_per_frame),
       frame_size_(frame_size) {
+  // Calculate the total number of frames in the sprite sheet.
   frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;
 }
 
@@ -47,6 +50,8 @@ void SpriteSheetAnimation::Start() {
   frame_index_ = 0;
   ticks_counter_ = 0;
   sprite_->setTexture(*texture_);
+  sprite_->setTextureRect(
+      sf::IntRect({frame_index_ * frame_size_.x, 0}, frame_size_));
 }
 
 void SpriteSheetAnimation::Update() {
