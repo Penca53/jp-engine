@@ -31,16 +31,19 @@ class FSM {
 
   // Adds a transition to the FSM.
   void AddTransition(Transition<TContext> transition) {
-    if (!transitions_.contains(transition.GetFrom())) {
-      transitions_.insert({transition.GetFrom(), {}});
+    auto it = transitions_.find(transition.GetFrom());
+    if (it == transitions_.end()) {
+      it = transitions_.insert({transition.GetFrom(), {}}).first;
     }
-    transitions_.at(transition.GetFrom()).push_back(std::move(transition));
+
+    it->second.push_back(std::move(transition));
   }
 
   // Updates the FSM, evaluating transitions and changing states if necessary.
   void Update() {
-    if (transitions_.contains(current_state_->GetID())) {
-      for (auto& transition : transitions_.at(current_state_->GetID())) {
+    auto it = transitions_.find(current_state_->GetID());
+    if (it != transitions_.end()) {
+      for (auto& transition : it->second) {
         if (transition.MeetsCondition(*context_)) {
           Transit(states_.at(transition.GetTo()).get());
           break;
