@@ -10,7 +10,7 @@ namespace game {
 
 class WinCanvas : public ng::Node {
  public:
-  explicit WinCanvas(ng::App& app);
+  explicit WinCanvas(ng::App* app);
 
   void Enable();
   void Disable();

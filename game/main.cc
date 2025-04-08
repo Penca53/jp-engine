@@ -7,6 +7,6 @@
 int main() {
   static constexpr sf::Vector2u kWindowSize = {832U, 640U};
   ng::App app(kWindowSize, "Platformer");
-  app.LoadScene(game::MakeDefaultScene(app)).Run(60, 60);
+  app.LoadScene(game::MakeDefaultScene(&app)).Run(60, 60);
   return EXIT_SUCCESS;
 }

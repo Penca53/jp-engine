@@ -11,11 +11,11 @@
 
 namespace game {
 
-GameManager::GameManager(ng::App& app)
+GameManager::GameManager(ng::App* app)
     : ng::Node(app),
-      win_sound_(GetApp().GetResourceManager().LoadSoundBuffer("Win_2.wav")),
+      win_sound_(GetApp()->GetResourceManager().LoadSoundBuffer("Win_2.wav")),
       lose_sound_(
-          GetApp().GetResourceManager().LoadSoundBuffer("Loose_2.wav")) {}
+          GetApp()->GetResourceManager().LoadSoundBuffer("Loose_2.wav")) {}
 
 void GameManager::OnAdd() {
   auto& win_canvas = GetParent()->MakeChild<WinCanvas>();
@@ -29,8 +29,8 @@ void GameManager::OnAdd() {
 
 void GameManager::Update() {
   if (state_ == State::WON || state_ == State::LOST) {
-    if (GetApp().GetInput().GetKeyDown(sf::Keyboard::Scancode::Enter)) {
-      GetApp().LoadScene(MakeDefaultScene(GetApp()));
+    if (GetApp()->GetInput().GetKeyDown(sf::Keyboard::Scancode::Enter)) {
+      GetApp()->LoadScene(MakeDefaultScene(GetApp()));
       return;
     }
   }

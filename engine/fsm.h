@@ -15,17 +15,17 @@ template <typename TContext>
 class FSM {
  public:
   // Creates an FSM with a context and an entry state.
-  FSM(TContext& context, std::unique_ptr<State<TContext>> entry_state)
-      : context_(&context), current_state_(entry_state.get()) {
+  FSM(TContext* context, std::unique_ptr<State<TContext>> entry_state)
+      : context_(context), current_state_(entry_state.get()) {
     AddState(std::move(entry_state));
   }
 
   // Returns the associated context.
-  TContext& GetMutableContext() { return context_; }
+  TContext* GetContext() { return context_; }
 
   // Adds a state to the FSM.
   void AddState(std::unique_ptr<State<TContext>> state) {
-    state->SetContext(*context_);
+    state->SetContext(context_);
     states_.insert({state->GetID(), std::move(state)});
   }
 
@@ -42,7 +42,7 @@ class FSM {
     if (transitions_.contains(current_state_->GetID())) {
       for (auto& transition : transitions_.at(current_state_->GetID())) {
         if (transition.MeetsCondition(*context_)) {
-          Transit(*states_.at(transition.GetTo()));
+          Transit(states_.at(transition.GetTo()).get());
           break;
         }
       }
@@ -52,9 +52,9 @@ class FSM {
   }
 
  private:
-  void Transit(State<TContext>& to_state) {
+  void Transit(State<TContext>* to_state) {
     current_state_->OnExit();
-    current_state_ = &to_state;
+    current_state_ = to_state;
     current_state_->OnEnter();
   }
 

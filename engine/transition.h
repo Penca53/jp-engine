@@ -15,7 +15,7 @@ class Transition {
   // Creates a transition given the source and destination state IDs, and a
   // condition function.
   Transition(State<TContext>::ID from, State<TContext>::ID to,  // NOLINT
-             std::function<bool(TContext)> condition)
+             std::function<bool(TContext&)> condition)
       : from_(std::move(from)),
         to_(std::move(to)),
         condition_(std::move(condition)) {}
@@ -37,7 +37,7 @@ class Transition {
   // The destination state of the transition.
   State<TContext>::ID to_;
   // The condition bound to the transition.
-  std::function<bool(TContext)> condition_;
+  std::function<bool(TContext&)> condition_;
 };
 
 }  // namespace ng

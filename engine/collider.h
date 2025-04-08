@@ -11,7 +11,7 @@ class RectangleCollider;
 // implementation of collision detection methods for various collider types.
 class Collider : public Node {
  public:
-  explicit Collider(App& app);
+  explicit Collider(App* app);
 
   // Checks for collision with another collider. This is used to leverage
   // double dispatch to call the specialized Collides method.

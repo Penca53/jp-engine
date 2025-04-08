@@ -7,7 +7,7 @@ namespace game {
 
 class FollowPlayer : public ng::Node {
  public:
-  FollowPlayer(ng::App& app, const Player& player);
+  FollowPlayer(ng::App* app, const Player* player);
 
  protected:
   void OnAdd() override;

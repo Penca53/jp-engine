@@ -25,12 +25,12 @@
 
 namespace game {
 
-std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App& app) {
+std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App* app) {
   auto scene = std::make_unique<ng::Scene>(app);
   scene->SetName("Scene");
 
   ng::Tileset tileset(
-      {32, 32}, app.GetResourceManager().LoadTexture("Terrain (16x16).png"));
+      {32, 32}, &app->GetResourceManager().LoadTexture("Terrain (16x16).png"));
 
   {
     tileset.AddTile(ng::Tile(TileID::kVoid));
@@ -191,28 +191,29 @@ std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App& app) {
   auto& score_manager = scene->MakeChild<ScoreManager>();
   auto& game_manager = scene->MakeChild<GameManager>();
 
-  auto& player = scene->MakeChild<Player>(tilemap, score_manager, game_manager);
+  auto& player =
+      scene->MakeChild<Player>(&tilemap, &score_manager, &game_manager);
   player.SetLocalPosition({8.F * static_cast<float>(tilemap.GetTileSize().x),
                            25.F * static_cast<float>(tilemap.GetTileSize().y)});
 
   scene->MakeChild<ng::Camera>(1, ng::Layer::kUI);
 
   auto& camera = scene->MakeChild<ng::Camera>();
-  camera.MakeChild<FollowPlayer>(player);
+  camera.MakeChild<FollowPlayer>(&player);
 
-  auto& end = scene->MakeChild<End>(game_manager);
+  auto& end = scene->MakeChild<End>(&game_manager);
   end.SetLocalPosition({61 * 32, 24 * 32});
 
-  auto& g = scene->MakeChild<Mushroom>(tilemap);
+  auto& g = scene->MakeChild<Mushroom>(&tilemap);
   g.SetLocalPosition({38 * 32, 27 * 32});
 
-  auto& g1 = scene->MakeChild<Mushroom>(tilemap);
+  auto& g1 = scene->MakeChild<Mushroom>(&tilemap);
   g1.SetLocalPosition({40 * 32, 27 * 32});
 
-  auto& p = scene->MakeChild<Plant>(tilemap);
+  auto& p = scene->MakeChild<Plant>(&tilemap);
   p.SetLocalPosition({52 * 32, (28 * 32) - 10});
 
-  auto& p1 = scene->MakeChild<Plant>(tilemap);
+  auto& p1 = scene->MakeChild<Plant>(&tilemap);
   p1.SetLocalPosition({58 * 32, (26 * 32) - 10});
 
   auto& b = scene->MakeChild<Banana>();

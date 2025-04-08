@@ -5,14 +5,14 @@
 
 namespace ng {
 
-Collider::Collider(App& app) : Node(app) {}
+Collider::Collider(App* app) : Node(app) {}
 
 void Collider::OnAdd() {
-  GetScene().GetMutablePhysics().AddCollider(this);
+  GetScene()->GetMutablePhysics().AddCollider(this);
 }
 
 void Collider::OnDestroy() {
-  GetScene().GetMutablePhysics().RemoveCollider(this);
+  GetScene()->GetMutablePhysics().RemoveCollider(this);
 }
 
 }  // namespace ng

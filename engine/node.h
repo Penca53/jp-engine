@@ -30,7 +30,7 @@ class Node {
   // InternalDraw, and InternalOnDestroy.
   friend class Scene;
 
-  explicit Node(App& app);
+  explicit Node(App* app);
   virtual ~Node() = default;
 
   Node(const Node& other) = delete;
@@ -43,8 +43,9 @@ class Node {
   // Sets the name of the node.
   void SetName(std::string name);
 
-  [[nodiscard]] Scene& GetScene();
-  [[nodiscard]] App& GetApp();
+  [[nodiscard]] App* GetApp();
+
+  [[nodiscard]] Scene* GetScene();
   // Returns the parent node.
   // If the parent is null, then this node is a scene root.
   [[nodiscard]] Node* GetParent() const;
@@ -59,7 +60,7 @@ class Node {
 
   template <Derived<Node> T, typename... Args>
   T& MakeChild(Args&&... args) {
-    auto child = std::make_unique<T>(*app_, std::forward<Args>(args)...);
+    auto child = std::make_unique<T>(app_, std::forward<Args>(args)...);
     T& ref = *child;
     AddChild(std::move(child));
     return ref;

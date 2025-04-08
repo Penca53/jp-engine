@@ -14,7 +14,7 @@
 
 namespace ng {
 
-Scene::Scene(App& app) {
+Scene::Scene(App* app) {
   root_ = std::make_unique<Node>(app);
   // Render all layers.
   root_->SetLayer(static_cast<Layer>(~0ULL));

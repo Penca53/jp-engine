@@ -14,7 +14,7 @@ class Tileset {
  public:
   // Creates a tileset given the size of a tile in pixels,
   // and the texture sheet to map tiles from.
-  Tileset(sf::Vector2u tile_size, const sf::Texture& texture);
+  Tileset(sf::Vector2u tile_size, const sf::Texture* texture);
 
   // Returns the tile, given its ID.
   [[nodiscard]] const Tile& GetTile(TileID id) const;
@@ -24,7 +24,7 @@ class Tileset {
   // Returns the size of a tile in the tileset.
   [[nodiscard]] sf::Vector2u GetTileSize() const;
   // Returns the texture sheet.
-  [[nodiscard]] const sf::Texture& GetTexture() const;
+  [[nodiscard]] const sf::Texture* GetTexture() const;
 
  private:
   // The size of every tile in the tileset.

@@ -20,7 +20,7 @@ namespace ng {
 static constexpr size_t kTriangleVertexCount = 3;
 static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
 
-Tilemap::Tilemap(App& app, sf::Vector2u size, Tileset tileset)
+Tilemap::Tilemap(App* app, sf::Vector2u size, Tileset tileset)
     : Node(app),
       size_(size),
       tileset_(std::move(tileset)),
@@ -136,7 +136,7 @@ sf::Vector2u Tilemap::WorldToTileSpace(sf::Vector2f world_position) const {
 void Tilemap::Draw(sf::RenderTarget& target) {
   sf::RenderStates state;
   state.transform = GetGlobalTransform().getTransform();
-  state.texture = &tileset_.GetTexture();
+  state.texture = tileset_.GetTexture();
   target.draw(vertices_, state);
 }
 

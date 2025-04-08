@@ -22,7 +22,7 @@ class Scene {
   // Node needs to be able to call RegisterNode, and UnregisterNode.
   friend class Node;
 
-  explicit Scene(App& app);
+  explicit Scene(App* app);
 
   // Returns the name of the scene.
   [[nodiscard]] const std::string& GetName() const;

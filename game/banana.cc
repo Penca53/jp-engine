@@ -28,13 +28,13 @@ void Banana::IdleState::Update() {
   animation_.Update();
 }
 
-Banana::Banana(ng::App& app)
+Banana::Banana(ng::App* app)
     : ng::Node(app),
-      sprite_(GetApp().GetResourceManager().LoadTexture("Banana/Bananas.png")),
-      animator_(context_, std::make_unique<IdleState>(
-                              "run", ng::SpriteSheetAnimation(
-                                         sprite_, &sprite_.getTexture(),
-                                         kAnimationTPF))) {
+      sprite_(GetApp()->GetResourceManager().LoadTexture("Banana/Bananas.png")),
+      animator_(&context_, std::make_unique<IdleState>(
+                               "run", ng::SpriteSheetAnimation(
+                                          &sprite_, &sprite_.getTexture(),
+                                          kAnimationTPF))) {
   SetName("Banana");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({16, 16});

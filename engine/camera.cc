@@ -10,9 +10,9 @@
 
 namespace ng {
 
-Camera::Camera(App& app) : Camera(app, 0, Layer::kDefault) {}
+Camera::Camera(App* app) : Camera(app, 0, Layer::kDefault) {}
 
-Camera::Camera(App& app, int32_t draw_order, Layer render_layers)
+Camera::Camera(App* app, int32_t draw_order, Layer render_layers)
     : Node(app), draw_order_(draw_order), render_layers_(render_layers) {}
 
 const sf::View& Camera::GetView() const {
@@ -32,9 +32,9 @@ void Camera::SetViewSize(sf::Vector2f size) {
 }
 
 void Camera::OnAdd() {
-  SetViewSize(sf::Vector2f(GetApp().GetWindow().getSize()));
+  SetViewSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
   view_.setCenter(GetGlobalTransform().getPosition());
-  GetScene().GetCameraManager().AddCamera(this);
+  GetScene()->GetCameraManager().AddCamera(this);
 }
 
 void Camera::Update() {
@@ -42,7 +42,7 @@ void Camera::Update() {
 }
 
 void Camera::OnDestroy() {
-  GetScene().GetCameraManager().RemoveCamera(this);
+  GetScene()->GetCameraManager().RemoveCamera(this);
 }
 
 }  // namespace ng

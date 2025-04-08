@@ -13,7 +13,7 @@ namespace game {
 
 class Banana : public ng::Node {
  public:
-  explicit Banana(ng::App& app);
+  explicit Banana(ng::App* app);
 
   bool GetIsCollected() const;
   void Collect();

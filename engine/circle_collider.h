@@ -8,7 +8,7 @@ namespace ng {
 class CircleCollider : public Collider {
  public:
   // Creates a CircleCollider with the specified radius.
-  CircleCollider(App& app, float radius);
+  CircleCollider(App* app, float radius);
 
   // Returns the radius of the collider.
   [[nodiscard]] float GetRadius() const;

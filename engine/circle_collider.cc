@@ -13,7 +13,7 @@
 
 namespace ng {
 
-CircleCollider::CircleCollider(App& app, float radius)
+CircleCollider::CircleCollider(App* app, float radius)
     : Collider(app), radius_(radius) {
   SetName("CircleCollider");
 }

@@ -19,11 +19,11 @@ class SpriteSheetAnimation {
   // Creates a SpriteSheetAnimation.
   // This overload deduces the frame's size to be a square
   // with side equals to the height of the texture.
-  SpriteSheetAnimation(sf::Sprite& sprite, const sf::Texture* texture,
+  SpriteSheetAnimation(sf::Sprite* sprite, const sf::Texture* texture,
                        int32_t ticks_per_frame);
   // Constructs a SpriteSheetAnimation with a specified frame size.
   // This overload is useful when a frame isn't a regular square.
-  SpriteSheetAnimation(sf::Sprite& sprite, const sf::Texture* texture,
+  SpriteSheetAnimation(sf::Sprite* sprite, const sf::Texture* texture,
                        int32_t ticks_per_frame, sf::Vector2i frame_size);
 
   // Returns the current frame index.

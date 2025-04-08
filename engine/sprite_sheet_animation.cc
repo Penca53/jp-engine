@@ -8,10 +8,10 @@
 
 namespace ng {
 
-SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
+SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite* sprite,
                                            const sf::Texture* texture,
                                            int32_t ticks_per_frame)
-    : sprite_(&sprite),
+    : sprite_(sprite),
       texture_(texture),
       ticks_per_frame_(ticks_per_frame),
       frame_size_({static_cast<int32_t>(texture_->getSize().y),
@@ -19,11 +19,11 @@ SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
   frames_count_ = static_cast<int32_t>(texture_->getSize().x) / frame_size_.x;
 }
 
-SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite& sprite,
+SpriteSheetAnimation::SpriteSheetAnimation(sf::Sprite* sprite,
                                            const sf::Texture* texture,
                                            int32_t ticks_per_frame,
                                            sf::Vector2i frame_size)
-    : sprite_(&sprite),
+    : sprite_(sprite),
       texture_(texture),
       ticks_per_frame_(ticks_per_frame),
       frame_size_(frame_size) {

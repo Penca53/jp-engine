@@ -12,7 +12,7 @@
 
 namespace ng {
 
-RectangleCollider::RectangleCollider(App& app, sf::Vector2f size)
+RectangleCollider::RectangleCollider(App* app, sf::Vector2f size)
     : Collider(app), size_(size) {
   SetName("RectangleCollider");
 }

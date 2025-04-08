@@ -37,12 +37,12 @@ void Plant::IdleState::Update() {
 
 Plant::AttackState::AttackState(ng::State<Context>::ID id,
                                 ng::SpriteSheetAnimation animation,
-                                const Plant& plant, const ng::Tilemap& tilemap,
+                                const Plant* plant, const ng::Tilemap* tilemap,
                                 sf::Vector2f direction)
     : ng::State<Context>(std::move(id)),
       animation_(std::move(animation)),
-      plant_(&plant),
-      tilemap_(&tilemap),
+      plant_(plant),
+      tilemap_(tilemap),
       direction_(direction) {
   animation_.RegisterOnEndCallback(
       [this]() -> void { GetContext()->is_attacking = false; });
@@ -61,18 +61,18 @@ void Plant::AttackState::Update() {
 
 void Plant::AttackState::Attack() {
   auto& bullet =
-      plant_->GetParent()->MakeChild<PlantBullet>(*tilemap_, direction_);
+      plant_->GetParent()->MakeChild<PlantBullet>(tilemap_, direction_);
   bullet.SetLocalPosition(plant_->GetLocalTransform().getPosition() +
                           sf::Vector2f{-16.F, -6.F});
 }
 
 Plant::HitState::HitState(ng::State<Context>::ID id,
                           ng::SpriteSheetAnimation animation,
-                          const sf::SoundBuffer& sound_buffer, Plant& plant)
+                          const sf::SoundBuffer* sound_buffer, Plant* plant)
     : ng::State<Context>(std::move(id)),
       animation_(std::move(animation)),
-      sound_(sound_buffer),
-      plant_(&plant) {
+      sound_(*sound_buffer),
+      plant_(plant) {
   animation_.RegisterOnEndCallback([this]() { Die(); });
 }
 
@@ -89,15 +89,15 @@ void Plant::HitState::Die() {
   plant_->Destroy();
 }
 
-Plant::Plant(ng::App& app, const ng::Tilemap& tilemap)
+Plant::Plant(ng::App* app, const ng::Tilemap* tilemap)
     : ng::Node(app),
-      tilemap_(&tilemap),
+      tilemap_(tilemap),
       sprite_(
-          GetApp().GetResourceManager().LoadTexture("Plant/Idle (44x42).png")),
-      animator_(context_, std::make_unique<IdleState>(
-                              "idle", ng::SpriteSheetAnimation(
-                                          sprite_, &sprite_.getTexture(),
-                                          kAnimationTPF, {44, 42}))) {
+          GetApp()->GetResourceManager().LoadTexture("Plant/Idle (44x42).png")),
+      animator_(&context_, std::make_unique<IdleState>(
+                               "idle", ng::SpriteSheetAnimation(
+                                           &sprite_, &sprite_.getTexture(),
+                                           kAnimationTPF, {44, 42}))) {
   SetName("Plant");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({22, 21});
@@ -109,31 +109,32 @@ Plant::Plant(ng::App& app, const ng::Tilemap& tilemap)
 
   animator_.AddState(std::make_unique<AttackState>(
       "attack",
-      ng::SpriteSheetAnimation(sprite_,
-                               &GetApp().GetResourceManager().LoadTexture(
+      ng::SpriteSheetAnimation(&sprite_,
+                               &GetApp()->GetResourceManager().LoadTexture(
                                    "Plant/Attack (44x42).png"),
                                kAnimationTPF, {44, 42}),
-      *this, *tilemap_, direction_));
+      this, tilemap_, direction_));
   animator_.AddState(std::make_unique<HitState>(
       "hit",
       ng::SpriteSheetAnimation(
-          sprite_,
-          &GetApp().GetResourceManager().LoadTexture("Plant/Hit (44x42).png"),
+          &sprite_,
+          &GetApp()->GetResourceManager().LoadTexture("Plant/Hit (44x42).png"),
           kAnimationTPF, {44, 42}),
-      GetApp().GetResourceManager().LoadSoundBuffer("Mushroom/Hit_2.wav"),
-      *this));
+      &GetApp()->GetResourceManager().LoadSoundBuffer("Mushroom/Hit_2.wav"),
+      this));
 
-  animator_.AddTransition(ng::Transition<Context>(
-      "idle", "hit", [](Context context) -> bool { return context.is_dead; }));
-  animator_.AddTransition(ng::Transition<Context>(
-      "idle", "attack",
-      [](Context context) -> bool { return context.is_attacking; }));
-  animator_.AddTransition(ng::Transition<Context>(
-      "attack", "idle",
-      [](Context context) -> bool { return !context.is_attacking; }));
-  animator_.AddTransition(ng::Transition<Context>(
-      "attack", "hit",
-      [](Context context) -> bool { return context.is_dead; }));
+  animator_.AddTransition({"idle", "hit", [](Context& context) -> bool {
+                             return context.is_dead;
+                           }});
+  animator_.AddTransition({"idle", "attack", [](Context& context) -> bool {
+                             return context.is_attacking;
+                           }});
+  animator_.AddTransition({"attack", "idle", [](Context& context) -> bool {
+                             return !context.is_attacking;
+                           }});
+  animator_.AddTransition({"attack", "hit", [](Context& context) -> bool {
+                             return context.is_dead;
+                           }});
 }
 
 bool Plant::GetIsDead() const {
@@ -159,7 +160,7 @@ void Plant::Update() {
     attack_timer_ = kAttackCooldown;
   }
 
-  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene()->GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

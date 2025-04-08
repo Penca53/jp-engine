@@ -21,7 +21,7 @@
 
 namespace ng {
 
-Node::Node(App& app) : app_(&app) {}
+Node::Node(App* app) : app_(app) {}
 
 const std::string& Node::GetName() const {
   return name_;
@@ -31,12 +31,12 @@ void Node::SetName(std::string name) {
   name_ = std::move(name);
 }
 
-Scene& Node::GetScene() {
-  return *scene_;
+App* Node::GetApp() {
+  return app_;
 }
 
-App& Node::GetApp() {
-  return *app_;
+Scene* Node::GetScene() {
+  return scene_;
 }
 
 Node* Node::GetParent() const {

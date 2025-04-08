@@ -12,7 +12,7 @@ namespace game {
 
 class PlantBullet : public ng::Node {
  public:
-  PlantBullet(ng::App& app, const ng::Tilemap& tilemap, sf::Vector2f direction);
+  PlantBullet(ng::App* app, const ng::Tilemap* tilemap, sf::Vector2f direction);
 
   bool GetIsDead() const;
 

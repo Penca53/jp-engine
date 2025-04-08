@@ -32,10 +32,10 @@ void End::IdleState::Update() {
 
 End::PressedState::PressedState(ng::State<Context>::ID id,
                                 ng::SpriteSheetAnimation animation,
-                                GameManager& game_manager)
+                                GameManager* game_manager)
     : ng::State<Context>(std::move(id)),
       animation_(std::move(animation)),
-      game_manager_(&game_manager) {}
+      game_manager_(game_manager) {}
 
 void End::PressedState::OnEnter() {
   animation_.Start();
@@ -49,14 +49,14 @@ void End::PressedState::Update() {
   animation_.Update();
 }
 
-End::End(ng::App& app, GameManager& game_manager)
+End::End(ng::App* app, GameManager* game_manager)
     : ng::Node(app),
-      sprite_(GetApp().GetResourceManager().LoadTexture("End/End (Idle).png")),
-      animator_(context_, std::make_unique<IdleState>(
-                              "idle", ng::SpriteSheetAnimation(
-                                          sprite_, &sprite_.getTexture(),
-                                          kAnimationTPF))),
-      game_manager_(&game_manager) {
+      sprite_(GetApp()->GetResourceManager().LoadTexture("End/End (Idle).png")),
+      animator_(&context_, std::make_unique<IdleState>(
+                               "idle", ng::SpriteSheetAnimation(
+                                           &sprite_, &sprite_.getTexture(),
+                                           kAnimationTPF))),
+      game_manager_(game_manager) {
   SetName("End");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({32, 32});
@@ -66,18 +66,18 @@ End::End(ng::App& app, GameManager& game_manager)
 
   animator_.AddState(std::make_unique<PressedState>(
       "pressed",
-      ng::SpriteSheetAnimation(sprite_,
-                               &GetApp().GetResourceManager().LoadTexture(
+      ng::SpriteSheetAnimation(&sprite_,
+                               &GetApp()->GetResourceManager().LoadTexture(
                                    "End/End (Pressed) (64x64).png"),
                                kAnimationTPF),
-      *game_manager_));
+      game_manager_));
 
-  animator_.AddTransition(ng::Transition<Context>(
-      "idle", "pressed",
-      [](Context context) -> bool { return context.is_pressed_; }));
-  animator_.AddTransition(ng::Transition<Context>(
-      "pressed", "idle",
-      [](Context context) -> bool { return !context.is_pressed_; }));
+  animator_.AddTransition({"idle", "pressed", [](Context& context) -> bool {
+                             return context.is_pressed_;
+                           }});
+  animator_.AddTransition({"pressed", "idle", [](Context& context) -> bool {
+                             return !context.is_pressed_;
+                           }});
 }
 
 void End::EndGame() {

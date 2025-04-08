@@ -9,8 +9,8 @@
 
 namespace game {
 
-FollowPlayer::FollowPlayer(ng::App& app, const Player& player)
-    : ng::Node(app), player_(&player) {}
+FollowPlayer::FollowPlayer(ng::App* app, const Player* player)
+    : ng::Node(app), player_(player) {}
 
 void FollowPlayer::OnAdd() {
   Follow();
@@ -21,7 +21,7 @@ void FollowPlayer::Update() {
 }
 
 void FollowPlayer::Follow() {
-  if (!GetScene().IsValid(player_)) {
+  if (!GetScene()->IsValid(player_)) {
     return;
   }
 

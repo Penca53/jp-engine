@@ -10,10 +10,10 @@
 
 namespace game {
 
-ScoreManager::ScoreManager(ng::App& app)
+ScoreManager::ScoreManager(ng::App* app)
     : ng::Node(app),
       score_text_(
-          GetApp().GetResourceManager().LoadFont("Roboto-Regular.ttf")) {
+          GetApp()->GetResourceManager().LoadFont("Roboto-Regular.ttf")) {
   SetLayer(ng::Layer::kUI);
 
   UpdateUI();
@@ -25,7 +25,7 @@ void ScoreManager::AddScore(int32_t score) {
 }
 
 void ScoreManager::Update() {
-  float width = static_cast<float>(GetApp().GetWindow().getSize().y);
+  float width = static_cast<float>(GetApp()->GetWindow().getSize().y);
   SetLocalPosition({0, -((width / 2.F) - 8)});
 }
 

@@ -18,7 +18,7 @@ class Tilemap : public Node {
  public:
   // Constructs a Tilemap specifying the size (in tiles) of the tilemap and the
   // associated tileset.
-  Tilemap(App& app, sf::Vector2u size, Tileset tileset);
+  Tilemap(App* app, sf::Vector2u size, Tileset tileset);
 
   // Returns the size of the tilemap in tiles.
   [[nodiscard]] sf::Vector2u GetSize() const;

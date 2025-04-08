@@ -9,17 +9,18 @@
 
 namespace game {
 
-LoseCanvas::LoseCanvas(ng::App& app)
+LoseCanvas::LoseCanvas(ng::App* app)
     : ng::Node(app),
-      title_text_(GetApp().GetResourceManager().LoadFont("Roboto-Regular.ttf")),
+      title_text_(
+          GetApp()->GetResourceManager().LoadFont("Roboto-Regular.ttf")),
       restart_text_(
-          GetApp().GetResourceManager().LoadFont("Roboto-Regular.ttf")) {
+          GetApp()->GetResourceManager().LoadFont("Roboto-Regular.ttf")) {
   SetName("LoseCanvas");
   SetLayer(ng::Layer::kUI);
 
-  background_.setSize(sf::Vector2f(GetApp().GetWindow().getSize()));
+  background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
   background_.setOrigin(
-      static_cast<sf::Vector2f>(GetApp().GetWindow().getSize() / 2U));
+      static_cast<sf::Vector2f>(GetApp()->GetWindow().getSize() / 2U));
   background_.setFillColor(sf::Color(50, 50, 50, 200));
 
   title_text_.setString("YOU LOST");

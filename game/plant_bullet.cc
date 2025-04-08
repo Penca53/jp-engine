@@ -13,12 +13,12 @@
 
 namespace game {
 
-PlantBullet::PlantBullet(ng::App& app, const ng::Tilemap& tilemap,
+PlantBullet::PlantBullet(ng::App* app, const ng::Tilemap* tilemap,
                          sf::Vector2f direction)
     : ng::Node(app),
-      tilemap_(&tilemap),
+      tilemap_(tilemap),
       direction_(direction),
-      sprite_(GetApp().GetResourceManager().LoadTexture("Plant/Bullet.png")) {
+      sprite_(GetApp()->GetResourceManager().LoadTexture("Plant/Bullet.png")) {
   SetName("PlantBullet");
   sprite_.setScale({2, 2});
   sprite_.setOrigin({8, 8});
@@ -66,7 +66,7 @@ void PlantBullet::Update() {
   static constexpr float kMovementSpeed = 6;
   Translate(direction_ * kMovementSpeed);
 
-  const ng::Collider* other = GetScene().GetPhysics().Overlap(*collider_);
+  const ng::Collider* other = GetScene()->GetPhysics().Overlap(*collider_);
   if (other != nullptr) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());

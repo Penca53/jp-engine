@@ -15,7 +15,7 @@ namespace game {
 static constexpr size_t kTriangleVertexCount = 3;
 static constexpr size_t kTrisInQuad = 2 * kTriangleVertexCount;
 
-Background::Background(ng::App& app, sf::Vector2u size)
+Background::Background(ng::App* app, sf::Vector2u size)
     : ng::Node(app),
       size_(size),
       image_vertices_(sf::PrimitiveType::Triangles, kTrisInQuad) {
@@ -29,7 +29,7 @@ Background::Background(ng::App& app, sf::Vector2u size)
 }
 
 void Background::OnAdd() {
-  texture_ = &GetApp().GetResourceManager().LoadTexture("Gray.png");
+  texture_ = &GetApp()->GetResourceManager().LoadTexture("Gray.png");
   texture_->setRepeated(true);
 }
 

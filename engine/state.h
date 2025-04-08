@@ -45,7 +45,7 @@ class State {
   virtual void OnExit() {}
 
  private:
-  void SetContext(TContext& context) { context_ = &context; }
+  void SetContext(TContext* context) { context_ = context; }
 
   // The unique ID of the state.
   ID id_;

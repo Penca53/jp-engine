@@ -13,7 +13,7 @@ namespace game {
 
 class End : public ng::Node {
  public:
-  End(ng::App& app, GameManager& game_manager);
+  End(ng::App* app, GameManager* game_manager);
 
   void EndGame();
 
@@ -42,7 +42,7 @@ class End : public ng::Node {
   class PressedState : public ng::State<Context> {
    public:
     PressedState(ng::State<Context>::ID id, ng::SpriteSheetAnimation animation,
-                 GameManager& game_manager);
+                 GameManager* game_manager);
 
    protected:
     void OnEnter() override;

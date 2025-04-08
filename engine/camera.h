@@ -14,9 +14,9 @@ namespace ng {
 class Camera : public Node {
  public:
   // Creates a default Camera (draw order 0 and default render layer).
-  explicit Camera(App& app);
+  explicit Camera(App* app);
   // Constructs a Camera with the specified draw order and rendering layer.
-  Camera(App& app, int32_t draw_order, Layer layers);
+  Camera(App* app, int32_t draw_order, Layer layers);
 
   // Returns the camera's view.
   [[nodiscard]] const sf::View& GetView() const;

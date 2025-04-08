@@ -18,7 +18,7 @@ class GameManager : public ng::Node {
     LOST,
   };
 
-  explicit GameManager(ng::App& app);
+  explicit GameManager(ng::App* app);
 
   void Win();
   void Lose();
