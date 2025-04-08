@@ -1,15 +1,15 @@
 #include "circle_collider.h"
 
-#include "app.h"
-#include "collider.h"
-#include "rectangle_collider.h"
-
 #ifdef DEBUG
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #endif
 #include <SFML/System/Vector2.hpp>
 #include <algorithm>
+
+#include "app.h"
+#include "collider.h"
+#include "rectangle_collider.h"
 
 namespace ng {
 
@@ -30,25 +30,28 @@ bool CircleCollider::Collides(const CircleCollider& other) const {
   float distanceSquared = (GetGlobalTransform().getPosition() -
                            other.GetGlobalTransform().getPosition())
                               .lengthSquared();
-  return distanceSquared <=
-         (radius_ + other.radius_) * (radius_ + other.radius_);
+  float combinedRadius =
+      (radius_ * std::max(GetGlobalTransform().getScale().x,
+                          GetGlobalTransform().getScale().y)) +
+      (other.radius_ * std::max(other.GetGlobalTransform().getScale().x,
+                                other.GetGlobalTransform().getScale().y));
+  return distanceSquared <= combinedRadius * combinedRadius;
 }
 
 bool CircleCollider::Collides(const RectangleCollider& other) const {
   sf::Vector2f pos = GetGlobalTransform().getPosition();
   sf::Vector2f other_pos = other.GetGlobalTransform().getPosition();
+  // Calculate the half-extents of the rectangle in world space.
+  float half_x =
+      (other.GetSize().x * other.GetGlobalTransform().getScale().x) / 2;
+  float half_y =
+      (other.GetSize().y * other.GetGlobalTransform().getScale().y) / 2;
 
-  float left = other_pos.x - (other.GetSize().x *
-                              other.GetGlobalTransform().getScale().x / 2);
-  float right = other_pos.x + (other.GetSize().x *
-                               other.GetGlobalTransform().getScale().x / 2);
-  float top = other_pos.y -
-              (other.GetSize().y * other.GetGlobalTransform().getScale().y / 2);
-  float bottom = other_pos.y + (other.GetSize().y *
-                                other.GetGlobalTransform().getScale().y / 2);
-
-  float closest_x = std::max(left, std::min(pos.x, right));
-  float closest_y = std::max(top, std::min(pos.y, bottom));
+  // Find the closest point on the rectangle to the circle's center.
+  float closest_x =
+      std::max(other_pos.x - half_x, std::min(pos.x, other_pos.x + half_x));
+  float closest_y =
+      std::max(other_pos.y - half_y, std::min(pos.y, other_pos.y + half_y));
 
   float diff_x = pos.x - closest_x;
   float diff_y = pos.y - closest_y;

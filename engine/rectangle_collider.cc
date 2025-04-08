@@ -26,24 +26,26 @@ bool RectangleCollider::Collides(const Collider& other) const {
 }
 
 bool RectangleCollider::Collides(const CircleCollider& other) const {
+  // Delegate collision check to the CircleCollider's specific implementation.
   return other.Collides(*this);
 }
 
 bool RectangleCollider::Collides(const RectangleCollider& other) const {
   sf::Vector2f pos = GetGlobalTransform().getPosition();
   sf::Vector2f otherPos = other.GetGlobalTransform().getPosition();
-  bool AisToTheRightOfB =
-      pos.x - size_.x * GetGlobalTransform().getScale().x / 2 >
-      otherPos.x + other.size_.x * other.GetGlobalTransform().getScale().x / 2;
-  bool AisToTheLeftOfB =
-      pos.x + size_.x * GetGlobalTransform().getScale().x / 2 <
-      otherPos.x - other.size_.x * other.GetGlobalTransform().getScale().x / 2;
-  bool AisBelowB =
-      pos.y - size_.y * GetGlobalTransform().getScale().y / 2 >
-      otherPos.y + other.size_.y * other.GetGlobalTransform().getScale().y / 2;
-  bool AisAboveB =
-      pos.y + size_.y * GetGlobalTransform().getScale().y / 2 <
-      otherPos.y - other.size_.y * other.GetGlobalTransform().getScale().y / 2;
+  // Calculate the extents of both rectangles in world space.
+  sf::Vector2f halfSize =
+      size_.componentWiseMul(GetGlobalTransform().getScale()) / 2.F;
+  sf::Vector2f otherHalfSize =
+      other.size_.componentWiseMul(other.GetGlobalTransform().getScale()) / 2.F;
+
+  // Check for non-overlapping conditions on both x and y axes.
+  bool AisToTheRightOfB = pos.x - halfSize.x > otherPos.x + otherHalfSize.x;
+  bool AisToTheLeftOfB = pos.x + halfSize.x < otherPos.x - otherHalfSize.x;
+  bool AisBelowB = pos.y - halfSize.y > otherPos.y + otherHalfSize.y;
+  bool AisAboveB = pos.y + halfSize.y < otherPos.y - otherHalfSize.y;
+
+  // If any of the non-overlapping conditions are true, then they are not colliding.
   return !(AisToTheRightOfB || AisToTheLeftOfB || AisAboveB || AisBelowB);
 }
 
