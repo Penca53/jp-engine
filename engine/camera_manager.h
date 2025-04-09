@@ -20,14 +20,7 @@ class CameraManager {
     /// @param b A pointer to the second Camera.
     /// @return True if camera 'a' should be drawn before camera 'b', false otherwise.
     bool operator()(const Camera* a, const Camera* b) const {
-      if (a->GetDrawOrder() < b->GetDrawOrder()) {
-        return true;
-      }
-      if (a->GetDrawOrder() > b->GetDrawOrder()) {
-        return false;
-      }
-      // If draw orders are equal, sort by pointer address for consistent ordering.
-      return a < b;
+      return a->GetDrawOrder() < b->GetDrawOrder();
     };
   };
 
