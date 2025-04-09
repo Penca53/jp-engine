@@ -20,6 +20,7 @@ class FSM {
   /// @param entry_state A unique pointer to the initial state of the FSM. Ownership is transferred to the FSM.
   FSM(TContext* context, std::unique_ptr<State<TContext>> entry_state)
       : context_(context), current_state_(entry_state.get()) {
+    assert(context);
     AddState(std::move(entry_state));
   }
 
@@ -64,6 +65,7 @@ class FSM {
   /// @brief Performs a transition from the current state to a new state.
   /// @param to_state A pointer to the State object to transition to. This pointer must not be null.
   void Transit(State<TContext>* to_state) {
+    assert(to_state);
     current_state_->OnExit();
     current_state_ = to_state;
     current_state_->OnEnter();

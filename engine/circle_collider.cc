@@ -1,6 +1,6 @@
 #include "circle_collider.h"
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #endif
@@ -62,7 +62,7 @@ bool CircleCollider::Collides(const RectangleCollider& other) const {
   return distance_squared <= radius * radius;
 }
 
-#ifdef DEBUG
+#ifndef NDEBUG
 void CircleCollider::Draw(sf::RenderTarget& target) {
   sf::CircleShape shape(radius_ * std::max(GetGlobalTransform().getScale().x,
                                            GetGlobalTransform().getScale().y));

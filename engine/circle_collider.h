@@ -32,7 +32,7 @@ class CircleCollider : public Collider {
   [[nodiscard]] bool Collides(const RectangleCollider& other) const override;
 
  protected:
-#ifdef DEBUG
+#ifndef NDEBUG
   /// @brief Draw the collider's bounds for debugging purposes.
   /// @param target The SFML RenderTarget to draw to.
   void Draw(sf::RenderTarget& target) override;

@@ -4,7 +4,7 @@
 #include "circle_collider.h"
 #include "collider.h"
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #endif
@@ -49,7 +49,7 @@ bool RectangleCollider::Collides(const RectangleCollider& other) const {
   return !(AisToTheRightOfB || AisToTheLeftOfB || AisAboveB || AisBelowB);
 }
 
-#ifdef DEBUG
+#ifndef NDEBUG
 void RectangleCollider::Draw(sf::RenderTarget& target) {
   sf::RectangleShape shape(
       size_.componentWiseMul(GetGlobalTransform().getScale()));

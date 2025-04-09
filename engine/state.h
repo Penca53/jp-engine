@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <string>
 
 namespace ng {
@@ -48,7 +49,10 @@ class State {
  private:
   /// @brief Sets the context object for this state. Called by the FSM.
   /// @param context A pointer to the context object. This pointer must not be null.
-  void SetContext(TContext* context) { context_ = context; }
+  void SetContext(TContext* context) {
+    assert(context);
+    context_ = context;
+  }
 
   // The unique identifier of the state.
   ID id_;

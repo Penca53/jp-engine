@@ -5,8 +5,8 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/System/Angle.hpp>
 #include <SFML/System/Vector2.hpp>
-
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -21,7 +21,9 @@
 
 namespace ng {
 
-Node::Node(App* app) : app_(app) {}
+Node::Node(App* app) : app_(app) {
+  assert(app);
+}
 
 const std::string& Node::GetName() const {
   return name_;

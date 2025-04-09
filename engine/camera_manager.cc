@@ -1,6 +1,7 @@
 #include "camera_manager.h"
 
 #include <SFML/System/Vector2.hpp>
+#include <cassert>
 #include <set>
 
 #include "camera.h"
@@ -19,10 +20,12 @@ CameraManager::GetCameras() const {
 }
 
 void CameraManager::AddCamera(Camera* camera) {
+  assert(camera);
   cameras_.insert(camera);
 }
 
 void CameraManager::RemoveCamera(Camera* camera) {
+  assert(camera);
   cameras_.erase(camera);
 }
 

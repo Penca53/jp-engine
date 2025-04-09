@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <cassert>
 #include <memory>
 #include <string>
 #include <utility>
@@ -15,6 +16,7 @@
 namespace ng {
 
 Scene::Scene(App* app) : root_(std::make_unique<Node>(app)) {
+  assert(app);
   // Render all layers by default on the root node.
   root_->SetLayer(static_cast<Layer>(~0ULL));
   root_->SetName("SceneRoot");
@@ -72,10 +74,12 @@ void Scene::InternalOnDestroy() {
 }
 
 void Scene::RegisterNode(const Node* node) {
+  assert(node);
   scene_nodes_.insert(node);
 }
 
 void Scene::UnregisterNode(const Node* node) {
+  assert(node);
   scene_nodes_.erase(node);
 }
 
