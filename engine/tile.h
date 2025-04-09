@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <optional>
 
+/// @brief The unique identifier for all the tiles. The user of the engine must define the enum
+//         to use Tile related operations (i.e. Tilemap).
 enum class TileID : uint64_t;
 
 namespace ng {
