@@ -1,4 +1,3 @@
-// app.h
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>

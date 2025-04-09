@@ -1,4 +1,3 @@
-// resource_manager.h
 #pragma once
 
 #include <SFML/Audio/SoundBuffer.hpp>

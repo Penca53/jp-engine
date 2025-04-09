@@ -40,28 +40,20 @@ void App::Run() {
   while (window_.isOpen()) {
     auto current = std::chrono::steady_clock::now();
 
-    // Calculate elapsed time since the last frame.
     std::chrono::duration elapsed = (current - previous);
 
     previous = current;
     lag += elapsed;
 
-    // Unload the current scene if it's scheduled.
     if (is_scene_unloading_scheduled_) {
-      // Notify the scene that it's being destroyed.
       scene_->InternalOnDestroy();
-      // Release ownership of the current scene.
       scene_ = nullptr;
       is_scene_unloading_scheduled_ = false;
     }
 
-    // Load the scheduled scene if there is one.
     if (scheduled_scene_to_load_) {
-      // Move the scheduled scene to the active scene. Transferring ownership.
       scene_ = std::move(scheduled_scene_to_load_);
-      // Notify the new scene that it has been added.
       scene_->InternalOnAdd();
-      // Reset the scheduled scene.
       scheduled_scene_to_load_ = nullptr;
     }
 
@@ -108,14 +100,11 @@ const Input& App::GetInput() const {
 }
 
 App& App::LoadScene(std::unique_ptr<Scene> scene) {
-  // Schedule the new scene to be loaded in the next frame.
-  // Ownership of 'scene' is moved to 'scheduled_scene_to_load_'.
   scheduled_scene_to_load_ = std::move(scene);
   return *this;
 }
 
 void App::UnloadScene() {
-  // Set the flag to unload the current scene in the next frame.
   is_scene_unloading_scheduled_ = true;
 }
 
@@ -123,13 +112,10 @@ void App::PollInput() {
   // Prepare the input handler for new events.
   input_.Advance();
 
-  // Poll all pending SFML events.
   while (std::optional event = window_.pollEvent()) {
-    // Handle window closing event.
     if (event->is<sf::Event::Closed>()) {
       window_.close();
     } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-      // Notify the current scene about window resizing.
       if (scene_) {
         scene_->OnWindowResize(resized->size);
       }
