@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 3.28)
-project(game LANGUAGES CXX)
-
 add_executable(game main.cc background.cc banana.cc default_scene.cc end.cc follow_player.cc game_manager.cc lose_canvas.cc mushroom.cc plant.cc plant_bullet.cc player.cc score_manager.cc win_canvas.cc)
+
 target_compile_features(game PRIVATE cxx_std_23)
 set_target_properties(game PROPERTIES CXX_EXTENSIONS OFF)
 

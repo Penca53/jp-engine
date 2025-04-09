@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.28)
-project(engine LANGUAGES CXX)
-
 include(FetchContent)
 FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
