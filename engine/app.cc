@@ -1,12 +1,12 @@
 #include "app.h"
 
+#include <SFML/System/String.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <chrono>
 #include <cstdint>
 #include <memory>
 #include <optional>
-#include <string>
 #include <utility>
 
 #include "input.h"
@@ -15,11 +15,15 @@
 
 namespace ng {
 
-App::App(sf::Vector2u window_size, const std::string& window_title) {
-  window_ = sf::RenderWindow(sf::VideoMode(window_size), window_title);
+App::App(sf::Vector2u window_size, const sf::String& window_title, uint32_t tps,
+         uint32_t fps)
+    : window_(sf::RenderWindow(sf::VideoMode(window_size), window_title)),
+      tps_(tps),
+      fps_(fps) {
+  window_.setFramerateLimit(fps_);
 }
 
-App& App::SetWindowTitle(const std::string& title) {
+App& App::SetWindowTitle(const sf::String& title) {
   window_.setTitle(title);
   return *this;
 }
@@ -29,22 +33,15 @@ App& App::SetWindowSize(sf::Vector2u size) {
   return *this;
 }
 
-void App::Run(uint32_t tps, uint32_t fps) {
-  tps_ = tps;
-  fps_ = fps;
-
-  window_.setFramerateLimit(fps_);
-
+void App::Run() {
   auto previous = std::chrono::steady_clock::now();
   // Accumulator for unprocessed time.
-  uint64_t lag = 0;
+  std::chrono::nanoseconds lag;
   while (window_.isOpen()) {
     auto current = std::chrono::steady_clock::now();
 
     // Calculate elapsed time since the last frame.
-    uint64_t elapsed =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(current - previous)
-            .count();
+    std::chrono::duration elapsed = (current - previous);
 
     previous = current;
     lag += elapsed;
@@ -88,13 +85,14 @@ void App::Run(uint32_t tps, uint32_t fps) {
   }
 }
 
-float App::SecondsPerTick() const {
-  return 1.F / static_cast<float>(tps_);
+std::chrono::duration<float> App::SecondsPerTick() const {
+  using namespace std::chrono_literals;
+  return std::chrono::duration<float>(1s) / tps_;  // NOLINT
 }
 
-uint64_t App::NanosecondsPerTick() const {
-  static constexpr uint64_t kNanosInSecond = 1000000000ULL;
-  return kNanosInSecond / tps_;
+std::chrono::nanoseconds App::NanosecondsPerTick() const {
+  using namespace std::chrono_literals;
+  return std::chrono::nanoseconds(1s) / tps_;  // NOLINT
 }
 
 const sf::RenderWindow& App::GetWindow() const {
