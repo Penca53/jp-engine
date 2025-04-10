@@ -8,7 +8,7 @@ namespace ng {
 
 /// @brief Manages a collection of cameras within a scene, handling resizing and providing access to them in draw order.
 class CameraManager {
-  /// @brief Grants Camera class access to internal methods for camera registration and unregistration.
+  // Camera needs to be able to call AddCamera, and RemoveCamera.
   friend class Camera;
 
  public:
@@ -34,11 +34,11 @@ class CameraManager {
 
  private:
   /// @brief Adds a camera to the managed set. Called by Camera during its addition to a scene.
-  /// @param camera A pointer to the Camera to add. This pointer must not be null.
+  /// @param camera A pointer to the Camera to add. This pointer must not be null and the Camera's lifetime should be managed externally to this class.
   void AddCamera(Camera* camera);
 
   /// @brief Removes a camera from the managed set. Called by Camera during its removal from a scene.
-  /// @param camera A pointer to the Camera to remove. This pointer must not be null. It it points to a Camera not currently managed, the call has no effect.
+  /// @param camera A pointer to the Camera to remove. This pointer must not be null and the Camera's lifetime should be managed externally to this class.
   void RemoveCamera(Camera* camera);
 
   // A set containing pointers to all cameras managed by this manager, sorted using DrawOrderCompare.
