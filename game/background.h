@@ -14,7 +14,6 @@ class Background : public ng::Node {
   Background(ng::App* app, sf::Vector2u size);
 
  protected:
-  void OnAdd() override;
   void Update() override;
   void Draw(sf::RenderTarget& target) override;
 
