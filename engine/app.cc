@@ -36,7 +36,7 @@ App& App::SetWindowSize(sf::Vector2u size) {
 void App::Run() {
   auto previous = std::chrono::steady_clock::now();
   // Accumulator for unprocessed time.
-  std::chrono::nanoseconds lag;
+  std::chrono::nanoseconds lag(0);
   while (window_.isOpen()) {
     auto current = std::chrono::steady_clock::now();
 
