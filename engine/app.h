@@ -14,7 +14,7 @@ namespace ng {
 /// @brief The core application class, managing the game loop, window, resources, input, and scenes.
 class App {
  public:
-  /// @brief Constructs an App instance with the specified window size and title.
+  /// @brief Constructs an App instance with the specified window size and title, ticks and frames per second.
   /// @param window_size The initial size of the game window.
   /// @param window_title The title of the game window.
   /// @param tps The target ticks per second (game logic updates).

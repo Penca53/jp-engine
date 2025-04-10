@@ -65,7 +65,7 @@ class Tilemap : public Node {
       sf::Vector2f world_position) const;
 
  protected:
-  /// @brief Overrides Node::Draw to render the tilemap.
+  /// @brief Renders the tilemap.
   /// @param target The SFML RenderTarget to draw to.
   void Draw(sf::RenderTarget& target) override;
 

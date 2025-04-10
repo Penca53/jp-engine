@@ -5,6 +5,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "engine/app.h"
 #include "engine/fsm.h"
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
