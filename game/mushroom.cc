@@ -140,7 +140,7 @@ void Mushroom::Update() {  // NOLINT
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(middle_left) ||
       !tilemap_->IsWithinWorldBounds(bottom_left)) {
-    context_.is_dead = true;
+    TakeDamage();
     return;
   }
 
@@ -163,7 +163,7 @@ void Mushroom::Update() {  // NOLINT
   if (!tilemap_->IsWithinWorldBounds(top_right) ||
       !tilemap_->IsWithinWorldBounds(middle_right) ||
       !tilemap_->IsWithinWorldBounds(bottom_right)) {
-    context_.is_dead = true;
+    TakeDamage();
     return;
   }
 
@@ -182,7 +182,7 @@ void Mushroom::Update() {  // NOLINT
 
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(top_right)) {
-    context_.is_dead = true;
+    TakeDamage();
     return;
   }
 
@@ -200,7 +200,7 @@ void Mushroom::Update() {  // NOLINT
 
   if (!tilemap_->IsWithinWorldBounds(bottom_left) ||
       !tilemap_->IsWithinWorldBounds(bottom_right)) {
-    context_.is_dead = true;
+    TakeDamage();
     return;
   }
 
