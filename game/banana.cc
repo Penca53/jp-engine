@@ -48,6 +48,10 @@ bool Banana::GetIsCollected() const {
 }
 
 void Banana::Collect() {
+  if (is_collected_) {
+    return;
+  }
+
   is_collected_ = true;
   Destroy();
 }

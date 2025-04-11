@@ -7,16 +7,6 @@
 
 namespace ng {
 
-void Physics::AddCollider(const Collider* collider) {
-  assert(collider);
-  colliders_.insert(collider);
-}
-
-void Physics::RemoveCollider(const Collider* collider) {
-  assert(collider);
-  colliders_.erase(collider);
-}
-
 const Collider* Physics::Overlap(const Collider& collider) const {
   for (const auto* other : colliders_) {
     if (other == &collider) {
@@ -29,6 +19,16 @@ const Collider* Physics::Overlap(const Collider& collider) const {
   }
 
   return nullptr;
+}
+
+void Physics::AddCollider(const Collider* collider) {
+  assert(collider);
+  colliders_.insert(collider);
+}
+
+void Physics::RemoveCollider(const Collider* collider) {
+  assert(collider);
+  colliders_.erase(collider);
 }
 
 }  // namespace ng
