@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_set>
+#include <vector>
 
 #include "collider.h"
 
@@ -14,8 +15,9 @@ class Physics {
  public:
   /// @brief Checks if a given collider overlaps with any other collider currently in the physics world.
   /// @param collider The Collider to check for overlaps.
-  /// @return A pointer to the first Collider that overlaps with the given collider, or nullptr if no overlap is found.
-  [[nodiscard]] const Collider* Overlap(const Collider& collider) const;
+  /// @return A vector of pointers to the Colliders that overlaps with the given collider, empty if no overlap is found.
+  [[nodiscard]] std::vector<const Collider*> Overlap(
+      const Collider& collider) const;
 
  private:
   /// @brief Adds a collider to the physics world for collision detection. Called by Collider during its addition to a scene.

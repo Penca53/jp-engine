@@ -2,23 +2,25 @@
 
 #include <cassert>
 #include <unordered_set>
+#include <vector>
 
 #include "collider.h"
 
 namespace ng {
 
-const Collider* Physics::Overlap(const Collider& collider) const {
+std::vector<const Collider*> Physics::Overlap(const Collider& collider) const {
+  std::vector<const Collider*> collisions;
   for (const auto* other : colliders_) {
     if (other == &collider) {
       continue;
     }
 
     if (collider.Collides(*other)) {
-      return other;
+      collisions.push_back(other);
     }
   }
 
-  return nullptr;
+  return collisions;
 }
 
 void Physics::AddCollider(const Collider* collider) {

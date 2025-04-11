@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <vector>
 
 #include "engine/app.h"
 #include "engine/circle_collider.h"
@@ -66,8 +67,9 @@ void PlantBullet::Update() {
   static constexpr float kMovementSpeed = 6;
   Translate(direction_ * kMovementSpeed);
 
-  const ng::Collider* other = GetScene()->GetPhysics().Overlap(*collider_);
-  if (other != nullptr) {
+  std::vector<const ng::Collider*> others =
+      GetScene()->GetPhysics().Overlap(*collider_);
+  for (const auto* other : others) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());
       player->TakeDamage();

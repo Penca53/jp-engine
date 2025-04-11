@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "banana.h"
 #include "end.h"
@@ -351,8 +352,9 @@ void Player::Update() {  // NOLINT
 
   SetLocalPosition(new_pos - sf::Vector2f{0, 8});
 
-  const ng::Collider* other = GetScene()->GetPhysics().Overlap(*collider_);
-  if (other != nullptr) {
+  std::vector<const ng::Collider*> others =
+      GetScene()->GetPhysics().Overlap(*collider_);
+  for (const auto* other : others) {
     if (other->GetParent()->GetName() == "Mushroom") {
       if (context_.velocity.y > 0) {
         auto* mushroom = dynamic_cast<Mushroom*>(other->GetParent());

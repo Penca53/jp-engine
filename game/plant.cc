@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "engine/app.h"
 #include "engine/collider.h"
@@ -160,8 +161,9 @@ void Plant::Update() {
     attack_timer_ = kAttackCooldown;
   }
 
-  const ng::Collider* other = GetScene()->GetPhysics().Overlap(*collider_);
-  if (other != nullptr) {
+  std::vector<const ng::Collider*> others =
+      GetScene()->GetPhysics().Overlap(*collider_);
+  for (const auto* other : others) {
     if (other->GetParent()->GetName() == "Player") {
       auto* player = dynamic_cast<Player*>(other->GetParent());
       if (player->GetVelocity().y <= 0) {
