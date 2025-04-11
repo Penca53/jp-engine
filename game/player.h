@@ -18,8 +18,8 @@ namespace game {
 
 class Player : public ng::Node {
  public:
-  Player(ng::App* app, ng::Tilemap* tilemap, ScoreManager* score_manager,
-         GameManager* game_manager);
+  Player(ng::App* app, ng::Tilemap* tilemap, GameManager* game_manager,
+         ScoreManager* score_manager);
   sf::Vector2f GetVelocity() const;
   void TakeDamage();
 
@@ -107,8 +107,8 @@ class Player : public ng::Node {
   };
 
   ng::Tilemap* tilemap_ = nullptr;
-  ScoreManager* score_manager_ = nullptr;
   GameManager* game_manager_ = nullptr;
+  ScoreManager* score_manager_ = nullptr;
   const ng::RectangleCollider* collider_ = nullptr;
   sf::Sprite sprite_;
   bool has_won_ = false;

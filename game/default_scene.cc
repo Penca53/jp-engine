@@ -192,7 +192,7 @@ std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App* app) {
   auto& game_manager = scene->MakeChild<GameManager>();
 
   auto& player =
-      scene->MakeChild<Player>(&tilemap, &score_manager, &game_manager);
+      scene->MakeChild<Player>(&tilemap, &game_manager, &score_manager);
   player.SetLocalPosition({8.F * static_cast<float>(tilemap.GetTileSize().x),
                            25.F * static_cast<float>(tilemap.GetTileSize().y)});
 

@@ -107,12 +107,12 @@ void Player::HitState::Die() {
   node_->Destroy();
 }
 
-Player::Player(ng::App* app, ng::Tilemap* tilemap, ScoreManager* score_manager,
-               GameManager* game_manager)
+Player::Player(ng::App* app, ng::Tilemap* tilemap, GameManager* game_manager,
+               ScoreManager* score_manager)
     : ng::Node(app),
       tilemap_(tilemap),
-      score_manager_(score_manager),
       game_manager_(game_manager),
+      score_manager_(score_manager),
       sprite_(GetApp()->GetResourceManager().LoadTexture(
           "Player/Idle (32x32).png")),
       animator_(&context_, std::make_unique<IdleState>(
