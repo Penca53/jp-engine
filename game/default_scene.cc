@@ -199,7 +199,7 @@ std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App* app) {
   scene->MakeChild<ng::Camera>(1, ng::Layer::kUI);
 
   auto& camera = scene->MakeChild<ng::Camera>();
-  camera.MakeChild<FollowPlayer>(&player);
+  camera.MakeChild<FollowPlayer>(&player, &tilemap);
 
   auto& end = scene->MakeChild<End>(&game_manager);
   end.SetLocalPosition({61 * 32, 24 * 32});
