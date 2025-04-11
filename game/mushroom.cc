@@ -228,7 +228,6 @@ void Mushroom::Update() {  // NOLINT
     } else if (other->GetParent()->GetName() == "Mushroom") {
       auto* mushroom = dynamic_cast<Mushroom*>(other->GetParent());
       if (!mushroom->GetIsDead()) {
-        mushroom->direction_.x = -mushroom->direction_.x;
         direction_.x = -direction_.x;
       }
     }
