@@ -121,7 +121,8 @@ void Mushroom::Update() {  // NOLINT
     return;
   }
 
-  velocity_.x = direction_.x * 2;
+  static constexpr float kMovementSpeed = 2.F;
+  velocity_.x = direction_.x * kMovementSpeed;
   velocity_.y += 1;
 
   sf::Vector2f old_pos = collider_->GetGlobalTransform().getPosition();

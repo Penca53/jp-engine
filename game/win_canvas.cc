@@ -19,8 +19,6 @@ WinCanvas::WinCanvas(ng::App* app)
   SetName("WinCanvas");
   SetLayer(ng::Layer::kUI);
 
-  background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
-  background_.setOrigin(sf::Vector2f(GetApp()->GetWindow().getSize() / 2U));
   background_.setFillColor(sf::Color(50, 50, 50, 200));
 
   title_text_.setString("YOU WON");
@@ -48,6 +46,9 @@ void WinCanvas::Draw(sf::RenderTarget& target) {
   if (!is_enabled_) {
     return;
   }
+
+  background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
+  background_.setOrigin(sf::Vector2f(GetApp()->GetWindow().getSize() / 2U));
 
   target.draw(background_, GetGlobalTransform().getTransform());
   target.draw(title_text_, GetGlobalTransform().getTransform());

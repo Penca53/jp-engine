@@ -229,19 +229,20 @@ void Player::Update() {  // NOLINT
     return;
   }
 
-  sf::Vector2f dir;
+  sf::Vector2f direction;
   if (!has_won_) {
     if (GetApp()->GetInput().GetKey(sf::Keyboard::Scancode::A)) {
-      dir.x += -1;
+      direction.x += -1;
       sprite_.setScale(sf::Vector2f{-2.F, 2.F});
     }
     if (GetApp()->GetInput().GetKey(sf::Keyboard::Scancode::D)) {
-      dir.x += 1;
+      direction.x += 1;
       sprite_.setScale(sf::Vector2f{2.F, 2.F});
     }
   }
 
-  context_.velocity.x = dir.x * 4;
+  static constexpr float kMovementSpeed = 4.F;
+  context_.velocity.x = direction.x * kMovementSpeed;
   context_.velocity.y += 1;
 
   if (!has_won_ && context_.is_on_ground &&

@@ -18,9 +18,6 @@ LoseCanvas::LoseCanvas(ng::App* app)
   SetName("LoseCanvas");
   SetLayer(ng::Layer::kUI);
 
-  background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
-  background_.setOrigin(
-      static_cast<sf::Vector2f>(GetApp()->GetWindow().getSize() / 2U));
   background_.setFillColor(sf::Color(50, 50, 50, 200));
 
   title_text_.setString("YOU LOST");
@@ -48,6 +45,10 @@ void LoseCanvas::Draw(sf::RenderTarget& target) {
   if (!is_enabled_) {
     return;
   }
+
+  background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
+  background_.setOrigin(
+      static_cast<sf::Vector2f>(GetApp()->GetWindow().getSize() / 2U));
 
   target.draw(background_, GetGlobalTransform().getTransform());
   target.draw(title_text_, GetGlobalTransform().getTransform());

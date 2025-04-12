@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "app.h"
+#include "camera.h"
 #include "camera_manager.h"
 #include "layer.h"
 #include "node.h"
@@ -17,9 +18,9 @@ namespace ng {
 
 Scene::Scene(App* app) : root_(std::make_unique<Node>(app)) {
   assert(app);
+  root_->SetName("SceneRoot");
   // Render all layers by default on the root node.
   root_->SetLayer(static_cast<Layer>(~0ULL));
-  root_->SetName("SceneRoot");
 }
 
 const std::string& Scene::GetName() const {

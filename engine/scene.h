@@ -5,7 +5,6 @@
 #include <string>
 #include <unordered_set>
 
-#include "camera.h"
 #include "camera_manager.h"
 #include "derived.h"
 #include "node.h"
@@ -67,10 +66,6 @@ class Scene {
   /// @return True if the Node is valid and belongs to this scene, false otherwise.
   bool IsValid(const Node* node) const;
 
-  /// @brief Called when the game window is resized. Notifies the CameraManager to update its cameras.
-  /// @param new_size The new size of the window.
-  void OnWindowResize(sf::Vector2u new_size);
-
  private:
   /// @brief Internal method called when the scene is added to the App. Notifies the root node.
   void InternalOnAdd();
@@ -88,6 +83,10 @@ class Scene {
   /// @brief Unregisters a Node from the scene. Called by Node during its removal from the hierarchy.
   /// @param node A pointer to the Node being unregistered. This pointer must not be null.
   void UnregisterNode(const Node* node);
+
+  /// @brief Called when the game window is resized. Notifies the CameraManager to update its cameras.
+  /// @param new_size The new size of the window.
+  void OnWindowResize(sf::Vector2u new_size);
 
   // The name of the scene.
   std::string name_;

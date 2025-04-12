@@ -204,23 +204,23 @@ std::unique_ptr<ng::Scene> MakeDefaultScene(ng::App* app) {
   auto& end = scene->MakeChild<End>(&game_manager);
   end.SetLocalPosition({61 * 32, 24 * 32});
 
-  auto& g = scene->MakeChild<Mushroom>(&tilemap);
-  g.SetLocalPosition({38 * 32, 27 * 32});
+  auto& mushroom_0 = scene->MakeChild<Mushroom>(&tilemap);
+  mushroom_0.SetLocalPosition({38 * 32, 27 * 32});
 
-  auto& g1 = scene->MakeChild<Mushroom>(&tilemap);
-  g1.SetLocalPosition({40 * 32, 27 * 32});
+  auto& mushroom_1 = scene->MakeChild<Mushroom>(&tilemap);
+  mushroom_1.SetLocalPosition({40 * 32, 27 * 32});
 
-  auto& p = scene->MakeChild<Plant>(&tilemap);
-  p.SetLocalPosition({52 * 32, (28 * 32) - 10});
+  auto& plant_0 = scene->MakeChild<Plant>(&tilemap);
+  plant_0.SetLocalPosition({52 * 32, (28 * 32) - 10});
 
-  auto& p1 = scene->MakeChild<Plant>(&tilemap);
-  p1.SetLocalPosition({58 * 32, (26 * 32) - 10});
+  auto& plant_1 = scene->MakeChild<Plant>(&tilemap);
+  plant_1.SetLocalPosition({58 * 32, (26 * 32) - 10});
 
-  auto& b = scene->MakeChild<Banana>();
-  b.SetLocalPosition({14 * 32, 26 * 32});
+  auto& banana_0 = scene->MakeChild<Banana>();
+  banana_0.SetLocalPosition({14 * 32, 26 * 32});
 
-  auto& b1 = scene->MakeChild<Banana>();
-  b1.SetLocalPosition({40 * 32, 28 * 32});
+  auto& banana_1 = scene->MakeChild<Banana>();
+  banana_1.SetLocalPosition({40 * 32, 28 * 32});
 
   return scene;
 }
