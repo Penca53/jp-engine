@@ -15,4 +15,9 @@ endif()
 
 target_link_libraries(game PRIVATE engine)
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/resources" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+add_custom_target(copy_resources
+	COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different 
+        "${CMAKE_CURRENT_SOURCE_DIR}/resources"
+        "$<TARGET_FILE_DIR:game>/resources"
+)
+add_dependencies(game copy_resources)
