@@ -22,6 +22,19 @@
 
 namespace game {
 
+namespace {
+
+bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
+  TileID id = tilemap.GetWorldTile(position).GetID();
+  return id == TileID::kInvisibleBarrier ||
+         (id >= TileID::kDirtTopLeft && id <= TileID::kDirtBottomRight) ||
+         (id >= TileID::kStoneHorizontalLeft &&
+          id <= TileID::kStoneVerticalBottom) ||
+         id == TileID::kPlasticBlock;
+}
+
+}  // namespace
+
 static constexpr int32_t kAnimationTPF = 4;
 
 Mushroom::RunState::RunState(ng::State<Context>::ID id,
@@ -101,19 +114,6 @@ void Mushroom::TakeDamage() {
   context_.is_dead = true;
 }
 
-namespace {
-
-bool DoesCollide(sf::Vector2f position, const ng::Tilemap& tilemap) {
-  TileID id = tilemap.GetWorldTile(position).GetID();
-  return id == TileID::kInvisibleBarrier ||
-         (id >= TileID::kDirtTopLeft && id <= TileID::kDirtBottomRight) ||
-         (id >= TileID::kStoneHorizontalLeft &&
-          id <= TileID::kStoneVerticalBottom) ||
-         id == TileID::kPlasticBlock;
-}
-
-}  // namespace
-
 void Mushroom::Update() {  // NOLINT
   animator_.Update();
 
@@ -128,16 +128,16 @@ void Mushroom::Update() {  // NOLINT
   sf::Vector2f old_pos = collider_->GetGlobalTransform().getPosition();
   sf::Vector2f new_pos = old_pos + velocity_;
 
-  sf::Vector2f col_size = collider_->GetSize() / 2.F;
+  sf::Vector2f col_half_size = collider_->GetSize() / 2.F;
   sf::Vector2f tilemap_size = sf::Vector2f(tilemap_->GetTileSize());
 
   static constexpr float kEps = 0.001F;
-  sf::Vector2f top_left = {new_pos.x - (col_size.x - kEps),
-                           old_pos.y - (col_size.y - kEps)};
-  sf::Vector2f middle_left = {new_pos.x + (col_size.x - kEps),
+  sf::Vector2f top_left = {new_pos.x - (col_half_size.x - kEps),
+                           old_pos.y - (col_half_size.y - kEps)};
+  sf::Vector2f middle_left = {new_pos.x + (col_half_size.x - kEps),
                               old_pos.y + (0 - kEps)};
-  sf::Vector2f bottom_left = {new_pos.x - (col_size.x - kEps),
-                              old_pos.y + (col_size.y - kEps)};
+  sf::Vector2f bottom_left = {new_pos.x - (col_half_size.x - kEps),
+                              old_pos.y + (col_half_size.y - kEps)};
 
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(middle_left) ||
@@ -149,18 +149,18 @@ void Mushroom::Update() {  // NOLINT
   if (velocity_.x < 0 && (DoesCollide(top_left, *tilemap_) ||
                           DoesCollide(middle_left, *tilemap_) ||
                           DoesCollide(bottom_left, *tilemap_))) {
-    new_pos.x =
-        std::ceil(top_left.x / tilemap_size.x) * tilemap_size.x + col_size.x;
+    new_pos.x = std::ceil(top_left.x / tilemap_size.x) * tilemap_size.x +
+                col_half_size.x;
     velocity_.x = 0;
     direction_.x = 1;
   }
 
-  sf::Vector2f top_right = {new_pos.x + (col_size.x - kEps),
-                            old_pos.y - (col_size.y - kEps)};
-  sf::Vector2f middle_right = {new_pos.x + (col_size.x - kEps),
+  sf::Vector2f top_right = {new_pos.x + (col_half_size.x - kEps),
+                            old_pos.y - (col_half_size.y - kEps)};
+  sf::Vector2f middle_right = {new_pos.x + (col_half_size.x - kEps),
                                old_pos.y + (0 - kEps)};
-  sf::Vector2f bottom_right = {new_pos.x + (col_size.x - kEps),
-                               old_pos.y + (col_size.y - kEps)};
+  sf::Vector2f bottom_right = {new_pos.x + (col_half_size.x - kEps),
+                               old_pos.y + (col_half_size.y - kEps)};
 
   if (!tilemap_->IsWithinWorldBounds(top_right) ||
       !tilemap_->IsWithinWorldBounds(middle_right) ||
@@ -172,15 +172,16 @@ void Mushroom::Update() {  // NOLINT
   if (velocity_.x > 0 && (DoesCollide(top_right, *tilemap_) ||
                           DoesCollide(middle_right, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
-    new_pos.x =
-        std::floor(top_right.x / tilemap_size.x) * tilemap_size.x - col_size.x;
+    new_pos.x = std::floor(top_right.x / tilemap_size.x) * tilemap_size.x -
+                col_half_size.x;
     velocity_.x = 0;
     direction_.x = -1;
   }
 
-  top_left = {new_pos.x - (col_size.x - kEps), new_pos.y - (col_size.y - kEps)};
-  top_right = {new_pos.x + (col_size.x - kEps),
-               new_pos.y - (col_size.y - kEps)};
+  top_left = {new_pos.x - (col_half_size.x - kEps),
+              new_pos.y - (col_half_size.y - kEps)};
+  top_right = {new_pos.x + (col_half_size.x - kEps),
+               new_pos.y - (col_half_size.y - kEps)};
 
   if (!tilemap_->IsWithinWorldBounds(top_left) ||
       !tilemap_->IsWithinWorldBounds(top_right)) {
@@ -190,15 +191,15 @@ void Mushroom::Update() {  // NOLINT
 
   if (velocity_.y < 0 &&
       (DoesCollide(top_left, *tilemap_) || DoesCollide(top_right, *tilemap_))) {
-    new_pos.y =
-        std::ceil(top_left.y / tilemap_size.y) * tilemap_size.y + col_size.y;
+    new_pos.y = std::ceil(top_left.y / tilemap_size.y) * tilemap_size.y +
+                col_half_size.y;
     velocity_.y = 0;
   }
 
-  bottom_left = {new_pos.x - (col_size.x - kEps),
-                 new_pos.y + (col_size.y - kEps)};
-  bottom_right = {new_pos.x + (col_size.x - kEps),
-                  new_pos.y + (col_size.y - kEps)};
+  bottom_left = {new_pos.x - (col_half_size.x - kEps),
+                 new_pos.y + (col_half_size.y - kEps)};
+  bottom_right = {new_pos.x + (col_half_size.x - kEps),
+                  new_pos.y + (col_half_size.y - kEps)};
 
   if (!tilemap_->IsWithinWorldBounds(bottom_left) ||
       !tilemap_->IsWithinWorldBounds(bottom_right)) {
@@ -209,7 +210,7 @@ void Mushroom::Update() {  // NOLINT
   if (velocity_.y > 0 && (DoesCollide(bottom_left, *tilemap_) ||
                           DoesCollide(bottom_right, *tilemap_))) {
     new_pos.y = std::floor(bottom_left.y / tilemap_size.y) * tilemap_size.y -
-                col_size.y;
+                col_half_size.y;
     velocity_.y = 0;
     is_on_ground_ = true;
   } else {
