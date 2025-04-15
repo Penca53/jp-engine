@@ -37,7 +37,7 @@ class Tileset {
   // The dimensions of each tile in the texture atlas.
   sf::Vector2u tile_size_;
   // Pointer to the texture atlas containing the tiles. This pointer is never null after construction.
-  const sf::Texture* texture_;
+  const sf::Texture* texture_ = nullptr;
   // Stores the tiles, indexed by their unique ID.
   std::unordered_map<TileID, Tile> tiles_;
 };
