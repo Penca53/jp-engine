@@ -3,6 +3,7 @@
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <cmath>
 #include <cstdint>
 #include <memory>
