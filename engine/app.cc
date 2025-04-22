@@ -57,9 +57,10 @@ void App::Run() {
       scheduled_scene_to_load_ = nullptr;
     }
 
+    PollInput();
+
     // Process game logic updates based on the target TPS.
     while (lag >= NanosecondsPerTick()) {
-      PollInput();
       if (scene_) {
         scene_->InternalUpdate();
       }
