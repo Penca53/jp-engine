@@ -59,7 +59,6 @@ void App::Run() {
 
     window_.clear();
 
-    // Draw the current scene if it exists.
     if (scene_) {
       scene_->InternalDraw(window_);
     }
