@@ -169,7 +169,7 @@ class Node {
   mutable bool is_global_transform_dirty_ = false;
 
   // Pointer to the App instance. Never null after construction.
-  App* app_;
+  App* app_ = nullptr;
 
   // Pointer to the parent node in the scene graph. Can be null for the root.
   Node* parent_ = nullptr;
