@@ -48,7 +48,7 @@ void WinCanvas::Draw(sf::RenderTarget& target) {
   }
 
   background_.setSize(sf::Vector2f(GetApp()->GetWindow().getSize()));
-  background_.setOrigin(sf::Vector2f(GetApp()->GetWindow().getSize() / 2U));
+  background_.setOrigin(sf::Vector2f(GetApp()->GetWindow().getSize()) / 2.F);
 
   target.draw(background_, GetGlobalTransform().getTransform());
   target.draw(title_text_, GetGlobalTransform().getTransform());

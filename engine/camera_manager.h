@@ -12,7 +12,7 @@ class CameraManager {
   friend class Camera;
 
  public:
-  /// @brief Comparator class used to sort cameras based on their draw order. If draw orders are equal, it uses pointer comparison for determinism.
+  /// @brief Comparator class used to sort cameras based on their draw order.
   class DrawOrderCompare {
    public:
     /// @brief Compares two Camera pointers based on their draw order.

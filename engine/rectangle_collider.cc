@@ -1,14 +1,14 @@
 #include "rectangle_collider.h"
 
-#include "app.h"
-#include "circle_collider.h"
-#include "collider.h"
-
 #ifndef NDEBUG
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #endif
 #include <SFML/System/Vector2.hpp>
+
+#include "app.h"
+#include "circle_collider.h"
+#include "collider.h"
 
 namespace ng {
 
