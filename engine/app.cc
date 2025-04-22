@@ -23,16 +23,6 @@ App::App(sf::Vector2u window_size, const sf::String& window_title, uint32_t tps,
   window_.setFramerateLimit(fps_);
 }
 
-App& App::SetWindowTitle(const sf::String& title) {
-  window_.setTitle(title);
-  return *this;
-}
-
-App& App::SetWindowSize(sf::Vector2u size) {
-  window_.setSize(size);
-  return *this;
-}
-
 void App::Run() {
   auto previous = std::chrono::steady_clock::now();
   // Accumulator for unprocessed time.

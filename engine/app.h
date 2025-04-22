@@ -28,16 +28,6 @@ class App {
   App(App&& other) = delete;
   App& operator=(App&& other) = delete;
 
-  /// @brief Sets the title of the game window.
-  /// @param title The new title for the window.
-  /// @return A reference to the App instance for method chaining.
-  App& SetWindowTitle(const sf::String& title);
-
-  /// @brief Sets the size of the game window.
-  /// @param size The new size of the window in pixels.
-  /// @return A reference to the App instance for method chaining.
-  App& SetWindowSize(sf::Vector2u size);
-
   /// @brief Runs the main game loop.
   void Run();
 
