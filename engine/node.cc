@@ -145,6 +145,8 @@ void Node::EraseDestroyedChildren() {
     return;
   }
 
+  // This is required because a newly destroyed child may destroy a new child
+  // from its parent (this node), invalidating the current children_to_erase_ vector.
   auto prev_frame_children_to_erase = std::move(children_to_erase_);
   std::ranges::sort(prev_frame_children_to_erase, std::greater<>());
   for (size_t to_erase : prev_frame_children_to_erase) {
@@ -154,6 +156,8 @@ void Node::EraseDestroyedChildren() {
 }
 
 void Node::AddQueuedChildren() {
+  // This is required because a newly added child may add a new child
+  // to its parent (this node), invalidating the current children_to_add_ vector.
   auto prev_frame_children_to_add = std::move(children_to_add_);
   for (auto& to_add : prev_frame_children_to_add) {
     Node* tmp = to_add.get();
