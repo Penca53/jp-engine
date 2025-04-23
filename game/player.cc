@@ -353,7 +353,7 @@ void Player::Update() {  // NOLINT
     context_.is_on_ground = false;
   }
 
-  SetLocalPosition(new_pos - sf::Vector2f{0, 8});
+  SetLocalPosition(new_pos - collider_->GetLocalTransform().getPosition());
 
   std::vector<const ng::Collider*> others =
       GetScene()->GetPhysics().Overlap(*collider_);

@@ -218,7 +218,7 @@ void Mushroom::Update() {  // NOLINT
     is_on_ground_ = false;
   }
 
-  SetLocalPosition(new_pos - sf::Vector2f{0, 16});
+  SetLocalPosition(new_pos - collider_->GetLocalTransform().getPosition());
 
   std::vector<const ng::Collider*> others =
       GetScene()->GetPhysics().Overlap(*collider_);
