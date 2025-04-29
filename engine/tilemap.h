@@ -5,6 +5,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <vector>
 
+#include "app.h"
 #include "node.h"
 #include "tile.h"
 #include "tileset.h"

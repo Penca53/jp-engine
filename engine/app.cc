@@ -2,6 +2,7 @@
 
 #include <SFML/System/String.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
 #include <chrono>
 #include <cstdint>
