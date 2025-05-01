@@ -4,7 +4,6 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <filesystem>
-#include <memory>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -42,14 +41,12 @@ class ResourceManager {
   /// @brief The prefix for all resource file paths.
   static constexpr std::string_view kPrefix_ = "resources/";
 
-  /// @brief Cache for loaded textures, mapping file paths to unique pointers of SFML Texture.
-  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Texture>>
-      textures_;
-  /// @brief Cache for loaded sound buffers, mapping file paths to unique pointers of SFML SoundBuffer.
-  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::SoundBuffer>>
-      sound_buffers_;
-  /// @brief Cache for loaded fonts, mapping file paths to unique pointers of SFML Font.
-  std::unordered_map<std::filesystem::path, std::unique_ptr<sf::Font>> fonts_;
+  /// @brief Cache for loaded textures, mapping file paths to SFML Textures.
+  std::unordered_map<std::filesystem::path, sf::Texture> textures_;
+  /// @brief Cache for loaded sound buffers, mapping file paths to SFML SoundBuffers.
+  std::unordered_map<std::filesystem::path, sf::SoundBuffer> sound_buffers_;
+  /// @brief Cache for loaded fonts, mapping file paths to SFML Fonts.
+  std::unordered_map<std::filesystem::path, sf::Font> fonts_;
 };
 
 }  // namespace ng
