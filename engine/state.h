@@ -38,13 +38,13 @@ class State {
   TContext* GetContext() { return context_; }
 
   /// @brief Called when the state is entered.
-  virtual void OnEnter() {}
+  virtual void OnEnter() {}  // NOLINT
 
   /// @brief Called during the update phase while this state is active.
-  virtual void Update() {}
+  virtual void Update() {}  // NOLINT
 
   /// @brief Called when the state is exited.
-  virtual void OnExit() {}
+  virtual void OnExit() {}  // NOLINT
 
  private:
   /// @brief Sets the context object for this state. Called by the FSM.
