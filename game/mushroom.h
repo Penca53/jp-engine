@@ -10,6 +10,7 @@
 #include "engine/node.h"
 #include "engine/rectangle_collider.h"
 #include "engine/sprite_sheet_animation.h"
+#include "engine/state.h"
 #include "engine/tilemap.h"
 
 namespace game {
